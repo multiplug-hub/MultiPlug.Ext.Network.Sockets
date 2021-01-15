@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FB0D96CE-75FF-4F5C-BE17-5120D5A969D2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MultiPlug.Ext.Network.Sockets</RootNamespace>
+    <AssemblyName>MultiPlug.Ext.Network.Sockets</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="MultiPlug.Base, Version=1.0.52.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MultiPlug.Base.1.0.52\lib\net472\MultiPlug.Base.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MultiPlug.Extension.Core, Version=1.0.59.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MultiPlug.Extension.Core.1.0.59\lib\net472\MultiPlug.Extension.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Components\SocketClient\MessageBuffer.cs" />
+    <Compile Include="Components\SocketClient\SocketClientComponent.cs" />
+    <Compile Include="Components\SocketEndpoint\SocketEndpointComponent.cs" />
+    <Compile Include="Components\SocketEndpoint\SocketEndpointListener.cs" />
+    <Compile Include="Controllers\Assets\AssetsEndpoint.cs" />
+    <Compile Include="Controllers\Assets\ImageController.cs" />
+    <Compile Include="Controllers\Settings\Home\HomeController.cs" />
+    <Compile Include="Controllers\Settings\SettingsApp.cs" />
+    <Compile Include="Controllers\Settings\SocketClient\DeleteSocketClientController.cs" />
+    <Compile Include="Controllers\Settings\SocketClient\DeleteSubcriptionController.cs" />
+    <Compile Include="Controllers\Settings\SocketClient\SocketClientController.cs" />
+    <Compile Include="Controllers\Settings\SocketEndpoint\DeleteSocketEndpointController.cs" />
+    <Compile Include="Controllers\Settings\SocketEndpoint\DeleteSubcriptionController.cs" />
+    <Compile Include="Controllers\Settings\SocketEndpoint\SocketEndpointController.cs" />
+    <Compile Include="Core.cs" />
+    <Compile Include="Diagnostics\EventLogDefinitions.cs" />
+    <Compile Include="Diagnostics\EventLogEntryCodes.cs" />
+    <Compile Include="Models\Components\SocketClientProperties.cs" />
+    <Compile Include="Models\Components\SocketEndpointProperties.cs" />
+    <Compile Include="Models\Components\SocketState.cs" />
+    <Compile Include="Models\Components\SubscriptionKey.cs" />
+    <Compile Include="Models\Load\LoadModel.cs" />
+    <Compile Include="Models\Settings\Home.cs" />
+    <Compile Include="Models\Settings\SocketClientPostModel.cs" />
+    <Compile Include="Models\Settings\SocketEndpointPostModel.cs" />
+    <Compile Include="NetworkSockets.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Controllers\Settings\Home\Home.cshtml" />
+    <None Include="Controllers\Settings\SocketClient\SocketClient.cshtml" />
+    <None Include="Controllers\Settings\SocketEndpoint\SocketEndpoint.cshtml" />
+    <None Include="packages.config" />
+    <None Include="Resources\NotFound.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Controllers\API\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\networks.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,74 @@
+﻿@model MultiPlug.Base.Http.EdgeApp
+
+<section class="row-fluid">
+    <div class="row-fluid">
+        <div class="box">
+            <div class="span2">
+                <a href="/"><img alt="Network Icon" src="@Raw(Model.Context.Paths.Assets)images/networks.png"></a>
+            </div>
+            <div class="span8">
+                <p style="font-size:22.75px; padding-top:10px; text-align:center;">Network Sockets</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span6">
+            <h3 class="box-header"><i class="icon-signout"></i>Clients [ @Model.Extension.Model.SocketClientCount ]</h3>
+            <div class="box non-collapsible">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Remote Host</th>
+                            <th>Port</th>
+                            <th><a class="btn btn-green" href="@Raw(Model.Context.Paths.Home)socketclient/"><i class="icon-time icon-plus"></i></a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var HttpRequest in @Model.Extension.Model.SocketClients)
+                        {
+                            <tr>
+                                <td><a href="@Raw(Model.Context.Paths.Home)socketclient/?id=@HttpRequest.Guid">@HttpRequest.HostName</a></td>
+                                <td><a href="@Raw(Model.Context.Paths.Home)socketclient/?id=@HttpRequest.Guid">@HttpRequest.Port</a></td>
+                                <td>
+                                    <form action="@Raw(Model.Context.Paths.Home)socketclient/delete/?id=@HttpRequest.Guid" method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded">
+                                        <button type="submit" value="submit" class="btn btn-red"><i class="icon-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="span6">
+            <h3 class="box-header"><i class="icon-signin"></i>Endpoints [ @Model.Extension.Model.SocketEndpointCount ]</h3>
+            <div class="box non-collapsible">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Local IP</th>
+                            <th>Port</th>
+                            <th><a class="btn btn-green" href="@Raw(Model.Context.Paths.Home)socketendpoint/"><i class="icon-time icon-plus"></i></a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var SocketEndpoint in @Model.Extension.Model.SocketEndpoints)
+                        {
+                            <tr>
+                                <td><a href="@Raw(Model.Context.Paths.Home)socketendpoint/?id=@SocketEndpoint.Guid">@SocketEndpoint.IPAddress</a></td>
+                                <td><a href="@Raw(Model.Context.Paths.Home)socketendpoint/?id=@SocketEndpoint.Guid">@SocketEndpoint.Port</a></td>
+                                <td>
+                                    <form action="@Raw(Model.Context.Paths.Home)socketendpoint/delete/?id=@SocketEndpoint.Guid" method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded">
+                                        <button type="submit" value="submit" class="btn btn-red"><i class="icon-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
