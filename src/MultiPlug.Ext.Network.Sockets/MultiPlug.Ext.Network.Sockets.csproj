@@ -71,7 +71,6 @@
     <Compile Include="Models\Components\SocketClientProperties.cs" />
     <Compile Include="Models\Components\SocketEndpointProperties.cs" />
     <Compile Include="Models\Components\SocketState.cs" />
-    <Compile Include="Models\Components\SubscriptionKey.cs" />
     <Compile Include="Models\Load\LoadModel.cs" />
     <Compile Include="Models\Settings\Home.cs" />
     <Compile Include="Models\Settings\SocketClientPostModel.cs" />
