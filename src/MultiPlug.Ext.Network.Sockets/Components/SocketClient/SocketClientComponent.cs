@@ -17,12 +17,15 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
         public event Action EventsUpdated;
         public event Action SubscriptionsUpdated;
 
-        private Socket m_Socket;
+        
 
         private ManualResetEvent connectDone = new ManualResetEvent(false);
         private ManualResetEvent sendDone = new ManualResetEvent(false);
 
         private MessageBuffer m_MessageBuffer;
+        private EventConsumerHelper m_EventConsumerHelper;
+
+        private Socket m_Socket;
 
         private bool m_ConnectionInError = false;
 
@@ -35,6 +38,8 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
 
             m_MessageBuffer = new MessageBuffer(theGuid, "SocketClient");
+
+            m_EventConsumerHelper = new EventConsumerHelper(this, OnLogWriteEntry, Send, m_MessageBuffer);
         }
         internal void UpdateProperties(SocketClientProperties theNewProperties)
         {
@@ -100,7 +105,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                 foreach (Subscription Subscription in NewSubscriptions)
                 {
                     Subscription.Guid = System.Guid.NewGuid().ToString();
-                    Subscription.EventConsumer = new EventConsumerHelper(this, m_Socket, OnLogWriteEntry, Send, m_MessageBuffer);
+                    Subscription.EventConsumer = m_EventConsumerHelper;
                 }
 
                 WriteSubscriptions.AddRange(NewSubscriptions);
@@ -185,6 +190,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                 IPEndPoint remoteEP = new IPEndPoint(IPAddress, Port);
 
                 m_Socket = new Socket(IPAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                m_EventConsumerHelper.Socket = m_Socket;
 
                 OnLogWriteEntry(EventLogEntryCodes.SocketClientConnectingTo, new string[] { IPAddress.ToString() });
                  
@@ -429,19 +435,18 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
         private class EventConsumerHelper : EventConsumer
         {
             private SocketClientProperties Properties;
-            private Socket m_Socket;
+
+            public Socket Socket { get; set; }
             private Action<EventLogEntryCodes, string[]> OnLogWriteEntry;
             private Func<byte[], bool> Send;
             private MessageBuffer m_MessageBuffer;
 
             public EventConsumerHelper(SocketClientProperties theProperties,
-                Socket theSocket,
                 Action<EventLogEntryCodes, string[]> theLog,
                 Func<byte[], bool> theSendFunc,
                 MessageBuffer theMessageBuffer)
             {
                 Properties = theProperties;
-                m_Socket = theSocket;
                 OnLogWriteEntry = theLog;
                 Send = theSendFunc;
                 m_MessageBuffer = theMessageBuffer;
@@ -453,7 +458,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
                 if (Subject != null)
                 {
-                    if (m_Socket != null && m_Socket.Connected)
+                    if (Socket != null && Socket.Connected)
                     {
                         OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { Subject.Value });
                         Send(Encoding.ASCII.GetBytes(Subject.Value));

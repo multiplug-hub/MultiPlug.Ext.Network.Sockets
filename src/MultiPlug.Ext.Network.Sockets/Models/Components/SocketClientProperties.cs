@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using MultiPlug.Base;
 using MultiPlug.Base.Exchange;
 using MultiPlug.Base.Exchange.API;
+using System.Net.Sockets;
 
 namespace MultiPlug.Ext.Network.Sockets.Models.Components
 {
