@@ -105,6 +105,12 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient
                     SubscriptionKey = theModel.SubscriptionKey,
                     Port = Port
                 } });
+
+                return new Response
+                {
+                    StatusCode = System.Net.HttpStatusCode.Moved,
+                    Location = new Uri(Context.Referrer, Context.Referrer.AbsolutePath + "?id=" + theModel.Guid)
+                };
             }
 
             return new Response

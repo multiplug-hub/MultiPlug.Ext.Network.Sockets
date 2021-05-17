@@ -109,6 +109,12 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint
                     Port = Port,
                     Backlog = Backlog
                 } });
+
+                return new Response
+                {
+                    StatusCode = System.Net.HttpStatusCode.Moved,
+                    Location = new Uri(Context.Referrer, Context.Referrer.AbsolutePath + "?id=" + theModel.Guid)
+                };
             }
 
             return new Response
