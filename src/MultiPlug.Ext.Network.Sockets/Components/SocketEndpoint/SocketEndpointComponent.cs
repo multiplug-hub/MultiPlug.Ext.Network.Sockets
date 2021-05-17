@@ -55,7 +55,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             }
             if (theNewProperties.ReadEvent.Id != ReadEvent.Id)
             {
-                ReadEvent.Id = ReadEvent.Id;
+                ReadEvent.Id = theNewProperties.ReadEvent.Id;
                 EventsUpdatedFlag = true;
             }
             if( theNewProperties.IPAddress != IPAddress)
