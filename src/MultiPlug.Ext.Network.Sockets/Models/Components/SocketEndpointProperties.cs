@@ -52,5 +52,8 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Components
                 return string.Empty; //TODO
             }
         }
+
+        [DataMember]
+        public int LoggingLevel { get; set; }
     }
 }

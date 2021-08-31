@@ -3,7 +3,6 @@ using System.Text;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 using System.Collections.Generic;
 using MultiPlug.Base.Exchange;
 using MultiPlug.Base.Exchange.API;
@@ -17,13 +16,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
         public event Action EventsUpdated;
         public event Action SubscriptionsUpdated;
 
-        
-
-        private ManualResetEvent connectDone = new ManualResetEvent(false);
-        private ManualResetEvent sendDone = new ManualResetEvent(false);
-
         private MessageBuffer m_MessageBuffer;
-        private EventConsumerHelper m_EventConsumerHelper;
 
         private Socket m_Socket;
 
@@ -36,10 +29,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             ReadEvent = new Event { Guid = theGuid, Id = System.Guid.NewGuid().ToString(), Description = "" };
             m_LoggingService = theLoggingService;
 
-
             m_MessageBuffer = new MessageBuffer(theGuid, "SocketClient");
-
-            m_EventConsumerHelper = new EventConsumerHelper(this, OnLogWriteEntry, Send, m_MessageBuffer);
         }
         internal void UpdateProperties(SocketClientProperties theNewProperties)
         {
@@ -47,6 +37,8 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             bool EventsUpdatedFlag = false;
 
             bool ForceInitialise = false;
+
+            LoggingLevel = theNewProperties.LoggingLevel;
 
             if (theNewProperties.ReadEvent.Guid != ReadEvent.Guid)
                 return;
@@ -105,7 +97,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                 foreach (Subscription Subscription in NewSubscriptions)
                 {
                     Subscription.Guid = System.Guid.NewGuid().ToString();
-                    Subscription.EventConsumer = m_EventConsumerHelper;
+                    Subscription.Event += OnSubscriptionEvent;
                 }
 
                 WriteSubscriptions.AddRange(NewSubscriptions);
@@ -124,6 +116,31 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             if (ForceInitialise)
             {
                 InitialiseSetup();
+            }
+        }
+
+        private void OnSubscriptionEvent(SubscriptionEvent obj)
+        {
+            PayloadSubject Subject = obj.Payload.Subjects.FirstOrDefault(p => p.Subject.Equals(SubscriptionKey, StringComparison.OrdinalIgnoreCase));
+
+            if (Subject != null)
+            {
+                if (m_Socket != null && m_Socket.Connected)
+                {
+                    Send(Encoding.ASCII.GetBytes(Subject.Value));
+                    if(LoggingLevel == 1)
+                    {
+                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { string.Empty });
+                    }
+                    else if (LoggingLevel == 2)
+                    {
+                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { Subject.Value });
+                    }
+                }
+                else
+                {
+                    m_MessageBuffer.Enqueue(Subject.Value, obj.Payload.TimeToLive);
+                }
             }
         }
 
@@ -190,9 +207,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                 IPEndPoint remoteEP = new IPEndPoint(IPAddress, Port);
 
                 m_Socket = new Socket(IPAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                m_EventConsumerHelper.Socket = m_Socket;
 
-                OnLogWriteEntry(EventLogEntryCodes.SocketClientConnectingTo, new string[] { IPAddress.ToString() });
+                if (LoggingLevel > 0)
+                {
+                    OnLogWriteEntry(EventLogEntryCodes.SocketClientConnectingTo, new string[] { IPAddress.ToString() });
+                }
                  
                 m_Socket.BeginConnect(remoteEP, new AsyncCallback(ConnectCallback), m_Socket);
             }
@@ -218,7 +237,10 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
                 client.EndConnect(ar);
 
-                OnLogWriteEntry(EventLogEntryCodes.ConnectedTo, new string[] { client.RemoteEndPoint.ToString() });
+                if( LoggingLevel > 0)
+                {
+                    OnLogWriteEntry(EventLogEntryCodes.ConnectedTo, new string[] { client.RemoteEndPoint.ToString() });
+                }
 
                 Receive(client);
 
@@ -289,9 +311,16 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
                         state.sb.Clear();
 
-                        OnLogWriteEntry(EventLogEntryCodes.SocketClientReceivedData, new string[] { response });
+                        if( LoggingLevel == 1)
+                        {
+                            OnLogWriteEntry(EventLogEntryCodes.SocketClientDataReceived, new string[] { string.Empty });
+                        }
+                        else if (LoggingLevel == 2)
+                        {
+                            OnLogWriteEntry(EventLogEntryCodes.SocketClientDataReceived, new string[] { response });
+                        }
 
-                        ReadEvent.Fire(new Payload
+                        ReadEvent.Invoke(new Payload
                         (
                             ReadEvent.Id,
                             new PayloadSubject[] { new PayloadSubject( EventKey, response ) }
@@ -323,6 +352,10 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             }
         }
 
+
+
+        public bool Connected { get { return m_Socket.Connected; } }
+
         public bool ConnectionInError
         {
             get { return m_ConnectionInError; }
@@ -334,7 +367,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                     {
                         ReadEvent.Enabled = false;
 
-                        ReadEvent.Fire(new Payload
+                        ReadEvent.Invoke(new Payload
                         (
                             ReadEvent.Id,
                             new PayloadSubject[0],
@@ -346,7 +379,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                     {
                         ReadEvent.Enabled = true;
 
-                        ReadEvent.Fire(new Payload
+                        ReadEvent.Invoke(new Payload
                         (
                             ReadEvent.Id,
                             new PayloadSubject[0],
@@ -368,12 +401,13 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
                 // Complete sending the data to the remote device.  
                 int bytesSent = client.EndSend(ar);
-                OnLogWriteEntry(EventLogEntryCodes.SocketClientDataSent, null);
+
+                if(LoggingLevel > 0)
+                {
+                    OnLogWriteEntry(EventLogEntryCodes.SocketClientDataSent, null);
+                }
 
                 ConnectionInError = false;
-
-                // Signal that all bytes have been sent.  
-                sendDone.Set();
             }
             catch (SocketException ex)
             {
@@ -392,7 +426,6 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             try
             {
                 m_Socket.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), m_Socket);
-                sendDone.WaitOne();
             }
             catch (SocketException theException)
             {
@@ -426,48 +459,6 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             else
             {
                 m_LoggingService.WriteEntry((uint)theLogCode);
-            }
-        }
-
-        /// <summary>
-        /// Temporary: Until Subscription EventConsumer has been made a Interface this Helper Class will have to exist
-        /// </summary>
-        private class EventConsumerHelper : EventConsumer
-        {
-            private SocketClientProperties Properties;
-
-            public Socket Socket { get; set; }
-            private Action<EventLogEntryCodes, string[]> OnLogWriteEntry;
-            private Func<byte[], bool> Send;
-            private MessageBuffer m_MessageBuffer;
-
-            public EventConsumerHelper(SocketClientProperties theProperties,
-                Action<EventLogEntryCodes, string[]> theLog,
-                Func<byte[], bool> theSendFunc,
-                MessageBuffer theMessageBuffer)
-            {
-                Properties = theProperties;
-                OnLogWriteEntry = theLog;
-                Send = theSendFunc;
-                m_MessageBuffer = theMessageBuffer;
-            }
-
-            public override void OnEvent(Payload thePayload)
-            {
-                PayloadSubject Subject = thePayload.Subjects.FirstOrDefault(p => p.Subject.Equals(Properties.SubscriptionKey, StringComparison.OrdinalIgnoreCase));
-
-                if (Subject != null)
-                {
-                    if (Socket != null && Socket.Connected)
-                    {
-                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { Subject.Value });
-                        Send(Encoding.ASCII.GetBytes(Subject.Value));
-                    }
-                    else
-                    {
-                        m_MessageBuffer.Enqueue(Subject.Value, thePayload.TimeToLive);
-                    }
-                }
             }
         }
     }

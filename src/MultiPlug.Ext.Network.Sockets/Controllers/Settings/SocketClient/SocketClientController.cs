@@ -103,7 +103,8 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient
                     HostName = theModel.HostName,
                     EventKey = theModel.EventKey,
                     SubscriptionKey = theModel.SubscriptionKey,
-                    Port = Port
+                    Port = Port,
+                    LoggingLevel = theModel.LoggingLevel
                 } });
 
                 return new Response

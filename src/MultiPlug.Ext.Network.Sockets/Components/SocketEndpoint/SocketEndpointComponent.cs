@@ -46,6 +46,8 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
             bool ForceInitialise = false;
 
+            LoggingLevel = theNewProperties.LoggingLevel;
+
             if (theNewProperties.ReadEvent.Guid != ReadEvent.Guid)
                 return;
 
@@ -106,7 +108,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 foreach (Subscription Subscription in NewSubscriptions)
                 {
                     Subscription.Guid = System.Guid.NewGuid().ToString();
-                    Subscription.EventConsumer = m_Listener;
+                    Subscription.Event += m_Listener.OnSubscriptionEvent;
                 }
 
                 WriteSubscriptions.AddRange(NewSubscriptions);
@@ -126,6 +128,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             {
                 InitialiseSetup();
             }
+        }
+
+        public string[] ConnectedClients()
+        {
+            return m_Listener.ConnectedClients();
         }
 
         internal void RemoveSubcription(string theSubcriptionGuid)

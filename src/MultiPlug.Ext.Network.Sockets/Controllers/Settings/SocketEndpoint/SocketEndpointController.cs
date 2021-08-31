@@ -107,7 +107,8 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint
                     EventKey = theModel.EventKey,
                     SubscriptionKey = theModel.SubscriptionKey,
                     Port = Port,
-                    Backlog = Backlog
+                    Backlog = Backlog,
+                    LoggingLevel = theModel.LoggingLevel
                 } });
 
                 return new Response

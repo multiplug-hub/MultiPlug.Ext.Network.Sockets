@@ -12,5 +12,6 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Settings
         public string SubscriptionKey { get; set; }
         public string HostName { get; set; }
         public string Port { get; set; }
+        public int LoggingLevel { get; set; }
     }
 }

@@ -44,5 +44,8 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Components
         }
 
         internal ILoggingService m_LoggingService;
+
+        [DataMember]
+        public int LoggingLevel { get; set; }
     }
 }

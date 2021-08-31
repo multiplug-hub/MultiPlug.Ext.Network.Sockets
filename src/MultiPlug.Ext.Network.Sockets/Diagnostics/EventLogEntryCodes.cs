@@ -23,17 +23,19 @@ namespace MultiPlug.Ext.Network.Sockets.Diagnostics
         SocketEndpointException = 30,
         SocketEndpointDataReceived = 31,
         SocketEndpointExceptionConnectionReset = 32,
-        SocketEndpointExceptionDiconnected = 33,
+        SocketEndpointExceptionDisconnected = 33,
         SocketEndpointSent = 34,
-        SocketClientNoHostName = 35,
-        SocketClientIncorrectPort = 36,
-        SocketClientConnectingTo = 37,
-        SocketClientException = 38,
-        SocketClientConnectedTo = 39,
-        SocketClientReceivedData = 40,
-        SocketClientDataSent = 41,
-        SocketClientSending = 42,
-        SocketClientSocketExceptionCode = 43,
-        SocketClientSocketException = 44
+        SocketEndpointSending = 35,
+
+        SocketClientNoHostName = 55,
+        SocketClientIncorrectPort = 56,
+        SocketClientConnectingTo = 57,
+        SocketClientException = 58,
+        SocketClientConnectedTo = 59,
+        SocketClientDataReceived = 60,
+        SocketClientDataSent = 61,
+        SocketClientSending = 62,
+        SocketClientSocketExceptionCode = 63,
+        SocketClientSocketException = 64
     }
 }

@@ -13,5 +13,6 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Settings
         public string IPAddress { get; set; }
         public string Port { get; set; }
         public string Backlog { get; set; }
+        public int LoggingLevel { get; set; }
     }
 }

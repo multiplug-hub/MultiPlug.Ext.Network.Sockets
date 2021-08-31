@@ -7,10 +7,11 @@ using System.Collections.Generic;
 using MultiPlug.Base.Exchange;
 using MultiPlug.Ext.Network.Sockets.Models.Components;
 using MultiPlug.Ext.Network.Sockets.Diagnostics;
+using System.Net;
 
 namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 {
-    internal class SocketEndpointListener : EventConsumer
+    internal class SocketEndpointListener
     {
         private Socket m_Socket = null;
         readonly SocketEndpointProperties m_Properties;
@@ -34,6 +35,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             }
         }
 
+        internal string[] ConnectedClients()
+        {
+            return m_Sockets.Select(s => (s.workSocket.RemoteEndPoint as IPEndPoint).Address.ToString()).ToArray();
+        }
+
         internal void Listen()
         {
             if (m_Socket == null) { return; }
@@ -45,7 +51,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                     allDone.Reset();
 
                     // Start an asynchronous socket to listen for connections.  
-                    Log?.Invoke(EventLogEntryCodes.WaitingForConnection, null);
+                    if(m_Properties.LoggingLevel > 0)
+                    {
+                        Log?.Invoke(EventLogEntryCodes.WaitingForConnection, null);
+                    }
+
                     m_Socket.BeginAccept( new AsyncCallback(AcceptCallback), m_Socket);
 
                     // Wait until a connection is made before continuing.  
@@ -75,7 +85,12 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 Socket listener = (Socket)ar.AsyncState;
                 Socket client = listener.EndAccept(ar);
 
-                Log?.Invoke(EventLogEntryCodes.ConnectedTo, new string[] { client.RemoteEndPoint.ToString() });
+                if(m_Properties.LoggingLevel > 0)
+                {
+                    Log?.Invoke(EventLogEntryCodes.ConnectedTo, new string[] { client.RemoteEndPoint.ToString() });
+                }
+
+
 
                 // Signal the main thread to continue.  
                 allDone.Set();
@@ -131,9 +146,16 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
                         state.sb.Clear();
 
-                        Log?.Invoke(EventLogEntryCodes.SocketEndpointDataReceived, null);
+                        if (m_Properties.LoggingLevel == 1)
+                        {
+                            Log?.Invoke(EventLogEntryCodes.SocketEndpointDataReceived, new string[] { string.Empty });
+                        }
+                        else if (m_Properties.LoggingLevel == 2)
+                        {
+                            Log?.Invoke(EventLogEntryCodes.SocketEndpointDataReceived, new string[] { response });
+                        }
 
-                        m_Properties.ReadEvent.Fire(new Payload
+                        m_Properties.ReadEvent.Invoke(new Payload
                         (
                             m_Properties.ReadEvent.Id,
                             new PayloadSubject[] { new PayloadSubject( m_Properties.EventKey, response ) }
@@ -162,7 +184,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                     Log?.Invoke(EventLogEntryCodes.SocketEndpointException, new string[] { theSocketException.Message });
                 }
 
-                m_Properties.ReadEvent.Fire(new Payload
+                m_Properties.ReadEvent.Invoke(new Payload
                 (
                     m_Properties.ReadEvent.Id,
                     new PayloadSubject[0],
@@ -184,6 +206,15 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
         internal void Send(string data)
         {
+            if (m_Properties.LoggingLevel == 1)
+            {
+                Log?.Invoke(EventLogEntryCodes.SocketEndpointSending, new string[] { string.Empty });
+            }
+            else if (m_Properties.LoggingLevel == 2)
+            {
+                Log?.Invoke(EventLogEntryCodes.SocketEndpointSending, new string[] { data });
+            }
+
             // Convert the string data to byte data using ASCII encoding.  
             byte[] byteData = Encoding.ASCII.GetBytes(data);
 
@@ -203,9 +234,9 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 {
                     OnSocketException(SocketState);
 
-                    Log?.Invoke(EventLogEntryCodes.SocketEndpointExceptionDiconnected, new string[] { SocketState.workSocket.RemoteEndPoint.ToString(), ex.SocketErrorCode.ToString() });
+                    Log?.Invoke(EventLogEntryCodes.SocketEndpointExceptionDisconnected, new string[] { SocketState.workSocket.RemoteEndPoint.ToString(), ex.SocketErrorCode.ToString() });
 
-                    m_Properties.ReadEvent.Fire(new Payload
+                    m_Properties.ReadEvent.Invoke(new Payload
                     (
                         m_Properties.ReadEvent.Id,
                         new PayloadSubject[0],
@@ -226,7 +257,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             {
                 // Complete sending the data to the remote device.  
                 int bytesSent = SocketState.workSocket.EndSend(theAsyncResult);
-                Log?.Invoke(EventLogEntryCodes.SocketEndpointSent, new string[] { bytesSent.ToString() });
+
+                if(m_Properties.LoggingLevel > 0)
+                {
+                    Log?.Invoke(EventLogEntryCodes.SocketEndpointSent, new string[] { bytesSent.ToString() });
+                }
             }
             catch( SocketException theSocketException)
             {
@@ -249,9 +284,9 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             m_Sockets = m_Sockets.Where(s => s.Errored == false).ToArray();
         }
 
-        public override void OnEvent(Payload thePayload)
+        public void OnSubscriptionEvent(SubscriptionEvent obj)
         {
-            Send(thePayload.Subjects[0].Value);
+            Send(obj.Payload.Subjects[0].Value);
         }
     }
 }
