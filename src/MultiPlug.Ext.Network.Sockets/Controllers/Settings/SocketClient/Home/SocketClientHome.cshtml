@@ -1,0 +1,105 @@
+﻿@model MultiPlug.Base.Http.EdgeApp
+
+@functions
+{
+    string isCurrentLoggingLevel(int theLevel)
+    {
+        return (@Model.Extension.Model.LoggingLevel == theLevel) ? "selected" : "";
+    }
+
+    string isConnected(bool theStatus)
+    {
+        return (theStatus) ? "Yes" : "No";
+    }
+}
+
+<form action="" method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded">
+    <section class="row-fluid">
+
+        <div class="row-fluid">
+            <div class="box">
+                <div class="span4">
+                    <a style="line-height: 52px;" href="#"><img alt="Network Logo" src="@Raw(Model.Context.Paths.Assets)images/networks.png"></a>
+                </div>
+                <div class="span3">
+                    <p style="font-size:26px; line-height: 54px; text-align: center; margin: 0px;">Socket Client</p>
+                </div>
+                <div class="span5" style="text-align: right;">
+                    <a class="btn btn-black" style="height:44px; width:35px" href="@Raw(Model.Context.Paths.Home)"><i class="icon-arrow-left icon-large"></i><p>Back</p></a>
+                    <button type="submit" value="submit" style="height:54px; width:65px" class="item btn btn-green"><i class="icon-save icon-large"></i><p>Save</p></button>
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" name="guid" value="@Model.Extension.Model.Guid">
+
+        @Include("MultiPlug.Ext.Network.Sockets.NetworkSocketsClientNavigation")
+
+        <div class="row-fluid">
+            <div class="box">
+                <h3 class="box-header">Connection</h3>
+                <div class="box">
+                    <h4>Connected</h4>
+                    <div class="row-fluid">
+                        <div class="well">
+                            <div class="row-fluid">
+                                @isConnected(Model.Extension.Model.Connected)
+                            </div>
+                        </div>
+                    </div>
+                    <h4>Errored</h4>
+                    <div class="row-fluid">
+                        <div class="well">
+                            <div class="row-fluid">
+                                @isConnected(Model.Extension.Model.ConnectionInError)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <h4>Level</h4>
+                <div class="row-fluid">
+                    <div class="well">
+                        <div class="row-fluid">
+                            <select name="LoggingLevel">
+                                <option value="0" @isCurrentLoggingLevel(0)>Errors</option>
+                                <option value="1" @isCurrentLoggingLevel(1)>Basic</option>
+                                <option value="2" @isCurrentLoggingLevel(2)>Verbose</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <h4>Log</h4>
+                <div class="row-fluid">
+                    <div class="well">
+                        <div class="row-fluid">
+                            <div class="span12">
+                                <textarea id="Logging" spellcheck="false" rows="10" class="input-block-level">@Model.Extension.Model.TraceLog</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+
+<script>
+    function scrollLogToBottom(loggingTextArea) {
+        var textarea = document.getElementById(loggingTextArea);
+        textarea.scrollTop = textarea.scrollHeight;
+    }
+
+    $.connection.wS.on("Send", function (id, Group) {
+        var loggingTextArea = $('#Logging');
+        loggingTextArea.text(loggingTextArea.text() + Group.Subjects[1].Value + '\n');
+        scrollLogToBottom('Logging');
+    });
+
+    $(document).ready(function () {
+        scrollLogToBottom('Logging');
+    });
+
+</script>

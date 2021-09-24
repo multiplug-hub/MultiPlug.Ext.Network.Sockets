@@ -1,9 +1,9 @@
 ﻿using MultiPlug.Base.Attribute;
 using MultiPlug.Base.Http;
 
-namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient
+namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
 {
-    [Route("socketclient/deletesubscription")]
+    [Route("socketclient/setup/deletesubscription")]
     public class DeleteSubcriptionController : SettingsApp
     {
         public Response Post(string id, string subid)

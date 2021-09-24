@@ -26,6 +26,8 @@ namespace MultiPlug.Ext.Network.Sockets.Diagnostics
         SocketEndpointExceptionDisconnected = 33,
         SocketEndpointSent = 34,
         SocketEndpointSending = 35,
+        LocalIPAddressUpdated = 36,
+        LocalIPAddressUpdateFailed = 37,
 
         SocketClientNoHostName = 55,
         SocketClientIncorrectPort = 56,

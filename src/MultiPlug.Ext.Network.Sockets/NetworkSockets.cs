@@ -5,6 +5,7 @@ using MultiPlug.Extension.Core;
 using MultiPlug.Extension.Core.Http;
 using MultiPlug.Ext.Network.Sockets.Models.Load;
 using MultiPlug.Ext.Network.Sockets.Properties;
+using MultiPlug.Ext.Network.Sockets.Controllers;
 
 namespace MultiPlug.Ext.Network.Sockets
 {
@@ -54,10 +55,14 @@ namespace MultiPlug.Ext.Network.Sockets
             {
                 return new RazorTemplate[]
                 {
-                    new RazorTemplate("NetworkSocketsHomeView", Resources.HomeRazor),
-                    new RazorTemplate("NetworkSocketsClientView", Resources.SocketClientRazor),
-                    new RazorTemplate("NetworkSocketsEndpointView", Resources.SocketEndpointRazor),
-                    new RazorTemplate("NetworkSocketsItemNotFound", Resources.NotFound),
+                    new RazorTemplate(Templates.SettingsHome, Resources.HomeRazor),
+                    new RazorTemplate(Templates.SettingsSocketClientNavigation, Resources.SocketClientNavigation),
+                    new RazorTemplate(Templates.SettingsSocketClientHome, Resources.SocketClientHome),
+                    new RazorTemplate(Templates.SettingsSocketClientSetup, Resources.SocketClientSetup),
+                    new RazorTemplate(Templates.SettingSocketEndpointNavigation, Resources.SocketEndpointNavigation),
+                    new RazorTemplate(Templates.SettingsSocketEndpointHome, Resources.SocketEndpointHome),
+                    new RazorTemplate(Templates.SettingsSocketEndpointSetup, Resources.SocketEndpointSetup),
+                    new RazorTemplate(Templates.SettingsNotFound, Resources.NotFound),
                 };
             }
         }

@@ -31,6 +31,8 @@ namespace MultiPlug.Ext.Network.Sockets.Diagnostics
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointExceptionDisconnected, Source = (uint) EventLogEntryCodes.SourceSocketEndpointListener, StringFormat = "Disconnected {0} Code {1}", Type = EventLogEntryType.Warning },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointSent, Source = (uint) EventLogEntryCodes.SourceSocketEndpointListener, StringFormat = "Data Sent", Type = EventLogEntryType.Information },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointSending, Source = (uint) EventLogEntryCodes.SourceSocketEndpointListener, StringFormat = "Sending: {0}", Type = EventLogEntryType.Information },
+            new EventLogDefinition { Code = (uint) EventLogEntryCodes.LocalIPAddressUpdated, Source = (uint) EventLogEntryCodes.SourceSocketEndpoint, StringFormat = "Local NIC IP updated to: {0}", Type = EventLogEntryType.Information },
+            new EventLogDefinition { Code = (uint) EventLogEntryCodes.LocalIPAddressUpdateFailed, Source = (uint) EventLogEntryCodes.SourceSocketEndpoint, StringFormat = "No Local NIC IP Address of: {0}", Type = EventLogEntryType.Warning },
 
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientNoHostName, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Connection aborted: No HostName", Type = EventLogEntryType.Warning },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientIncorrectPort, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Connection aborted: Incorrect port", Type = EventLogEntryType.Warning },

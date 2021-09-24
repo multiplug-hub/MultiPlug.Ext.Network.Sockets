@@ -1,40 +1,23 @@
-﻿using System.Text;
-using System.Net;
-using System.Linq;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using MultiPlug.Base;
 using MultiPlug.Base.Exchange;
 using MultiPlug.Base.Exchange.API;
-using System.Net.Sockets;
 
 namespace MultiPlug.Ext.Network.Sockets.Models.Components
 {
     public class SocketClientProperties : MultiPlugBase
     {
-        public string Guid { get { return ReadEvent.Guid; } }
+        [DataMember]
+        public string Guid { get; set; }
 
         [DataMember]
         public Event ReadEvent { get; set; }
         [DataMember]
-        public List<Subscription> WriteSubscriptions { get; set; } = new List<Subscription>();
+        public Subscription[] WriteSubscriptions { get; set; }
         [DataMember]
-        public string HostName { get; set; } = string.Empty;
+        public string HostName { get; set; }
         [DataMember]
-        public int Port { get; set; } = 0;
-        [DataMember]
-        public string EventKey { get; set; } = "value";
-        [DataMember]
-        public string SubscriptionKey { get; set; } = "value";
-
-        //public string[] IPAddressList
-        //{
-        //    get
-        //    {
-        //        IPHostEntry ipHost = Dns.GetHostEntry("");
-        //        return ipHost.AddressList.Select(a => a.ToString()).ToArray();
-        //    }
-        //}
+        public int Port { get; set; } = -1;
         public string TraceLog
         {
             get
@@ -47,5 +30,6 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Components
 
         [DataMember]
         public int LoggingLevel { get; set; }
+
     }
 }

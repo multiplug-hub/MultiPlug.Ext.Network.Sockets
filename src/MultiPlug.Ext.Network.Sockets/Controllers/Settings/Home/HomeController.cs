@@ -17,7 +17,7 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.Home
                     SocketClients = Core.Instance.SocketClients,
                     SocketEndpoints = Core.Instance.SocketEndpoints
                 },
-                Template = "NetworkSocketsHomeView"
+                Template = Templates.SettingsHome
             };
         }
     }

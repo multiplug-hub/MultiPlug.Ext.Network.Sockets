@@ -127,10 +127,22 @@
   <data name="NotFound" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\NotFound.cshtml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="SocketClientRazor" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Controllers\Settings\SocketClient\SocketClient.cshtml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="SocketClientHome" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Controllers\Settings\SocketClient\Home\SocketClientHome.cshtml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
-  <data name="SocketEndpointRazor" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Controllers\Settings\SocketEndpoint\SocketEndpoint.cshtml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  <data name="SocketClientNavigation" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Controllers\Settings\SocketClient\Shared\SocketClientNavigation.cshtml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="SocketClientSetup" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Controllers\Settings\SocketClient\Setup\SocketClientSetup.cshtml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="SocketEndpointHome" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Controllers\Settings\SocketEndpoint\Home\SocketEndpoint.cshtml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="SocketEndpointNavigation" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Controllers\Settings\SocketEndpoint\Shared\SocketEndpointNavigation.cshtml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="SocketEndpointSetup" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Controllers\Settings\SocketEndpoint\Setup\SocketEndpointSetup.cshtml;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

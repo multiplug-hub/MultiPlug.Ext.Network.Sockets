@@ -3,11 +3,12 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Net.Sockets;
+using System.Collections.Generic;
 using MultiPlug.Base.Exchange;
 using MultiPlug.Base.Exchange.API;
 using MultiPlug.Ext.Network.Sockets.Models.Components;
 using MultiPlug.Ext.Network.Sockets.Diagnostics;
-using System.Collections.Generic;
+using MultiPlug.Ext.Network.Sockets.Components.Utils;
 
 namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 {
@@ -27,9 +28,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
         public SocketEndpointComponent(string theGuid, ILoggingService theLoggingService)
         {
+            Guid = theGuid;
             m_LoggingService = theLoggingService;
 
-            ReadEvent = new Event { Guid = theGuid, Id = System.Guid.NewGuid().ToString(), Description = "" };
+            ReadEvent = new Event { Guid = theGuid, Id = System.Guid.NewGuid().ToString(), Description = "", Subjects = new[] { "value" } };
+            WriteSubscriptions = new Subscription[0];
 
             m_Listener = new SocketEndpointListener(this);
             m_Listener.Log += OnLogWriteEntry;
@@ -43,41 +46,55 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
         {
             bool SubscriptionsUpdatedFlag = false;
             bool EventsUpdatedFlag = false;
-
             bool ForceInitialise = false;
 
-            LoggingLevel = theNewProperties.LoggingLevel;
-
-            if (theNewProperties.ReadEvent.Guid != ReadEvent.Guid)
+            if (theNewProperties.Guid == null || theNewProperties.Guid != Guid)
+            {
                 return;
+            }
 
-            if (theNewProperties.ReadEvent.Description != ReadEvent.Description)
+            if (theNewProperties.ReadEvent != null)
             {
-                ReadEvent.Description = theNewProperties.ReadEvent.Description;
+                if ( Event.Merge(ReadEvent, theNewProperties.ReadEvent) )
+                {
+                    EventsUpdatedFlag = true;
+                }
             }
-            if (theNewProperties.ReadEvent.Id != ReadEvent.Id)
-            {
-                ReadEvent.Id = theNewProperties.ReadEvent.Id;
-                EventsUpdatedFlag = true;
-            }
-            if( theNewProperties.IPAddress != IPAddress)
+
+            if (theNewProperties.IPAddress != null && theNewProperties.IPAddress != IPAddress )
             {
                 IPAddress = theNewProperties.IPAddress;
                 ForceInitialise = true;
             }
-            if( theNewProperties.Port != Port)
+
+            if(theNewProperties.Port != -1 && theNewProperties.Port != Port )
             {
                 Port = theNewProperties.Port;
                 ForceInitialise = true;
             }
-            if( Backlog != Backlog)
+
+            if(theNewProperties.Backlog != -1 && theNewProperties.Backlog != Backlog )
             {
                 Backlog = theNewProperties.Backlog;
                 ForceInitialise = true;
             }
 
-            EventKey = theNewProperties.EventKey;
-            SubscriptionKey = theNewProperties.SubscriptionKey;
+            if( theNewProperties.LoggingLevel != -1 && theNewProperties.LoggingLevel != LoggingLevel )
+            {
+                LoggingLevel = theNewProperties.LoggingLevel;
+            }
+
+            if(theNewProperties.NICIndex != -1 && theNewProperties.NICIndex != NICIndex)
+            {
+                NICIndex = theNewProperties.NICIndex;
+            }
+
+            int NICIndexSearch = LocalIPAddressList.GetIndex(IPAddress);
+
+            if(NICIndexSearch != -1)
+            {
+                NICIndex = NICIndexSearch;
+            }
 
             if (theNewProperties.WriteSubscriptions != null)
             {
@@ -85,7 +102,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
                 foreach (Subscription Subscription in theNewProperties.WriteSubscriptions)
                 {
-                    Subscription Search = WriteSubscriptions.Find(ne => ne.Guid == Subscription.Guid);
+                    Subscription Search = WriteSubscriptions.FirstOrDefault(ne => ne.Guid == Subscription.Guid);
 
                     if (Search == null)
                     {
@@ -111,7 +128,10 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                     Subscription.Event += m_Listener.OnSubscriptionEvent;
                 }
 
-                WriteSubscriptions.AddRange(NewSubscriptions);
+                List<Subscription> List = WriteSubscriptions == null ? new List<Subscription>() : WriteSubscriptions.ToList();
+
+                List.AddRange(NewSubscriptions);
+                WriteSubscriptions = List.ToArray();
             }
 
             if (EventsUpdatedFlag)
@@ -141,7 +161,10 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
             if (Search != null)
             {
-                WriteSubscriptions.Remove(Search);
+                var list = WriteSubscriptions.ToList();
+                list.Remove(Search);
+                WriteSubscriptions = list.ToArray();
+
                 SubscriptionsUpdated?.Invoke();
             }
         }
@@ -179,6 +202,26 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             {
                 Shutdown();
             }
+
+            var IPAddressList = LocalIPAddressList.Get();
+
+            // If the IPAddress has been updated, we attempt to update it using the NIC index
+
+            if( ! IPAddressList.Contains(IPAddress) )
+            {
+                if(NICIndex < IPAddressList.Length)
+                {
+                    IPAddress = IPAddressList[NICIndex];
+                    OnLogWriteEntry(EventLogEntryCodes.LocalIPAddressUpdated, new string[] { IPAddress });
+                }
+                else
+                {
+                    OnLogWriteEntry(EventLogEntryCodes.LocalIPAddressUpdateFailed, new string[] { IPAddress });
+                    return;
+                }
+            }
+
+
 
             IPAddress ipAddr;
 

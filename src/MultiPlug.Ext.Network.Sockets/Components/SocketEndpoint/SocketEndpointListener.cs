@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Net;
 using System.Threading;
 using System.Net.Sockets;
 using System.Collections.Generic;
 using MultiPlug.Base.Exchange;
 using MultiPlug.Ext.Network.Sockets.Models.Components;
 using MultiPlug.Ext.Network.Sockets.Diagnostics;
-using System.Net;
 
 namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 {
@@ -158,7 +158,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                         m_Properties.ReadEvent.Invoke(new Payload
                         (
                             m_Properties.ReadEvent.Id,
-                            new PayloadSubject[] { new PayloadSubject( m_Properties.EventKey, response ) }
+                            new PayloadSubject[] { new PayloadSubject(m_Properties.ReadEvent.Subjects[0], response ) }
                         ));
                     }
 

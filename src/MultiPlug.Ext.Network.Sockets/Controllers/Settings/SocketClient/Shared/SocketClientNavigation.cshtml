@@ -1,0 +1,18 @@
+﻿@model MultiPlug.Base.Http.EdgeApp
+@functions {
+    public string NavLocationIsHome()
+    {
+        return Model.Context.Paths.Current == Model.Context.Paths.Home + "socketclient/" ? "active" : string.Empty;
+    }
+
+    public string NavLocationIsSetup()
+    {
+        return Model.Context.Paths.Current == Model.Context.Paths.Home + "socketclient/setup/" ? "active" : string.Empty;
+    }
+}
+<div class="row-fluid">
+    <ul class="nav nav-tabs">
+        <li class="@NavLocationIsHome()"><a href="@Raw(Model.Context.Paths.Home)socketclient/?id=@Model.Extension.Model.Guid">Status</a></li>
+        <li class="@NavLocationIsSetup()"><a href="@Raw(Model.Context.Paths.Home)socketclient/setup/?id=@Model.Extension.Model.Guid">Setup</a></li>
+    </ul>
+</div>

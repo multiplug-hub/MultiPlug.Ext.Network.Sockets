@@ -55,16 +55,20 @@
     <Compile Include="Components\SocketClient\SocketClientComponent.cs" />
     <Compile Include="Components\SocketEndpoint\SocketEndpointComponent.cs" />
     <Compile Include="Components\SocketEndpoint\SocketEndpointListener.cs" />
+    <Compile Include="Components\Utils\LocalIPAddressList.cs" />
     <Compile Include="Controllers\Assets\AssetsEndpoint.cs" />
     <Compile Include="Controllers\Assets\ImageController.cs" />
     <Compile Include="Controllers\Settings\Home\HomeController.cs" />
     <Compile Include="Controllers\Settings\SettingsApp.cs" />
-    <Compile Include="Controllers\Settings\SocketClient\DeleteSocketClientController.cs" />
-    <Compile Include="Controllers\Settings\SocketClient\DeleteSubcriptionController.cs" />
-    <Compile Include="Controllers\Settings\SocketClient\SocketClientController.cs" />
-    <Compile Include="Controllers\Settings\SocketEndpoint\DeleteSocketEndpointController.cs" />
-    <Compile Include="Controllers\Settings\SocketEndpoint\DeleteSubcriptionController.cs" />
-    <Compile Include="Controllers\Settings\SocketEndpoint\SocketEndpointController.cs" />
+    <Compile Include="Controllers\Settings\SocketClient\Home\SocketClientHomeController.cs" />
+    <Compile Include="Controllers\Settings\SocketClient\Setup\DeleteSocketClientController.cs" />
+    <Compile Include="Controllers\Settings\SocketClient\Setup\DeleteSubcriptionController.cs" />
+    <Compile Include="Controllers\Settings\SocketClient\Setup\SocketClientSetupController.cs" />
+    <Compile Include="Controllers\Settings\SocketEndpoint\Setup\DeleteSocketEndpointController.cs" />
+    <Compile Include="Controllers\Settings\SocketEndpoint\Setup\DeleteSubcriptionController.cs" />
+    <Compile Include="Controllers\Settings\SocketEndpoint\Setup\SocketEndpointSetupController.cs" />
+    <Compile Include="Controllers\Settings\SocketEndpoint\Home\SocketEndpointHomeController.cs" />
+    <Compile Include="Controllers\Templates.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="Diagnostics\EventLogDefinitions.cs" />
     <Compile Include="Diagnostics\EventLogEntryCodes.cs" />
@@ -74,7 +78,11 @@
     <Compile Include="Models\Load\LoadModel.cs" />
     <Compile Include="Models\Settings\Home.cs" />
     <Compile Include="Models\Settings\SocketClientPostModel.cs" />
+    <Compile Include="Models\Settings\SocketClient\SocketClientHomeModel.cs" />
+    <Compile Include="Models\Settings\SocketClient\SocketClientSetupModel.cs" />
     <Compile Include="Models\Settings\SocketEndpointPostModel.cs" />
+    <Compile Include="Models\Settings\SocketEndpoint\SocketEndpointHomeModel.cs" />
+    <Compile Include="Models\Settings\SocketEndpoint\SocketEndpointSetupModel.cs" />
     <Compile Include="NetworkSockets.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -85,8 +93,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Controllers\Settings\Home\Home.cshtml" />
-    <None Include="Controllers\Settings\SocketClient\SocketClient.cshtml" />
-    <None Include="Controllers\Settings\SocketEndpoint\SocketEndpoint.cshtml" />
+    <None Include="Controllers\Settings\SocketClient\Home\SocketClientHome.cshtml" />
+    <None Include="Controllers\Settings\SocketClient\Setup\SocketClientSetup.cshtml" />
+    <None Include="Controllers\Settings\SocketClient\Shared\SocketClientNavigation.cshtml" />
+    <None Include="Controllers\Settings\SocketEndpoint\Setup\SocketEndpointSetup.cshtml" />
+    <None Include="Controllers\Settings\SocketEndpoint\Home\SocketEndpoint.cshtml" />
     <None Include="packages.config" />
     <None Include="Resources\NotFound.cshtml" />
   </ItemGroup>
@@ -101,11 +112,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Controllers\Settings\SocketEndpoint\Shared\SocketEndpointNavigation.cshtml" />
     <Content Include="Resources\networks.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(ProjectDir)bin\$(ConfigurationName)\MultiPlug.Ext.Network.Sockets.dll" "C:\projects\i4Core\Connector\MultiPlug.CLI\bin\Debug\extensions\MultiPlug.Ext.Network.Sockets\" /Y /I</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

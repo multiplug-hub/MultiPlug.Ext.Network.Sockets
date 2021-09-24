@@ -109,13 +109,14 @@ namespace MultiPlug.Ext.Network.Sockets
                 }
                 else
                 {
-                    if (!string.IsNullOrEmpty(SocketEndpointProperties.Guid))
+                    if(!string.IsNullOrEmpty(SocketEndpointProperties.Guid))
                     {
                         var Logger = MultiPlugServices.Logging.New(SocketEndpointProperties.Guid, Diagnostics.EventLogDefinitions.DefinitionsId);
                         SocketEndpoint = new SocketEndpointComponent(SocketEndpointProperties.Guid, Logger);
                         Add(new SocketEndpointComponent[] { SocketEndpoint });
                         SocketEndpoint.UpdateProperties(SocketEndpointProperties);
                     }
+                    
                 }
             }
         }

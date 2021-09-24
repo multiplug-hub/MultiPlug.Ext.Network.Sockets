@@ -26,7 +26,9 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
         public SocketClientComponent( string theGuid, ILoggingService theLoggingService)
         {
-            ReadEvent = new Event { Guid = theGuid, Id = System.Guid.NewGuid().ToString(), Description = "" };
+            Guid = theGuid;
+            ReadEvent = new Event { Guid = theGuid, Id = System.Guid.NewGuid().ToString(), Description = "", Subjects = new[] { "value" } };
+            WriteSubscriptions = new Subscription[0];
             m_LoggingService = theLoggingService;
 
             m_MessageBuffer = new MessageBuffer(theGuid, "SocketClient");
@@ -38,35 +40,34 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
             bool ForceInitialise = false;
 
-            LoggingLevel = theNewProperties.LoggingLevel;
-
-            if (theNewProperties.ReadEvent.Guid != ReadEvent.Guid)
+            if (theNewProperties.Guid == null || theNewProperties.Guid != Guid)
+            {
                 return;
-
-            if (theNewProperties.ReadEvent.Description != ReadEvent.Description)
-            {
-                ReadEvent.Description = theNewProperties.ReadEvent.Description;
             }
 
-            if (theNewProperties.ReadEvent.Id != ReadEvent.Id)
+            if(theNewProperties.ReadEvent != null)
             {
-                ReadEvent.Id = theNewProperties.ReadEvent.Id;
-                EventsUpdatedFlag = true;
+                if (Event.Merge(ReadEvent, theNewProperties.ReadEvent))
+                {
+                    EventsUpdatedFlag = true;
+                }
             }
 
-            if (theNewProperties.HostName != HostName)
+            if (theNewProperties.HostName != null && theNewProperties.HostName != HostName)
             {
                 HostName = theNewProperties.HostName;
                 ForceInitialise = true;
             }
-            if (theNewProperties.Port != Port)
+            if (theNewProperties.Port != -1 && theNewProperties.Port != Port)
             {
                 Port = theNewProperties.Port;
                 ForceInitialise = true;
             }
 
-            EventKey = theNewProperties.EventKey;
-            SubscriptionKey = theNewProperties.SubscriptionKey;
+            if (theNewProperties.LoggingLevel != -1 && theNewProperties.LoggingLevel != LoggingLevel)
+            {
+                LoggingLevel = theNewProperties.LoggingLevel;
+            }
 
             if (theNewProperties.WriteSubscriptions != null)
             {
@@ -74,7 +75,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
                 foreach ( Subscription Subscription in theNewProperties.WriteSubscriptions)
                 {
-                    Subscription Search = WriteSubscriptions.Find(ne => ne.Guid == Subscription.Guid);
+                    Subscription Search = WriteSubscriptions.FirstOrDefault(ne => ne.Guid == Subscription.Guid);
 
                     if( Search == null)
                     {
@@ -100,7 +101,10 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                     Subscription.Event += OnSubscriptionEvent;
                 }
 
-                WriteSubscriptions.AddRange(NewSubscriptions);
+                List<Subscription> List = WriteSubscriptions == null ? new List<Subscription>() : WriteSubscriptions.ToList();
+
+                List.AddRange(NewSubscriptions);
+                WriteSubscriptions = List.ToArray();
             }
 
             if (EventsUpdatedFlag)
@@ -121,25 +125,23 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
         private void OnSubscriptionEvent(SubscriptionEvent obj)
         {
-            PayloadSubject Subject = obj.Payload.Subjects.FirstOrDefault(p => p.Subject.Equals(SubscriptionKey, StringComparison.OrdinalIgnoreCase));
-
-            if (Subject != null)
+            if (obj.Payload.Subjects.Any())
             {
                 if (m_Socket != null && m_Socket.Connected)
                 {
-                    Send(Encoding.ASCII.GetBytes(Subject.Value));
+                    Send(Encoding.ASCII.GetBytes(obj.Payload.Subjects[0].Value));
                     if(LoggingLevel == 1)
                     {
                         OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { string.Empty });
                     }
                     else if (LoggingLevel == 2)
                     {
-                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { Subject.Value });
+                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { obj.Payload.Subjects[0].Value });
                     }
                 }
                 else
                 {
-                    m_MessageBuffer.Enqueue(Subject.Value, obj.Payload.TimeToLive);
+                    m_MessageBuffer.Enqueue(obj.Payload.Subjects[0].Value, obj.Payload.TimeToLive);
                 }
             }
         }
@@ -150,7 +152,10 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
             if (Search != null)
             {
-                WriteSubscriptions.Remove(Search);
+                var list = WriteSubscriptions.ToList();
+                list.Remove(Search);
+                WriteSubscriptions = list.ToArray();
+
                 SubscriptionsUpdated?.Invoke();
             }
         }
@@ -323,7 +328,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                         ReadEvent.Invoke(new Payload
                         (
                             ReadEvent.Id,
-                            new PayloadSubject[] { new PayloadSubject( EventKey, response ) }
+                            new PayloadSubject[] { new PayloadSubject(ReadEvent.Subjects[0], response ) }
                         ));
                     }
 
@@ -354,7 +359,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
 
 
-        public bool Connected { get { return m_Socket.Connected; } }
+        public bool Connected { get { return m_Socket == null ? false : m_Socket.Connected; } }
 
         public bool ConnectionInError
         {

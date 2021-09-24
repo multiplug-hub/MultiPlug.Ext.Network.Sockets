@@ -3,7 +3,7 @@ using MultiPlug.Base.Attribute;
 using MultiPlug.Base.Http;
 using MultiPlug.Ext.Network.Sockets.Components.SocketClient;
 
-namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient
+namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
 {
     [Route("socketclient/delete")]
     public class DeleteSocketClientController : SettingsApp

@@ -118,20 +118,131 @@ namespace MultiPlug.Ext.Network.Sockets.Properties {
         /// <summary>
         ///   Looks up a localized string similar to @model MultiPlug.Base.Http.EdgeApp
         ///
+        ///@functions
+        ///{
+        ///    string isCurrentLoggingLevel(int theLevel)
+        ///    {
+        ///        return (@Model.Extension.Model.LoggingLevel == theLevel) ? &quot;selected&quot; : &quot;&quot;;
+        ///    }
+        ///
+        ///    string isConnected(bool theStatus)
+        ///    {
+        ///        return (theStatus) ? &quot;Yes&quot; : &quot;No&quot;;
+        ///    }
+        ///
+        ///}
+        ///
+        ///&lt;form action=&quot;&quot; method=&quot;post&quot; accept-charset=&quot;utf-8&quot; enctype=&quot;application/x-www-form-urlencoded&quot;&gt;
+        ///    &lt;section class=&quot;row-fluid&quot;&gt;
+        ///
+        ///        &lt;div class=&quot;row-fluid&quot;&gt;
+        ///            &lt;div class=&quot;box&quot;&gt;
+        ///        [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string SocketClientHome {
+            get {
+                return ResourceManager.GetString("SocketClientHome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to @model MultiPlug.Base.Http.EdgeApp
+        ///@functions {
+        ///    public string NavLocationIsHome()
+        ///    {
+        ///        return Model.Context.Paths.Current == Model.Context.Paths.Home + &quot;socketclient/&quot; ? &quot;active&quot; : string.Empty;
+        ///    }
+        ///
+        ///    public string NavLocationIsSetup()
+        ///    {
+        ///        return Model.Context.Paths.Current == Model.Context.Paths.Home + &quot;socketclient/setup/&quot; ? &quot;active&quot; : string.Empty;
+        ///    }
+        ///}
+        ///&lt;div class=&quot;row-fluid&quot;&gt;
+        ///    &lt;ul class=&quot;nav nav-tabs&quot;&gt;
+        ///        &lt;li class=&quot;@NavLocationIsHome()&quot;&gt;&lt;a href=&quot;@Raw [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string SocketClientNavigation {
+            get {
+                return ResourceManager.GetString("SocketClientNavigation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to @model MultiPlug.Base.Http.EdgeApp
+        ///
+        ///@functions
+        ///{
+        ///    string isCurrentLoggingLevel(int theLevel)
+        ///    {
+        ///        return (@Model.Extension.Model.LoggingLevel == theLevel) ? &quot;selected&quot; : &quot;&quot;;
+        ///    }
+        ///
+        ///    string isConnected(bool theStatus)
+        ///    {
+        ///        return (theStatus) ? &quot;Yes&quot; : &quot;No&quot;;
+        ///    }
+        ///
+        ///}
+        ///
+        ///&lt;form action=&quot;&quot; method=&quot;post&quot; accept-charset=&quot;utf-8&quot; enctype=&quot;application/x-www-form-urlencoded&quot;&gt;
+        ///    &lt;section class=&quot;row-fluid&quot;&gt;
+        ///
+        ///        &lt;div class=&quot;row-fluid&quot;&gt;
+        ///            &lt;div class=&quot;box&quot;&gt;
+        ///        [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string SocketClientSetup {
+            get {
+                return ResourceManager.GetString("SocketClientSetup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to @model MultiPlug.Base.Http.EdgeApp
+        ///
+        ///@functions
+        ///{
+        ///    string isCurrentLoggingLevel(int theLevel)
+        ///    {
+        ///        return (@Model.Extension.Model.LoggingLevel == theLevel) ? &quot;selected&quot; : &quot;&quot;;
+        ///    }
+        ///}
+        ///
         ///&lt;form action=&quot;&quot; method=&quot;post&quot; accept-charset=&quot;utf-8&quot; enctype=&quot;application/x-www-form-urlencoded&quot;&gt;
         ///    &lt;section class=&quot;row-fluid&quot;&gt;
         ///
         ///        &lt;div class=&quot;row-fluid&quot;&gt;
         ///            &lt;div class=&quot;box&quot;&gt;
         ///                &lt;div class=&quot;span4&quot;&gt;
-        ///                    &lt;a style=&quot;line-height: 52px;&quot; href=&quot;#&quot;&gt;&lt;img alt=&quot;Network Logo&quot; src=&quot;@Raw(Model.Context.Paths.Assets)images/networks.png&quot;&gt;&lt;/a&gt;
-        ///                &lt;/div&gt;
-        ///                &lt;div class=&quot;span3&quot;&gt;
-        ///                    &lt;p style=&quot;f [rest of string was truncated]&quot;;.
+        ///                    &lt;a style=&quot;line-height: 52px;&quot; href=&quot;#&quot;&gt;&lt;img alt=&quot;Net [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string SocketClientRazor {
+        internal static string SocketEndpointHome {
             get {
-                return ResourceManager.GetString("SocketClientRazor", resourceCulture);
+                return ResourceManager.GetString("SocketEndpointHome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to @model MultiPlug.Base.Http.EdgeApp
+        ///@functions {
+        ///    public string NavLocationIsHome()
+        ///    {
+        ///        return Model.Context.Paths.Current == Model.Context.Paths.Home + &quot;socketendpoint/&quot; ? &quot;active&quot; : string.Empty;
+        ///    }
+        ///
+        ///    public string NavLocationIsSetup()
+        ///    {
+        ///        return Model.Context.Paths.Current == Model.Context.Paths.Home + &quot;socketendpoint/setup/&quot; ? &quot;active&quot; : string.Empty;
+        ///    }
+        ///}
+        ///&lt;div class=&quot;row-fluid&quot;&gt;
+        ///    &lt;ul class=&quot;nav nav-tabs&quot;&gt;
+        ///        &lt;li class=&quot;@NavLocationIsHome()&quot;&gt;&lt;a href=&quot; [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string SocketEndpointNavigation {
+            get {
+                return ResourceManager.GetString("SocketEndpointNavigation", resourceCulture);
             }
         }
         
@@ -149,9 +260,9 @@ namespace MultiPlug.Ext.Network.Sockets.Properties {
         ///                &lt;div class=&quot;span3&quot;&gt;
         ///                    &lt;p style=&quot;f [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string SocketEndpointRazor {
+        internal static string SocketEndpointSetup {
             get {
-                return ResourceManager.GetString("SocketEndpointRazor", resourceCulture);
+                return ResourceManager.GetString("SocketEndpointSetup", resourceCulture);
             }
         }
     }
