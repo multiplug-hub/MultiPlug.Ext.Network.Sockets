@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>MultiPlug.Ext.Network.Sockets</id>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <title>Network Sockets Extension for the MultiPlug .Net Edge Computing Platform</title>
     <authors>MultiPlugHub</authors>
     <owners>MultiPlugHub</owners>
@@ -11,7 +11,9 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Use Network Sockets with this MultiPlug Extension</description>
 	<license type="expression">MIT</license>
-    <releaseNotes>1.0.5 Connection Status UI pages
+    <releaseNotes>1.0.6 https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/5
+https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/4
+	1.0.5 Connection Status UI pages
 	1.0.4 Logging Levels and Minor User Interface tidy up
 	1.0.3 https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/2
 https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/3
@@ -21,9 +23,9 @@ https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/3
     <tags>MultiPlug Edge_Computing Edge IoT</tags>
     <dependencies>
       <group targetFramework=".NETFramework4.7.2">
-        <dependency id="MultiPlug.Base" version="1.0.63" />
-        <dependency id="MultiPlug.Extension.Core" version="1.0.62" />
-        <dependency id="MultiPlug.Core" version="2.2.75" />
+        <dependency id="MultiPlug.Base" version="1.0.69" />
+        <dependency id="MultiPlug.Extension.Core" version="1.0.63" />
+        <dependency id="MultiPlug.Core" version="2.2.79" />
       </group>
     </dependencies>
   </metadata>
