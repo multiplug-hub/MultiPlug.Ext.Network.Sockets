@@ -242,6 +242,8 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
                 client.EndConnect(ar);
 
+                ConnectionInError = false;
+
                 if( LoggingLevel > 0)
                 {
                     OnLogWriteEntry(EventLogEntryCodes.ConnectedTo, new string[] { client.RemoteEndPoint.ToString() });
@@ -305,6 +307,8 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             {
                 Socket client = state.workSocket; 
                 int bytesRead = client.EndReceive(ar);
+
+                ConnectionInError = false;
 
                 if (bytesRead > 0)
                 {
