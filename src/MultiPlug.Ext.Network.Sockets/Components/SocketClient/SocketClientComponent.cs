@@ -123,25 +123,25 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             }
         }
 
-        private void OnSubscriptionEvent(SubscriptionEvent obj)
+        private void OnSubscriptionEvent(SubscriptionEvent theSubscriptionEvent)
         {
-            if (obj.Payload.Subjects.Any())
+            foreach(var Subject in theSubscriptionEvent.PayloadSubjects)
             {
                 if (m_Socket != null && m_Socket.Connected)
                 {
-                    Send(Encoding.ASCII.GetBytes(obj.Payload.Subjects[0].Value));
-                    if(LoggingLevel == 1)
+                    Send(Encoding.ASCII.GetBytes(Subject.Value));
+                    if (LoggingLevel == 1)
                     {
                         OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { string.Empty });
                     }
                     else if (LoggingLevel == 2)
                     {
-                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { obj.Payload.Subjects[0].Value });
+                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { theSubscriptionEvent.Payload.Subjects[0].Value });
                     }
                 }
                 else
                 {
-                    m_MessageBuffer.Enqueue(obj.Payload.Subjects[0].Value, obj.Payload.TimeToLive);
+                    m_MessageBuffer.Enqueue(theSubscriptionEvent.Payload.Subjects[0].Value, theSubscriptionEvent.Payload.TimeToLive);
                 }
             }
         }

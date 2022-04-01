@@ -48,7 +48,6 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
 
                     WriteSubscriptionGuid = SocketClient.WriteSubscriptions.Select(s => s.Guid).ToArray(),
                     WriteSubscriptionId = SocketClient.WriteSubscriptions.Select(s => s.Id).ToArray(),
-                    WriteSubscriptionIndex = SocketClient.WriteSubscriptions.Select(s => s.Subjects[0].ToString()).ToArray(),
                     WriteSubscriptionConnected = SocketClient.WriteSubscriptions.Select(s => s.Connected).ToArray(),
 
                 };
@@ -69,7 +68,6 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
 
                     WriteSubscriptionGuid = new string[0],
                     WriteSubscriptionId = new string[0],
-                    WriteSubscriptionIndex = new string[0],
                     WriteSubscriptionConnected = new bool[0]
                 };
 
@@ -98,8 +96,7 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
 
                 if (theModel.WriteSubscriptionGuid != null &&
                     theModel.WriteSubscriptionId != null &&
-                    theModel.WriteSubscriptionGuid.Length == theModel.WriteSubscriptionId.Length &&
-                    theModel.WriteSubscriptionGuid.Length == theModel.WriteSubscriptionIndex.Length)
+                    theModel.WriteSubscriptionGuid.Length == theModel.WriteSubscriptionId.Length)
                 {
                     for (int i = 0; i < theModel.WriteSubscriptionGuid.Length; i++)
                     {
@@ -108,14 +105,10 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
                             continue;
                         }
 
-                        ushort SubscriptionIndex = 0;
-                        ushort.TryParse(theModel.WriteSubscriptionIndex[i], out SubscriptionIndex);
-
                         Subscriptions.Add(new Subscription
                         {
                             Guid = (string.IsNullOrEmpty(theModel.WriteSubscriptionGuid[i])) ? Guid.NewGuid().ToString() : theModel.WriteSubscriptionGuid[i],
-                            Id = theModel.WriteSubscriptionId[i],
-                            Subjects = new ushort[] { SubscriptionIndex }
+                            Id = theModel.WriteSubscriptionId[i]
                         });
                     }
                 }

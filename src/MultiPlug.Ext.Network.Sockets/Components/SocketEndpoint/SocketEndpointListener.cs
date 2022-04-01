@@ -284,9 +284,12 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             m_Sockets = m_Sockets.Where(s => s.Errored == false).ToArray();
         }
 
-        public void OnSubscriptionEvent(SubscriptionEvent obj)
+        public void OnSubscriptionEvent(SubscriptionEvent theSubscriptionEvent)
         {
-            Send(obj.Payload.Subjects[0].Value);
+            foreach( var Subject in theSubscriptionEvent.PayloadSubjects)
+            {
+                Send(Subject.Value);
+            }
         }
     }
 }
