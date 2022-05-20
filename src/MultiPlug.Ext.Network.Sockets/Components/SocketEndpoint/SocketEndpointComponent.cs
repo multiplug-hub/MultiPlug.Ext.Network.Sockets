@@ -37,9 +37,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             m_Listener = new SocketEndpointListener(this);
             m_Listener.Log += OnLogWriteEntry;
 
-            m_ReadThread = new Thread(m_Listener.Listen);
-            m_ReadThread.Name = "Thread for " + theGuid;
-            m_ReadThread.IsBackground = true;
+            SubscriptionsControlConnect = true;
         }
 
         internal void UpdateProperties(SocketEndpointProperties theNewProperties)
@@ -51,6 +49,16 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             if (theNewProperties.Guid == null || theNewProperties.Guid != Guid)
             {
                 return;
+            }
+
+            if( SubscriptionsControlConnect != theNewProperties.SubscriptionsControlConnect )
+            {
+                SubscriptionsControlConnect = theNewProperties.SubscriptionsControlConnect;
+
+                if( !SubscriptionsControlConnect )
+                {
+                    ForceInitialise = true;
+                }
             }
 
             if (theNewProperties.ReadEvent != null)
@@ -126,6 +134,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 {
                     Subscription.Guid = System.Guid.NewGuid().ToString();
                     Subscription.Event += m_Listener.OnSubscriptionEvent;
+                    Subscription.EnabledStatus += OnSubscriptionStatusChanged;
                 }
 
                 List<Subscription> List = WriteSubscriptions == null ? new List<Subscription>() : WriteSubscriptions.ToList();
@@ -144,13 +153,54 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 SubscriptionsUpdated?.Invoke();
             }
 
-            if( ForceInitialise )
+            if (ForceInitialise)
             {
-                InitialiseSetup();
+                OnLogWriteEntry(EventLogEntryCodes.SocketEndpointSocketClosingDueToReconfigure, new string[0]);
+                Shutdown();
+
+                if (SubscriptionsControlConnect)
+                {
+                    OnSubscriptionStatusChanged(false);
+                }
+                else
+                {
+                    InitialiseSetup();
+                }
             }
         }
 
-        public string[] ConnectedClients()
+        internal string TraceLog
+        {
+            get
+            {
+                return (m_LoggingService == null) ? string.Empty : string.Join(System.Environment.NewLine, m_LoggingService.Read());
+            }
+        }
+
+        private void OnSubscriptionStatusChanged(bool isEnabled /*Unused*/)
+        {
+            if( SubscriptionsControlConnect )
+            {
+                if ( WriteSubscriptions.All( Subscription => Subscription.Enabled ) )
+                {
+                    if ( ! m_Listener.Listening )
+                    {
+                        InitialiseSetup();
+                    }
+                }
+                else
+                {
+                    if (LoggingLevel > 0)
+                    {
+                        OnLogWriteEntry(EventLogEntryCodes.SocketEndpointSocketClosingDueToSubscriptionControl, new string[0]);
+                    }
+
+                    Shutdown();
+                }
+            }
+        }
+
+        internal string[] ConnectedClients()
         {
             return m_Listener.ConnectedClients();
         }
@@ -161,20 +211,28 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
             if (Search != null)
             {
-                var list = WriteSubscriptions.ToList();
-                list.Remove(Search);
-                WriteSubscriptions = list.ToArray();
+                Search.Event -= m_Listener.OnSubscriptionEvent;
+                Search.EnabledStatus -= OnSubscriptionStatusChanged;
+
+                List<Subscription> SubscriptionsList = WriteSubscriptions.ToList();
+                SubscriptionsList.Remove(Search);
+                WriteSubscriptions = SubscriptionsList.ToArray();
 
                 SubscriptionsUpdated?.Invoke();
+                OnSubscriptionStatusChanged(false); // Force a update with the new count of Subscriptions
             }
         }
 
         internal void Shutdown()
         {
-            if (m_ReadThread.IsAlive)
+            if (m_ReadThread != null && m_ReadThread.IsAlive)
             {
                 m_ReadThread.Interrupt();
                 m_ReadThread.Join();
+                if (LoggingLevel > 0)
+                {
+                    OnLogWriteEntry(EventLogEntryCodes.SocketEndpointSocketClosed, new string[0]);
+                }
             }
         }
 
@@ -212,11 +270,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 if(NICIndex < IPAddressList.Length)
                 {
                     IPAddress = IPAddressList[NICIndex];
-                    OnLogWriteEntry(EventLogEntryCodes.LocalIPAddressUpdated, new string[] { IPAddress });
+                    OnLogWriteEntry(EventLogEntryCodes.SocketEndpointLocalIPAddressUpdated, new string[] { IPAddress });
                 }
                 else
                 {
-                    OnLogWriteEntry(EventLogEntryCodes.LocalIPAddressUpdateFailed, new string[] { IPAddress });
+                    OnLogWriteEntry(EventLogEntryCodes.SocketEndpointLocalIPAddressUpdateFailed, new string[] { IPAddress });
                     return;
                 }
             }
@@ -241,7 +299,10 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 m_Socket.Listen(Backlog);
 
                 m_Listener.Socket = m_Socket;
-         
+
+                m_ReadThread = new Thread(m_Listener.Listen);
+                m_ReadThread.Name = "Thread for " + Guid;
+                m_ReadThread.IsBackground = true;
                 m_ReadThread.Start();
             }
             catch (Exception theException)

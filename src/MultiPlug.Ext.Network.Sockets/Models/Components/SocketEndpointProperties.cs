@@ -31,16 +31,10 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Components
         [DataMember]
         public int NICIndex { get; set; } = -1;
 
-        public string TraceLog
-        {
-            get
-            {
-                return string.Empty; //TODO
-            }
-        }
-
         [DataMember]
         public int LoggingLevel { get; set; }
+        [DataMember]
+        public bool SubscriptionsControlConnect { get; set; }
 
     }
 }

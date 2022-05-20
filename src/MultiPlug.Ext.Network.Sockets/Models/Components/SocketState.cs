@@ -18,5 +18,6 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Components
         // Received data string.  
         public StringBuilder sb = new StringBuilder();
         public bool Errored { get; set; } = false;
+        public string Address { get; internal set; }
     }
 }

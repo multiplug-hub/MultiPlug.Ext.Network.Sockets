@@ -26,8 +26,11 @@ namespace MultiPlug.Ext.Network.Sockets.Diagnostics
         SocketEndpointExceptionDisconnected = 33,
         SocketEndpointSent = 34,
         SocketEndpointSending = 35,
-        LocalIPAddressUpdated = 36,
-        LocalIPAddressUpdateFailed = 37,
+        SocketEndpointLocalIPAddressUpdated = 36,
+        SocketEndpointLocalIPAddressUpdateFailed = 37,
+        SocketEndpointSocketClosed = 38,
+        SocketEndpointSocketClosingDueToReconfigure = 39,
+        SocketEndpointSocketClosingDueToSubscriptionControl = 40,
 
         SocketClientNoHostName = 55,
         SocketClientIncorrectPort = 56,
@@ -38,6 +41,10 @@ namespace MultiPlug.Ext.Network.Sockets.Diagnostics
         SocketClientDataSent = 61,
         SocketClientSending = 62,
         SocketClientSocketExceptionCode = 63,
-        SocketClientSocketException = 64
+        SocketClientSocketException = 64,
+        SocketClientSocketClosed = 65,
+        SocketClientSocketClosedException = 66,
+        SocketClientSocketClosingDueToReconfigure = 67,
+        SocketClientSocketClosingDueToSubscriptionControl = 68
     }
 }

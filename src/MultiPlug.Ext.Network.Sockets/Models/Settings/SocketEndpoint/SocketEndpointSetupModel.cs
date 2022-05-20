@@ -3,19 +3,17 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Settings.SocketEndpoint
 {
     public class SocketEndpointSetupModel
     {
-        public string Guid { get; set; }
+        public string Guid { get; internal set; }
         public int Backlog { get; internal set; }
-        public int NICIndex { get; set; }
-
-        public string[] IPAddressList { get; set; }
-        public int Port { get; set; }
-
-        public string ReadEventId { get; set; }
-        public string ReadEventDescription { get; set; }
-        public string ReadEventSubject { get; set; }
-
-        public string[] WriteSubscriptionGuid { get; set; }
-        public string[] WriteSubscriptionId { get; set; }
-        public bool[] WriteSubscriptionConnected { get; set; }
+        public int NICIndex { get; internal set; }
+        public string[] IPAddressList { get; internal set; }
+        public int Port { get; internal set; }
+        public string ReadEventId { get; internal set; }
+        public string ReadEventDescription { get; internal set; }
+        public string ReadEventSubject { get; internal set; }
+        public string[] WriteSubscriptionGuid { get; internal set; }
+        public string[] WriteSubscriptionId { get; internal set; }
+        public bool[] WriteSubscriptionConnected { get; internal set; }
+        public bool SubscriptionsControlConnect { get; internal set; }
     }
 }

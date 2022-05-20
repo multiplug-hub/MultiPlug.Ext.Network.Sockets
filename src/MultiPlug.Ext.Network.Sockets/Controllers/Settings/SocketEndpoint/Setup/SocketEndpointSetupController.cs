@@ -54,6 +54,7 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Setu
                     WriteSubscriptionGuid = SocketEndpoint.WriteSubscriptions.Select( s => s.Guid ).ToArray(),
                     WriteSubscriptionId = SocketEndpoint.WriteSubscriptions.Select(s => s.Id ).ToArray(),
                     WriteSubscriptionConnected = SocketEndpoint.WriteSubscriptions.Select(s => s.Connected).ToArray(),
+                    SubscriptionsControlConnect = SocketEndpoint.SubscriptionsControlConnect
 
                 };
                 Subscriptions = new Subscription[] { new Subscription { Id = SocketEndpoint.LogEventId } };
@@ -76,7 +77,8 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Setu
 
                     WriteSubscriptionGuid = new string[0],
                     WriteSubscriptionId = new string[0],
-                    WriteSubscriptionConnected = new bool[0]
+                    WriteSubscriptionConnected = new bool[0],
+                    SubscriptionsControlConnect = true
                 };
             }
 
@@ -130,7 +132,8 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Setu
                     NICIndex = theModel.NICIndex,
                     Port = theModel.Port,
                     Backlog = theModel.Backlog,
-                    LoggingLevel = -1
+                    LoggingLevel = -1,
+                    SubscriptionsControlConnect = theModel.SubscriptionsControlConnect
                 } });
 
                 return new Response

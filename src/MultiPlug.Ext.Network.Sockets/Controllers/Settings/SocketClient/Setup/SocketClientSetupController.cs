@@ -6,7 +6,6 @@ using MultiPlug.Base.Exchange;
 using MultiPlug.Base.Http;
 using MultiPlug.Ext.Network.Sockets.Components.SocketClient;
 using MultiPlug.Ext.Network.Sockets.Models.Components;
-using MultiPlug.Ext.Network.Sockets.Models.Settings;
 using MultiPlug.Ext.Network.Sockets.Models.Settings.SocketClient;
 
 namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
@@ -49,6 +48,7 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
                     WriteSubscriptionGuid = SocketClient.WriteSubscriptions.Select(s => s.Guid).ToArray(),
                     WriteSubscriptionId = SocketClient.WriteSubscriptions.Select(s => s.Id).ToArray(),
                     WriteSubscriptionConnected = SocketClient.WriteSubscriptions.Select(s => s.Connected).ToArray(),
+                    SubscriptionsControlConnect = SocketClient.SubscriptionsControlConnect
 
                 };
                 Subscriptions = new Subscription[] { new Subscription { Id = SocketClient.LogEventId } };
@@ -68,7 +68,8 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
 
                     WriteSubscriptionGuid = new string[0],
                     WriteSubscriptionId = new string[0],
-                    WriteSubscriptionConnected = new bool[0]
+                    WriteSubscriptionConnected = new bool[0],
+                    SubscriptionsControlConnect = true
                 };
 
                 Subscriptions = new Subscription[0];
@@ -122,7 +123,8 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
                     WriteSubscriptions = Subscriptions.ToArray(),
                     HostName = theModel.HostName,
                     Port = theModel.Port,
-                    LoggingLevel = -1
+                    LoggingLevel = -1,
+                    SubscriptionsControlConnect = theModel.SubscriptionsControlConnect
                 } });
 
                 return new Response

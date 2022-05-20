@@ -12,5 +12,6 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Settings.SocketClient
         public bool[] WriteSubscriptionConnected { get; internal set; }
         public string[] WriteSubscriptionGuid { get; internal set; }
         public string[] WriteSubscriptionId { get; internal set; }
+        public bool SubscriptionsControlConnect { get; internal set; }
     }
 }

@@ -2,16 +2,10 @@
 
 @functions
 {
-    string isCurrentLoggingLevel(int theLevel)
+    string isEnabled(bool theValue)
     {
-        return (@Model.Extension.Model.LoggingLevel == theLevel) ? "selected" : "";
+        return (theValue) ? "checked" : "";
     }
-
-    string isConnected(bool theStatus)
-    {
-        return (theStatus) ? "Yes" : "No";
-    }
-
 }
 
 <form action="" method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded">
@@ -60,7 +54,8 @@
                         </div>
 
                         <div class="span4">
-
+                            <div class="row-fluid"><div class="span12">Write Subscriptions Control Connection Status</div></div>
+                            <div class="row-fluid"><div class="span12"><input type="checkbox" name="SubscriptionsControlConnect" value="true" @Raw(isEnabled(Model.Extension.Model.SubscriptionsControlConnect))></div></div>
                         </div>
 
                     </div>

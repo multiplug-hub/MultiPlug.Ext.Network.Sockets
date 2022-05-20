@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>MultiPlug.Ext.Network.Sockets</id>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <title>Network Sockets Extension for the MultiPlug .Net Edge Computing Platform</title>
     <authors>MultiPlugHub</authors>
     <owners>MultiPlugHub</owners>
@@ -11,14 +11,20 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Use Network Sockets with this MultiPlug Extension</description>
 	<license type="expression">MIT</license>
-    <releaseNotes>1.0.6 https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/5
+    <releaseNotes>1.0.7 https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/11
+https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/10
+https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/9
+https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/8
+https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/7
+https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/6
+1.0.6 https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/5
 https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/4
-	1.0.5 Connection Status UI pages
-	1.0.4 Logging Levels and Minor User Interface tidy up
-	1.0.3 https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/2
+1.0.5 Connection Status UI pages
+1.0.4 Logging Levels and Minor User Interface tidy up
+1.0.3 https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/2
 https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/3
-	1.0.2 https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/1
-	1.0.1 First Release based on MultiPlug.Ext.Networks</releaseNotes>
+1.0.2 https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/1
+1.0.1 First Release based on MultiPlug.Ext.Networks</releaseNotes>
     <copyright>MultiPlug Community</copyright>
     <tags>MultiPlug Edge_Computing Edge IoT</tags>
     <dependencies>

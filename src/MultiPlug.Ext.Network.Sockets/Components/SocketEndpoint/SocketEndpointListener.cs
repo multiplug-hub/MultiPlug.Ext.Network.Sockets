@@ -25,6 +25,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
         public SocketEndpointListener(SocketEndpointProperties theProperties)
         {
             m_Properties = theProperties;
+            m_Properties.ReadEvent.Enabled = false;
         }
 
         internal Socket Socket
@@ -35,9 +36,18 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             }
         }
 
+        internal bool Listening
+        {
+            get
+            {
+                return m_Socket != null;
+            }
+        }
+
         internal string[] ConnectedClients()
         {
-            return m_Sockets.Select(s => (s.workSocket.RemoteEndPoint as IPEndPoint).Address.ToString()).ToArray();
+            var Sockets = m_Sockets;
+            return Sockets.Select(s => s.Address).ToArray();
         }
 
         internal void Listen()
@@ -67,6 +77,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 Log?.Invoke(EventLogEntryCodes.SocketEndpointShutdown, null);
  
                 m_Socket.Close();
+                m_Socket = null;
 
                 Array.ForEach(m_Sockets, s =>
                 {
@@ -75,6 +86,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                     s.workSocket.Close();
                 });
                 m_Sockets = new SocketState[0];
+                m_Properties.ReadEvent.Enabled = false;
             }
         }
 
@@ -90,18 +102,18 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                     Log?.Invoke(EventLogEntryCodes.ConnectedTo, new string[] { client.RemoteEndPoint.ToString() });
                 }
 
-
-
                 // Signal the main thread to continue.  
                 allDone.Set();
 
                 // Create the state object.  
                 SocketState state = new SocketState();
                 state.workSocket = client;
+                state.Address = (client.RemoteEndPoint as IPEndPoint).Address.ToString();
 
                 var SocketList = new List<SocketState>(m_Sockets);
                 SocketList.Add(state);
                 m_Sockets = SocketList.ToArray();
+                m_Properties.ReadEvent.Enabled = true;
 
                 client.BeginReceive(state.buffer, 0, SocketState.BufferSize, 0,
                     new AsyncCallback(ReceiveCallback), state);
@@ -218,8 +230,9 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             // Convert the string data to byte data using ASCII encoding.  
             byte[] byteData = Encoding.ASCII.GetBytes(data);
 
+            var Sockets = m_Sockets;
 
-            foreach( SocketState SocketState in m_Sockets)
+            foreach ( SocketState SocketState in Sockets)
             {
                 if( SocketState.Errored)
                 {
@@ -243,10 +256,9 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                         DateTime.Now.AddSeconds(2),
                         PayloadStatus.Disabled
                     ));
+                    RemoveErroredSockets();
                 }
             }
-
-            RemoveErroredSockets();
         }
 
         private void SendCallback(IAsyncResult theAsyncResult)
@@ -267,6 +279,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             {
                 Log?.Invoke(EventLogEntryCodes.SocketEndpointSocketException, new string[] { theSocketException.Message });
                 OnSocketException(SocketState);
+                RemoveErroredSockets();
             }
             catch (Exception theException)
             {
@@ -282,6 +295,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
         private void RemoveErroredSockets()
         {
             m_Sockets = m_Sockets.Where(s => s.Errored == false).ToArray();
+
+            if (m_Sockets.Length == 0)
+            {
+                m_Properties.ReadEvent.Enabled = false;
+            }
         }
 
         public void OnSubscriptionEvent(SubscriptionEvent theSubscriptionEvent)

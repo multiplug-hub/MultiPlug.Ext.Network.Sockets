@@ -1,7 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using MultiPlug.Base;
 using MultiPlug.Base.Exchange;
-using MultiPlug.Base.Exchange.API;
 
 namespace MultiPlug.Ext.Network.Sockets.Models.Components
 {
@@ -18,18 +17,10 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Components
         public string HostName { get; set; }
         [DataMember]
         public int Port { get; set; } = -1;
-        public string TraceLog
-        {
-            get
-            {
-                return (m_LoggingService == null)? string.Empty : string.Join(System.Environment.NewLine, m_LoggingService.Read());
-            }
-        }
-
-        internal ILoggingService m_LoggingService;
-
         [DataMember]
         public int LoggingLevel { get; set; }
+        [DataMember]
+        public bool SubscriptionsControlConnect { get; set; }
 
     }
 }
