@@ -48,7 +48,7 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
                     WriteSubscriptionGuid = SocketClient.WriteSubscriptions.Select(s => s.Guid).ToArray(),
                     WriteSubscriptionId = SocketClient.WriteSubscriptions.Select(s => s.Id).ToArray(),
                     WriteSubscriptionConnected = SocketClient.WriteSubscriptions.Select(s => s.Connected).ToArray(),
-                    SubscriptionsControlConnect = SocketClient.SubscriptionsControlConnect
+                    SubscriptionsControlConnect = (SocketClient.SubscriptionsControlConnect == true)
 
                 };
                 Subscriptions = new Subscription[] { new Subscription { Id = SocketClient.LogEventId } };

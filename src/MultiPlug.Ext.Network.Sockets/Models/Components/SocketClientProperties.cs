@@ -20,7 +20,7 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Components
         [DataMember]
         public int LoggingLevel { get; set; }
         [DataMember]
-        public bool SubscriptionsControlConnect { get; set; }
+        public bool? SubscriptionsControlConnect { get; set; }
 
     }
 }
