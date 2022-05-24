@@ -30,13 +30,14 @@ namespace MultiPlug.Ext.Network.Sockets.Diagnostics
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointSending, Source = (uint) EventLogEntryCodes.SourceSocketEndpointListener, StringFormat = "Sending: {0}", Type = EventLogEntryType.Information },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointLocalIPAddressUpdated, Source = (uint) EventLogEntryCodes.SourceSocketEndpoint, StringFormat = "Local NIC IP updated to: {0}", Type = EventLogEntryType.Information },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointLocalIPAddressUpdateFailed, Source = (uint) EventLogEntryCodes.SourceSocketEndpoint, StringFormat = "No Local NIC IP Address of: {0}", Type = EventLogEntryType.Warning },
-
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointSocketClosed, Source = (uint) EventLogEntryCodes.SourceSocketEndpoint, StringFormat = "Socket Closed", Type = EventLogEntryType.Information },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointSocketClosingDueToReconfigure, Source = (uint) EventLogEntryCodes.SourceSocketEndpoint, StringFormat = "Socket closing due to reconfiguration", Type = EventLogEntryType.Information },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointSocketClosingDueToSubscriptionControl, Source = (uint) EventLogEntryCodes.SourceSocketEndpoint, StringFormat = "Socket closing due to Subscription Control", Type = EventLogEntryType.Information },
+            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointObjectDisposedException, Source = (uint) EventLogEntryCodes.SourceSocketEndpoint, StringFormat = "Object Disposed Exception: {0}", Type = EventLogEntryType.Error },
+            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointClosedWhileReceive, Source = (uint) EventLogEntryCodes.SourceSocketEndpoint, StringFormat = "Connection Closed while Receiving", Type = EventLogEntryType.Warning },
 
-            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientNoHostName, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Connection aborted: No HostName", Type = EventLogEntryType.Warning },
-            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientIncorrectPort, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Connection aborted: Incorrect port", Type = EventLogEntryType.Warning },
+            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientNoHostName, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Connection initialisation aborted: No HostName", Type = EventLogEntryType.Warning },
+            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientIncorrectPort, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Connection initialisation aborted: Incorrect port", Type = EventLogEntryType.Warning },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientConnectingTo, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Connecting to {0}", Type = EventLogEntryType.Information },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientException, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Exception: {0}", Type = EventLogEntryType.Error },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientConnectedTo, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Connected to {0}", Type = EventLogEntryType.Information },
@@ -49,6 +50,9 @@ namespace MultiPlug.Ext.Network.Sockets.Diagnostics
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientSocketClosedException, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Socket Closed Exception: {0}", Type = EventLogEntryType.Error },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientSocketClosingDueToReconfigure, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Socket closing due to reconfiguration", Type = EventLogEntryType.Information },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientSocketClosingDueToSubscriptionControl, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Socket closing due to Subscription Control", Type = EventLogEntryType.Information },
+            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientAlreadyInitialising, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Connection initialisation aborted: Already initialising", Type = EventLogEntryType.Information },
+            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientObjectDisposedException, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Object Disposed Exception: {0}", Type = EventLogEntryType.Error },
+            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientClosedWhileReceive, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Connection Closed while Receiving", Type = EventLogEntryType.Warning }
         };
     }
 }

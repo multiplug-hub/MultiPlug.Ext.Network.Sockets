@@ -31,6 +31,8 @@ namespace MultiPlug.Ext.Network.Sockets.Diagnostics
         SocketEndpointSocketClosed = 38,
         SocketEndpointSocketClosingDueToReconfigure = 39,
         SocketEndpointSocketClosingDueToSubscriptionControl = 40,
+        SocketEndpointObjectDisposedException = 41,
+        SocketEndpointClosedWhileReceive = 42,
 
         SocketClientNoHostName = 55,
         SocketClientIncorrectPort = 56,
@@ -45,6 +47,9 @@ namespace MultiPlug.Ext.Network.Sockets.Diagnostics
         SocketClientSocketClosed = 65,
         SocketClientSocketClosedException = 66,
         SocketClientSocketClosingDueToReconfigure = 67,
-        SocketClientSocketClosingDueToSubscriptionControl = 68
+        SocketClientSocketClosingDueToSubscriptionControl = 68,
+        SocketClientAlreadyInitialising = 69,
+        SocketClientObjectDisposedException = 70,
+        SocketClientClosedWhileReceive = 71,
     }
 }

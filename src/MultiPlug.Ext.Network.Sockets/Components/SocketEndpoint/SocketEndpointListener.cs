@@ -118,9 +118,9 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 client.BeginReceive(state.buffer, 0, SocketState.BufferSize, 0,
                     new AsyncCallback(ReceiveCallback), state);
             }
-            catch( ObjectDisposedException )
+            catch( ObjectDisposedException theException)
             {
-                // Connection Closed
+                Log?.Invoke(EventLogEntryCodes.SocketEndpointObjectDisposedException, new string[] { "AcceptCallback " + theException.Message });
             }
             catch( SocketException theSocketException)
             {
@@ -132,16 +132,24 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             }
         }
 
-        public void ReceiveCallback(IAsyncResult ar)
+        public void ReceiveCallback(IAsyncResult theAsyncResult)
         {
-            SocketState state = (SocketState)ar.AsyncState;
+            SocketState state = (SocketState)theAsyncResult.AsyncState;
 
             try
             {
                 Socket client = state.workSocket;
 
+                if (!client.Connected)
+                {
+                    Log?.Invoke(EventLogEntryCodes.SocketEndpointClosedWhileReceive, new string[] { state.Address });
+                    OnSocketException(state);
+                    RemoveErroredSockets();
+                    return;
+                }
+
                 // Read data from the client socket.   
-                int bytesRead = client.EndReceive(ar);
+                int bytesRead = client.EndReceive(theAsyncResult);
 
                 if (bytesRead > 0)
                 {
@@ -178,9 +186,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                     new AsyncCallback(ReceiveCallback), state);
                 }
             }
-            catch (ObjectDisposedException)
+            catch (ObjectDisposedException theException)
             {
-                // Connection Closed
+                state.Errored = true;
+                Log?.Invoke(EventLogEntryCodes.SocketEndpointObjectDisposedException, new string[] { "ReceiveCallback " + theException.Message });
+                RemoveErroredSockets();
             }
             catch ( SocketException theSocketException)
             {
@@ -189,7 +199,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
                 if ( theSocketException.SocketErrorCode == SocketError.ConnectionReset)
                 {
-                    Log?.Invoke(EventLogEntryCodes.SocketEndpointExceptionConnectionReset, new string[] { state.workSocket.RemoteEndPoint.ToString() });
+                    Log?.Invoke(EventLogEntryCodes.SocketEndpointExceptionConnectionReset, new string[] { state.Address });
                 }
                 else
                 {
