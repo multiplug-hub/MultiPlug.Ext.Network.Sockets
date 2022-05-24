@@ -54,7 +54,8 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Setu
                     WriteSubscriptionGuid = SocketEndpoint.WriteSubscriptions.Select( s => s.Guid ).ToArray(),
                     WriteSubscriptionId = SocketEndpoint.WriteSubscriptions.Select(s => s.Id ).ToArray(),
                     WriteSubscriptionConnected = SocketEndpoint.WriteSubscriptions.Select(s => s.Connected).ToArray(),
-                    SubscriptionsControlConnect = ( SocketEndpoint.SubscriptionsControlConnect == true )
+                    SubscriptionsControlConnect = ( SocketEndpoint.SubscriptionsControlConnect == true ),
+                    AllowedList = SocketEndpoint.AllowedList
 
                 };
                 Subscriptions = new Subscription[] { new Subscription { Id = SocketEndpoint.LogEventId } };
@@ -133,7 +134,8 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Setu
                     Port = theModel.Port,
                     Backlog = theModel.Backlog,
                     LoggingLevel = -1,
-                    SubscriptionsControlConnect = theModel.SubscriptionsControlConnect
+                    SubscriptionsControlConnect = theModel.SubscriptionsControlConnect,
+                    AllowedList = theModel.AllowedList == null ? new string[0] : theModel.AllowedList
                 } });
 
                 return new Response

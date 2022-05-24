@@ -38,6 +38,8 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             m_Listener.Log += OnLogWriteEntry;
 
             SubscriptionsControlConnect = true;
+
+            AllowedList = new string[0];
         }
 
         internal void UpdateProperties(SocketEndpointProperties theNewProperties)
@@ -59,6 +61,17 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 {
                     ForceInitialise = true;
                 }
+            }
+
+            if(theNewProperties.AllowedList != null)
+            {
+                AllowedList = theNewProperties.AllowedList
+                    .Where(x => !string.IsNullOrEmpty(x))
+                    .Where(x => 
+                    {
+                        IPAddress address;
+                        return System.Net.IPAddress.TryParse(x, out address);
+                    }).ToArray();
             }
 
             if (theNewProperties.ReadEvent != null)

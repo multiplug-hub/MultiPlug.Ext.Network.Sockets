@@ -149,7 +149,45 @@
                         </div>
 
                         <div class="span6">
-                            @* Right Hand Column*@
+                            <h3 class="box-header">
+                                Allowed Clients
+                            </h3>
+                            <div class="box">
+                                <div class="row-fluid">
+                                </div>
+                                <ul id="Allowed" style="list-style: none;">
+                                    @for (var Index = 0; Index < Model.Extension.Model.AllowedList.Length; Index++)
+                                    {
+                                        <li>
+                                            <div class="control-group">
+                                                <div class="controls">
+                                                    <div class="span2">
+                                                        <button type="button" class="item btn btn-red delete-allow"><i class="icon-trash icon-large"></i></button>
+                                                    </div>
+                                                    <div class="span10">
+                                                        <input name="AllowedList" type="text" value="@Model.Extension.Model.AllowedList[Index]" class="input-block-level">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                                <ul style="list-style: none;">
+                                    <li>
+                                        <div class="control-group">
+                                            <div class="controls">
+                                                <div class="span2">
+                                                    <button type="button" id="NewAllow" class="btn btn-green"><i class="icon-plus icon-large"></i></button>
+                                                </div>
+                                                <div class="span10">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -177,7 +215,22 @@
         </li>';
     }
 
-    function ApplyDelete(theSelector) {
+    function newAllowElement() {
+        return '<li>\
+            <div class="control-group">\
+                <div class="controls">\
+                    <div class="span2">\
+                        <button type="button" class="item btn btn-red delete-allow"><i class="icon-trash icon-large"></i></button>\
+                    </div>\
+                    <div class="span10">\
+                        <input name="AllowedList" type="text" value="" class="input-block-level">\
+                    </div>\
+                </div>\
+            </div>\
+        </li>';
+    }
+
+    function ApplySubscriptionDelete(theSelector) {
         $(theSelector).on('click', '.delete-sub', function () {
             var id = $(this).attr('value');
             var closestli = $(this).closest("li");
@@ -192,13 +245,28 @@
         });
     }
 
+    function ApplyAllowDelete(theSelector) {
+        $(theSelector).on('click', '.delete-allow', function () {
+            var id = $(this).attr('value');
+            var closestli = $(this).closest("li");
+            closestli.remove();
+        });
+    }
+
     $('#NewSubscription').on('click', function () {
         $('#Subscriptions').append(newSubElement());
         var NewAggregateSubscription = $('#Subscriptions li:last-child');
         applyMPEventPickerOnClick();
-        ApplyDelete(NewAggregateSubscription.find(':button'));
+        ApplySubscriptionDelete(NewAggregateSubscription.find(':button'));
     });
 
-    ApplyDelete(document);
+    $('#NewAllow').on('click', function () {
+        $('#Allowed').append(newAllowElement());
+        var NewAllow = $('#Allowed li:last-child');
+        ApplyAllowDelete(NewAllow.find(':button'));
+    });
+
+    ApplySubscriptionDelete(document);
+    ApplyAllowDelete(document);
 
 </script>

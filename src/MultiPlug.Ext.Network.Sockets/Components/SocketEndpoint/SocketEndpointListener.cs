@@ -110,6 +110,19 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 state.workSocket = client;
                 state.Address = (client.RemoteEndPoint as IPEndPoint).Address.ToString();
 
+                if(m_Properties.AllowedList.Any())
+                {
+                    var Search = m_Properties.AllowedList.FirstOrDefault(Allowed => Allowed == state.Address);
+
+                    if( Search == null)
+                    {
+                        client.Shutdown(SocketShutdown.Both);
+                        client.Close();
+                        Log?.Invoke(EventLogEntryCodes.SocketEndpointClientNotOnAllowedList, new string[] { state.Address });
+                        return;
+                    }
+                }
+
                 var SocketList = new List<SocketState>(m_Sockets);
                 SocketList.Add(state);
                 m_Sockets = SocketList.ToArray();

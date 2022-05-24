@@ -33,6 +33,7 @@ namespace MultiPlug.Ext.Network.Sockets.Diagnostics
         SocketEndpointSocketClosingDueToSubscriptionControl = 40,
         SocketEndpointObjectDisposedException = 41,
         SocketEndpointClosedWhileReceive = 42,
+        SocketEndpointClientNotOnAllowedList = 43,
 
         SocketClientNoHostName = 55,
         SocketClientIncorrectPort = 56,
