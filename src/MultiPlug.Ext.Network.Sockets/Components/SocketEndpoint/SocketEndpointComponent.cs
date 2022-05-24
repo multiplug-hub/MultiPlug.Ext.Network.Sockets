@@ -51,11 +51,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 return;
             }
 
-            if( SubscriptionsControlConnect != theNewProperties.SubscriptionsControlConnect )
+            if(theNewProperties.SubscriptionsControlConnect != null && SubscriptionsControlConnect != theNewProperties.SubscriptionsControlConnect )
             {
                 SubscriptionsControlConnect = theNewProperties.SubscriptionsControlConnect;
 
-                if( !SubscriptionsControlConnect )
+                if( SubscriptionsControlConnect == false )
                 {
                     ForceInitialise = true;
                 }
@@ -158,7 +158,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 OnLogWriteEntry(EventLogEntryCodes.SocketEndpointSocketClosingDueToReconfigure, new string[0]);
                 Shutdown();
 
-                if (SubscriptionsControlConnect)
+                if (SubscriptionsControlConnect == true)
                 {
                     OnSubscriptionStatusChanged(false);
                 }
@@ -179,7 +179,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
         private void OnSubscriptionStatusChanged(bool isEnabled /*Unused*/)
         {
-            if( SubscriptionsControlConnect )
+            if( SubscriptionsControlConnect == true )
             {
                 if ( WriteSubscriptions.All( Subscription => Subscription.Enabled ) )
                 {
