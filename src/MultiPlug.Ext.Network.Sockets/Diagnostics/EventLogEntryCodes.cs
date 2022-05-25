@@ -52,5 +52,7 @@ namespace MultiPlug.Ext.Network.Sockets.Diagnostics
         SocketClientAlreadyInitialising = 69,
         SocketClientObjectDisposedException = 70,
         SocketClientClosedWhileReceive = 71,
+        SocketClientSocketConnectingDueToSubscriptionControl = 72,
+        SocketClientSocketWaitingBeforeInitialisation = 73,
     }
 }

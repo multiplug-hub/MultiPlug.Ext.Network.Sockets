@@ -33,7 +33,7 @@ namespace MultiPlug.Ext.Network.Sockets.Diagnostics
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointSocketClosed, Source = (uint) EventLogEntryCodes.SourceSocketEndpoint, StringFormat = "Socket Closed", Type = EventLogEntryType.Information },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointSocketClosingDueToReconfigure, Source = (uint) EventLogEntryCodes.SourceSocketEndpoint, StringFormat = "Socket closing due to reconfiguration", Type = EventLogEntryType.Information },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointSocketClosingDueToSubscriptionControl, Source = (uint) EventLogEntryCodes.SourceSocketEndpoint, StringFormat = "Socket closing due to Subscription Control", Type = EventLogEntryType.Information },
-            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointObjectDisposedException, Source = (uint) EventLogEntryCodes.SourceSocketEndpoint, StringFormat = "Object Disposed Exception: {0}", Type = EventLogEntryType.Error },
+            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointObjectDisposedException, Source = (uint) EventLogEntryCodes.SourceSocketEndpoint, StringFormat = "Object Disposed Exception: {0}", Type = EventLogEntryType.Warning },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointClosedWhileReceive, Source = (uint) EventLogEntryCodes.SourceSocketEndpoint, StringFormat = "Connection Closed while Receiving", Type = EventLogEntryType.Warning },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointClientNotOnAllowedList, Source = (uint) EventLogEntryCodes.SourceSocketEndpoint, StringFormat = "Client Disconnected as not on Allowed List: IP {0} ", Type = EventLogEntryType.Warning },
 
@@ -52,8 +52,10 @@ namespace MultiPlug.Ext.Network.Sockets.Diagnostics
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientSocketClosingDueToReconfigure, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Socket closing due to reconfiguration", Type = EventLogEntryType.Information },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientSocketClosingDueToSubscriptionControl, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Socket closing due to Subscription Control", Type = EventLogEntryType.Information },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientAlreadyInitialising, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Connection initialisation aborted: Already initialising", Type = EventLogEntryType.Information },
-            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientObjectDisposedException, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Object Disposed Exception: {0}", Type = EventLogEntryType.Error },
-            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientClosedWhileReceive, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Connection Closed while Receiving", Type = EventLogEntryType.Warning }
+            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientObjectDisposedException, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Object Disposed Exception: {0}", Type = EventLogEntryType.Warning },
+            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientClosedWhileReceive, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Connection Closed while Receiving", Type = EventLogEntryType.Warning },
+            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientSocketConnectingDueToSubscriptionControl, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Socket connecting due to Subscription Control", Type = EventLogEntryType.Information },
+            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientSocketWaitingBeforeInitialisation, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Waiting 2 seconds before re-initialisation", Type = EventLogEntryType.Information }
         };
     }
 }

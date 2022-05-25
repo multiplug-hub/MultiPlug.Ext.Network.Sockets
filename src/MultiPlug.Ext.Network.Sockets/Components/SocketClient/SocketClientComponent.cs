@@ -28,6 +28,8 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
         public string LogEventId { get { return m_LoggingService.EventId; } }
 
         private System.Timers.Timer m_InitialiseDelayTimer;
+        private readonly object m_InitialisationLock = new object();
+        private const double c_InitialiseDelay = 2000;
 
         public SocketClientComponent( string theGuid, ILoggingService theLoggingService)
         {
@@ -40,6 +42,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             m_MessageBuffer = new MessageBuffer(theGuid, "SocketClient");
 
             SubscriptionsControlConnect = true;
+            Enabled = true;
         }
         internal void UpdateProperties(SocketClientProperties theNewProperties)
         {
@@ -138,7 +141,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
             if (ForceInitialise)
             {
-                OnLogWriteEntry(EventLogEntryCodes.SocketClientSocketClosingDueToReconfigure, new string[0]);
+                if(LoggingLevel > 0)
+                {
+                    OnLogWriteEntry(EventLogEntryCodes.SocketClientSocketClosingDueToReconfigure, new string[0]);
+                }
+
                 Shutdown();
 
                 if(SubscriptionsControlConnect == true)
@@ -168,6 +175,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                 {
                     if( m_Socket == null || ( ! m_Socket.Connected ) )
                     {
+                        if (LoggingLevel > 0)
+                        {
+                            OnLogWriteEntry(EventLogEntryCodes.SocketClientSocketConnectingDueToSubscriptionControl, new string[0]);
+                        }
+                        Enabled = true;
                         InitialiseSetup();
                     }
                 }
@@ -177,7 +189,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                     {
                         OnLogWriteEntry(EventLogEntryCodes.SocketClientSocketClosingDueToSubscriptionControl, new string[0]);
                     }
-
+                    Enabled = false;
                     Shutdown();
                 }
             }
@@ -232,14 +244,16 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                     if (m_Socket.Connected)
                     {
                         m_Socket.Shutdown(SocketShutdown.Both);
-                        m_Socket.Close();
-                        m_Socket = null;
-
-                        if (LoggingLevel > 0)
-                        {
-                            OnLogWriteEntry(EventLogEntryCodes.SocketClientSocketClosed, new string[0]);
-                        }
                     }
+
+                    m_Socket.Close();
+                    m_Socket = null;
+
+                    if (LoggingLevel > 0)
+                    {
+                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSocketClosed, new string[0]);
+                    }
+                    
                 }
                 catch(Exception theException)
                 {
@@ -252,25 +266,40 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
         private void InitialiseSetup()
         {
-            if(m_ConnectionInitialising)
+            if(Enabled == false)
             {
-                OnLogWriteEntry(EventLogEntryCodes.SocketClientAlreadyInitialising, null);
                 return;
             }
 
-            if( string.IsNullOrEmpty(HostName) )
+            lock(m_InitialisationLock)
+            {
+                if (m_ConnectionInitialising)
+                {
+                    if(LoggingLevel > 0)
+                    {
+                        OnLogWriteEntry(EventLogEntryCodes.SocketClientAlreadyInitialising, null);
+                    }
+                    return;
+                }
+                else
+                {
+                    m_ConnectionInitialising = true;
+                }
+            }
+
+            if ( string.IsNullOrEmpty(HostName) )
             {
                 OnLogWriteEntry(EventLogEntryCodes.SocketClientNoHostName, null);
+                m_ConnectionInitialising = false;
                 return;
             }
 
             if (Port == 0)
             {
                 OnLogWriteEntry(EventLogEntryCodes.SocketClientIncorrectPort, null);
+                m_ConnectionInitialising = false;
                 return;
             }
-
-            m_ConnectionInitialising = true;
 
             try
             {
@@ -312,12 +341,17 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
         private void InitialiseAfterDelay()
         {
-            if(m_InitialiseDelayTimer != null && ! m_InitialiseDelayTimer.Enabled)
+            if( Enabled == true && ( m_InitialiseDelayTimer == null || ( ! m_InitialiseDelayTimer.Enabled ) ) )
             {
-                m_InitialiseDelayTimer = new System.Timers.Timer(1500);
+                m_InitialiseDelayTimer = new System.Timers.Timer(c_InitialiseDelay);
                 m_InitialiseDelayTimer.AutoReset = false;
                 m_InitialiseDelayTimer.Elapsed += (s, e) => { InitialiseSetup(); };
                 m_InitialiseDelayTimer.Start();
+
+                if (LoggingLevel > 0)
+                {
+                    OnLogWriteEntry(EventLogEntryCodes.SocketClientSocketWaitingBeforeInitialisation, new string[0]);
+                }
             }
         }
 
@@ -358,7 +392,10 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             {
                 // Connection Closed
                 ConnectionInError = true;
-                OnLogWriteEntry(EventLogEntryCodes.SocketClientObjectDisposedException, new string[] { "ConnectCallback " + theException.Message });
+                if (LoggingLevel > 0)
+                {
+                    OnLogWriteEntry(EventLogEntryCodes.SocketClientObjectDisposedException, new string[] { "ConnectCallback " + theException.Message });
+                }
                 InitialiseAfterDelay();
             }
             catch (SocketException theException)
@@ -401,7 +438,10 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                 if( ! client.Connected )
                 {
                     ConnectionInError = true;
-                    OnLogWriteEntry(EventLogEntryCodes.SocketClientClosedWhileReceive, new string[0]);
+                    if (LoggingLevel > 0)
+                    {
+                        OnLogWriteEntry(EventLogEntryCodes.SocketClientClosedWhileReceive, new string[0]);
+                    }
                     InitialiseAfterDelay();
                     return;
                 }
@@ -422,7 +462,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
                         if( LoggingLevel == 1)
                         {
-                            OnLogWriteEntry(EventLogEntryCodes.SocketClientDataReceived, new string[0]);
+                            OnLogWriteEntry(EventLogEntryCodes.SocketClientDataReceived, new string[] { string.Empty });
                         }
                         else if (LoggingLevel == 2)
                         {
@@ -443,7 +483,10 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             {
                 ConnectionInError = true;
                 // Connection Closed
-                OnLogWriteEntry(EventLogEntryCodes.SocketClientObjectDisposedException, new string[] { "ReceiveCallback " + theException.Message });
+                if(LoggingLevel > 0)
+                {
+                    OnLogWriteEntry(EventLogEntryCodes.SocketClientObjectDisposedException, new string[] { "ReceiveCallback " + theException.Message });
+                }
                 InitialiseAfterDelay();
             }
             catch (SocketException theSocketException)
@@ -556,7 +599,22 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
         private void OnSocketException(SocketException theException)
         {
-            OnLogWriteEntry(EventLogEntryCodes.SocketClientSocketExceptionCode, new string[] { theException.SocketErrorCode.ToString() });
+            switch( theException.SocketErrorCode)
+            {
+                case SocketError.TimedOut:
+                case SocketError.ConnectionReset:
+                case SocketError.Interrupted:
+                case SocketError.Shutdown:
+                    if (LoggingLevel > 0)
+                    {
+                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSocketExceptionCode, new string[] { theException.SocketErrorCode.ToString() });
+                    }
+                    break;
+                default:
+                    OnLogWriteEntry(EventLogEntryCodes.SocketClientSocketExceptionCode, new string[] { theException.SocketErrorCode.ToString() });
+                    break;
+            }
+
             ConnectionInError = true;
             InitialiseAfterDelay();
         }

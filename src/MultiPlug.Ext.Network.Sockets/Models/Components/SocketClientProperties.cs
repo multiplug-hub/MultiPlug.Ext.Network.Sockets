@@ -21,6 +21,8 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Components
         public int LoggingLevel { get; set; }
         [DataMember]
         public bool? SubscriptionsControlConnect { get; set; }
+        //[DataMember] Future User Settable
+        public bool? Enabled { get; set; }
 
     }
 }
