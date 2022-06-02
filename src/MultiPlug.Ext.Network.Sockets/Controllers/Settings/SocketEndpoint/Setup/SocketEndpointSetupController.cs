@@ -79,7 +79,8 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Setu
                     WriteSubscriptionGuid = new string[0],
                     WriteSubscriptionId = new string[0],
                     WriteSubscriptionConnected = new bool[0],
-                    SubscriptionsControlConnect = true
+                    SubscriptionsControlConnect = true,
+                    AllowedList = new string[0]
                 };
             }
 
