@@ -8,12 +8,13 @@ using System.Collections.Generic;
 using MultiPlug.Base.Exchange;
 using MultiPlug.Ext.Network.Sockets.Models.Components;
 using MultiPlug.Ext.Network.Sockets.Diagnostics;
+using MultiPlug.Ext.Network.Sockets.Components.Utils;
 
 namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 {
     internal class SocketEndpointListener
     {
-        private Socket m_Socket = null;
+        private TcpSocket m_Socket = null;
         readonly SocketEndpointProperties m_Properties;
 
         SocketState[] m_Sockets = new SocketState[0];
@@ -28,7 +29,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             m_Properties.ReadEvent.Enabled = false;
         }
 
-        internal Socket Socket
+        internal TcpSocket Socket
         {
             set
             {
@@ -94,7 +95,13 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
         {
             try
             {
-                Socket listener = (Socket)ar.AsyncState;
+                TcpSocket listener = (TcpSocket)ar.AsyncState;
+
+                if(listener.IsDisposed)
+                {
+                    return;
+                }
+
                 Socket client = listener.EndAccept(ar);
 
                 if(m_Properties.LoggingLevel > 0)

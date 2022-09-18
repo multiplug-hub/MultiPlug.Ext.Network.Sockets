@@ -17,7 +17,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
         public event Action EventsUpdated;
         public event Action SubscriptionsUpdated;
 
-        private Socket m_Socket;
+        private TcpSocket m_Socket;
 
         private SocketEndpointListener m_Listener;
         private Thread m_ReadThread;
@@ -306,7 +306,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             {
                 var ipEndPoint = new IPEndPoint(ipAddr, Port);
 
-                m_Socket = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                m_Socket = new TcpSocket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
                 m_Socket.Bind(ipEndPoint);
                 m_Socket.Listen(Backlog);

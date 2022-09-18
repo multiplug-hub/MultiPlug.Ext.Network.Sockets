@@ -8,6 +8,7 @@ using MultiPlug.Base.Exchange;
 using MultiPlug.Base.Exchange.API;
 using MultiPlug.Ext.Network.Sockets.Models.Components;
 using MultiPlug.Ext.Network.Sockets.Diagnostics;
+using MultiPlug.Ext.Network.Sockets.Components.Utils;
 
 namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 {
@@ -18,7 +19,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
         private MessageBuffer m_MessageBuffer;
 
-        private Socket m_Socket;
+        private TcpSocket m_Socket;
 
         private bool m_ConnectionInitialising = false;
         private bool m_ConnectionInError = false;
@@ -318,7 +319,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
                 IPEndPoint remoteEP = new IPEndPoint(IPAddress, Port);
 
-                m_Socket = new Socket(IPAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                m_Socket = new TcpSocket(IPAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 
                 if (LoggingLevel > 0)
                 {
@@ -358,8 +359,15 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
         private void ConnectCallback(IAsyncResult ar)
         {
             try
-            { 
-                Socket client = (Socket)ar.AsyncState;
+            {
+                TcpSocket client = (TcpSocket)ar.AsyncState;
+
+                if(client.IsDisposed)
+                {
+                    ConnectionInError = true;
+                    InitialiseAfterDelay();
+                    return;
+                }
 
                 client.EndConnect(ar);
 
@@ -551,7 +559,14 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             try
             {
                 // Retrieve the socket from the state object.  
-                Socket client = (Socket)ar.AsyncState;
+                TcpSocket client = (TcpSocket)ar.AsyncState;
+
+                if(client.IsDisposed)
+                {
+                    ConnectionInError = true;
+                    InitialiseAfterDelay();
+                    return;
+                }
 
                 // Complete sending the data to the remote device.  
                 int bytesSent = client.EndSend(ar);
@@ -576,6 +591,13 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
         private bool Send(byte[] byteData)
         {
             bool Sent = true;
+
+            if(m_Socket.IsDisposed)
+            {
+                ConnectionInError = true;
+                InitialiseAfterDelay();
+                return Sent;
+            }
 
             try
             {
