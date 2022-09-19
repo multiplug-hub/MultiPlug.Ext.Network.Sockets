@@ -79,6 +79,7 @@ namespace MultiPlug.Ext.Network.Sockets
                 SocketEndpointComponent.SubscriptionsUpdated -= OnSubscriptionsUpdated;
                 SocketEndpointComponent.EventsUpdated -= OnEventsUpdated;
                 SocketEndpointComponent.Shutdown();
+                SocketEndpointComponent.Dispose();
 
                 var SocketEndpointsList = new List<SocketEndpointComponent>(SocketEndpoints);
                 SocketEndpointsList.Remove(SocketEndpointComponent);
@@ -162,6 +163,7 @@ namespace MultiPlug.Ext.Network.Sockets
                 SocketClientComponent.SubscriptionsUpdated -= OnSubscriptionsUpdated;
                 SocketClientComponent.EventsUpdated -= OnEventsUpdated;
                 SocketClientComponent.Shutdown();
+                SocketClientComponent.Dispose();
 
                 var SocketClientsList = new List<SocketClientComponent>(SocketClients);
                 SocketClientsList.Remove(SocketClientComponent);

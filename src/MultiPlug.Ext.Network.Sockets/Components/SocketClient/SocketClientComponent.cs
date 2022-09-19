@@ -47,6 +47,20 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             SubscriptionsControlConnect = true;
             Enabled = true;
         }
+
+        internal new void Dispose()
+        {
+            try
+            {
+                // Bug Created https://github.com/British-Systems/MultiPlug/issues/52
+                m_LoggingService.Delete();
+            }
+            catch(NotImplementedException)
+            {
+            }
+
+            base.Dispose();
+        }
         internal void UpdateProperties(SocketClientProperties theNewProperties)
         {
             bool SubscriptionsUpdatedFlag = false;

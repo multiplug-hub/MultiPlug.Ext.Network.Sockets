@@ -44,6 +44,20 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             AllowedList = new string[0];
         }
 
+        internal new void Dispose()
+        {
+            try
+            {
+                // Bug Created https://github.com/British-Systems/MultiPlug/issues/52
+                m_LoggingService.Delete();
+            }
+            catch (NotImplementedException)
+            {
+            }
+
+            base.Dispose();
+        }
+
         internal void UpdateProperties(SocketEndpointProperties theNewProperties)
         {
             bool SubscriptionsUpdatedFlag = false;
