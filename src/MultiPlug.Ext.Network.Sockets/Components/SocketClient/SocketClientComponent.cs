@@ -651,6 +651,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
         {
             switch( theException.SocketErrorCode)
             {
+                case SocketError.AddressNotAvailable:
                 case SocketError.TimedOut:
                 case SocketError.ConnectionReset:
                 case SocketError.Interrupted:
