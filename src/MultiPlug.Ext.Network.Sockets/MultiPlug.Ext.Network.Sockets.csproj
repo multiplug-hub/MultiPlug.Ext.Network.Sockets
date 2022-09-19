@@ -56,6 +56,7 @@
     <Compile Include="Components\SocketEndpoint\SocketEndpointComponent.cs" />
     <Compile Include="Components\SocketEndpoint\SocketEndpointListener.cs" />
     <Compile Include="Components\Utils\LocalIPAddressList.cs" />
+    <Compile Include="Components\Utils\TcpSocket.cs" />
     <Compile Include="Controllers\Assets\AssetsEndpoint.cs" />
     <Compile Include="Controllers\Assets\ImageController.cs" />
     <Compile Include="Controllers\Settings\Home\HomeController.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Controllers\Settings\SocketClient\Setup\DeleteSocketClientController.cs" />
     <Compile Include="Controllers\Settings\SocketClient\Setup\DeleteSubcriptionController.cs" />
     <Compile Include="Controllers\Settings\SocketClient\Setup\SocketClientSetupController.cs" />
+    <Compile Include="Controllers\Settings\SocketEndpoint\Home\SocketEndpointDisconnectClientController.cs" />
     <Compile Include="Controllers\Settings\SocketEndpoint\Setup\DeleteSocketEndpointController.cs" />
     <Compile Include="Controllers\Settings\SocketEndpoint\Setup\DeleteSubcriptionController.cs" />
     <Compile Include="Controllers\Settings\SocketEndpoint\Setup\SocketEndpointSetupController.cs" />
@@ -72,6 +74,7 @@
     <Compile Include="Core.cs" />
     <Compile Include="Diagnostics\EventLogDefinitions.cs" />
     <Compile Include="Diagnostics\EventLogEntryCodes.cs" />
+    <Compile Include="Models\Components\ConnectedClient.cs" />
     <Compile Include="Models\Components\SocketClientProperties.cs" />
     <Compile Include="Models\Components\SocketEndpointProperties.cs" />
     <Compile Include="Models\Components\SocketState.cs" />
@@ -81,6 +84,7 @@
     <Compile Include="Models\Settings\SocketClient\SocketClientHomeModel.cs" />
     <Compile Include="Models\Settings\SocketClient\SocketClientSetupModel.cs" />
     <Compile Include="Models\Settings\SocketEndpointPostModel.cs" />
+    <Compile Include="Models\Settings\SocketEndpoint\SocketEndpointDisconnectClientModel.cs" />
     <Compile Include="Models\Settings\SocketEndpoint\SocketEndpointHomeModel.cs" />
     <Compile Include="Models\Settings\SocketEndpoint\SocketEndpointSetupModel.cs" />
     <Compile Include="NetworkSockets.cs" />
