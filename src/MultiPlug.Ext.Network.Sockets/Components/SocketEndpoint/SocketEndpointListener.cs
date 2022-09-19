@@ -45,10 +45,10 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             }
         }
 
-        internal string[] ConnectedClients()
+        internal ConnectedClient[] ConnectedClients()
         {
             var Sockets = m_Sockets;
-            return Sockets.Select(s => s.Address).ToArray();
+            return Sockets.Select(s => new ConnectedClient { Address = s.Address, Guid = s.Guid }).ToArray();
         }
 
         internal void Listen()
@@ -243,6 +243,16 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 }
 
                 Log?.Invoke(EventLogEntryCodes.SocketEndpointException, new string[] { theSocketException.Message });
+            }
+        }
+
+        internal void DisconnectClient(string theClientGuidToDelete)
+        {
+            var Search = m_Sockets.FirstOrDefault(s => s.Guid == theClientGuidToDelete);
+            
+            if(Search != null)
+            {
+                Search.workSocket.Close();
             }
         }
 

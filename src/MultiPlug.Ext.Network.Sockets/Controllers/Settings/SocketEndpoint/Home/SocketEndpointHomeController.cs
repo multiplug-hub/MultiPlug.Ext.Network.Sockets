@@ -53,7 +53,7 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Home
                 model = new SocketEndpointHomeModel
                 {
                     Guid = string.Empty,
-                    ConnectedClients = new string[0],
+                    ConnectedClients = new ConnectedClient[0],
                     LoggingLevel = 0,
                     TraceLog = string.Empty,
                 };

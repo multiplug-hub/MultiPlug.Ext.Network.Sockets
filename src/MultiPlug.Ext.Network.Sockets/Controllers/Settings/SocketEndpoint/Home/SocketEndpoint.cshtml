@@ -8,7 +8,7 @@
     }
 }
 
-<form action="" method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded">
+<form action="" id="FormLogging" method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded"></form>
     <section class="row-fluid">
 
         <div class="row-fluid">
@@ -21,12 +21,12 @@
                 </div>
                 <div class="span3" style="text-align: right;">
                     <a class="btn btn-black" style="height:44px; width:35px" href="@Raw(Model.Context.Paths.Home)"><i class="icon-arrow-left icon-large"></i><p>Back</p></a>
-                    <button type="submit" value="submit" style="height:54px; width:65px" class="item btn btn-green"><i class="icon-save icon-large"></i><p>Save</p></button>
+                    <button type="submit" value="submit" form="FormLogging" style="height:54px; width:65px" class="item btn btn-green"><i class="icon-save icon-large"></i><p>Save</p></button>
                 </div>
             </div>
         </div>
 
-        <input type="hidden" name="guid" value="@Model.Extension.Model.Guid">
+        <input type="hidden" name="guid" form="FormLogging" value="@Model.Extension.Model.Guid">
 
         @Include("MultiPlug.Ext.Network.Sockets.NetworkSocketsEndpointNavigation")
 
@@ -38,13 +38,28 @@
                     <div class="row-fluid">
                         <div class="well">
                             <div class="row-fluid">
-                                <ul>
-                                    @foreach (var item in Model.Extension.Model.ConnectedClients)
-                                    {
-                                        <li>@item</li>
-                                    }
-                                </ul>
+                                <div class="span6">
+                                    <h5>IP Address</h5>
+                                </div>
+                                <div class="span6">
+                                    <h5>Disconnect</h5>
+                                </div>
                             </div>
+@foreach (var item in Model.Extension.Model.ConnectedClients)
+{
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <p>@item.Address</p>
+                                </div>
+                                <div class="span6">
+                                    <form action="@Raw(Model.Context.Paths.Current)disconnect/" method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded">
+                                        <input type="hidden" name="guid" value="@Model.Extension.Model.Guid">
+                                        <input type="hidden" name="clientguid" value="@item.Guid">
+                                        <button class="btn btn-red btn-small" type="submit"><i class="icon-trash"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+}
                         </div>
                     </div>
                 </div>
@@ -55,7 +70,7 @@
                     <div class="row-fluid">
                         <div class="well">
                             <div class="row-fluid">
-                                <select name="LoggingLevel">
+                                <select name="LoggingLevel" form="FormLogging">
                                     <option value="0" @isCurrentLoggingLevel(0)>Errors</option>
                                     <option value="1" @isCurrentLoggingLevel(1)>Basic</option>
                                     <option value="2" @isCurrentLoggingLevel(2)>Verbose</option>
@@ -78,7 +93,6 @@
             </div>
         </div>
     </section>
-</form>
 
 <script>
     $.connection.wS.on("Send", function (id, Group) {

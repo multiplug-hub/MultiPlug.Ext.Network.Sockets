@@ -198,6 +198,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             }
         }
 
+        internal void DisconnectClient(string theClientGuidToDelete)
+        {
+            m_Listener.DisconnectClient(theClientGuidToDelete);
+        }
+
         internal void Start( bool MultiPlugHasStarted)
         {
             m_MultiPlugStarted = MultiPlugHasStarted;
@@ -235,7 +240,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             }
         }
 
-        internal string[] ConnectedClients()
+        internal ConnectedClient[] ConnectedClients()
         {
             return m_Listener.ConnectedClients();
         }

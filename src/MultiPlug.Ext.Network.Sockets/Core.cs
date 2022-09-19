@@ -72,6 +72,16 @@ namespace MultiPlug.Ext.Network.Sockets
             }
         }
 
+        internal void SocketEndpointDisconnectClient(string theSocketEndpointGuid, string theClientGuidToDelete)
+        {
+            SocketEndpointComponent SocketEndpoint = SocketEndpoints.FirstOrDefault(e => e.Guid == theSocketEndpointGuid);
+
+            if (SocketEndpoint != null)
+            {
+                SocketEndpoint.DisconnectClient(theClientGuidToDelete);
+            }
+        }
+
         internal void Remove(SocketEndpointComponent[] theSocketClientComponents)
         {
             foreach (SocketEndpointComponent SocketEndpointComponent in theSocketClientComponents)
