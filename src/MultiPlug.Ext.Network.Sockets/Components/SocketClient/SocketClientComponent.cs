@@ -32,6 +32,8 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
         private readonly object m_InitialisationLock = new object();
         private const double c_InitialiseDelay = 2000;
 
+        private bool m_MultiPlugStarted = false;
+
         public SocketClientComponent( string theGuid, ILoggingService theLoggingService)
         {
             Guid = theGuid;
@@ -160,6 +162,12 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             }
         }
 
+        internal void Start(bool MultiPlugHasStarted)
+        {
+            m_MultiPlugStarted = MultiPlugHasStarted;
+            InitialiseSetup();
+        }
+
         internal string TraceLog
         {
             get
@@ -267,7 +275,13 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
         private void InitialiseSetup()
         {
-            if(Enabled == false)
+            if (!m_MultiPlugStarted)
+            {
+                return;
+            }
+
+
+            if (Enabled == false)
             {
                 return;
             }

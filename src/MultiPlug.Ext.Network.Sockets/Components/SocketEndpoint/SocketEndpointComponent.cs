@@ -26,6 +26,8 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
         public string LogEventId { get { return m_LoggingService.EventId; } }
 
+        private bool m_MultiPlugStarted = false;
+
         public SocketEndpointComponent(string theGuid, ILoggingService theLoggingService)
         {
             Guid = theGuid;
@@ -182,6 +184,12 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             }
         }
 
+        internal void Start( bool MultiPlugHasStarted)
+        {
+            m_MultiPlugStarted = MultiPlugHasStarted;
+            InitialiseSetup();
+        }
+
         internal string TraceLog
         {
             get
@@ -251,6 +259,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
         private void InitialiseSetup()
         {
+            if(! m_MultiPlugStarted)
+            {
+                return;
+            }
+
             if (string.IsNullOrEmpty(IPAddress))
             {
                 OnLogWriteEntry(EventLogEntryCodes.NoIPAddress, null);

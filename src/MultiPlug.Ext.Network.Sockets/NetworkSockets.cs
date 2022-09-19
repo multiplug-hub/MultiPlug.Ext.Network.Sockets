@@ -100,5 +100,10 @@ namespace MultiPlug.Ext.Network.Sockets
         {
             Core.Instance.Shutdown();
         }
+
+        public override void Start()
+        {
+            Core.Instance.Start();
+        }
     }
 }

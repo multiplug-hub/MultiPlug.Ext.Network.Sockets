@@ -21,6 +21,8 @@ namespace MultiPlug.Ext.Network.Sockets
         public Subscription[] Subscriptions { get; private set; } = new Subscription[0];
         public Event[] Events { get; private set; } = new Event[0];
 
+        private bool m_MultiPlugStarted = false;
+
         public static Core Instance
         {
             get
@@ -91,6 +93,14 @@ namespace MultiPlug.Ext.Network.Sockets
             }
         }
 
+        internal void Start()
+        {
+            m_MultiPlugStarted = true;
+
+            Array.ForEach(SocketEndpoints, s => s.Start(m_MultiPlugStarted));
+            Array.ForEach(SocketClients, s => s.Start(m_MultiPlugStarted));
+        }
+
         internal void Shutdown()
         {
             Array.ForEach(SocketEndpoints, s => s.Shutdown());
@@ -115,6 +125,7 @@ namespace MultiPlug.Ext.Network.Sockets
                         SocketEndpoint = new SocketEndpointComponent(SocketEndpointProperties.Guid, Logger);
                         Add(new SocketEndpointComponent[] { SocketEndpoint });
                         SocketEndpoint.UpdateProperties(SocketEndpointProperties);
+                        SocketEndpoint.Start(m_MultiPlugStarted);
                     }
                     
                 }
@@ -183,6 +194,7 @@ namespace MultiPlug.Ext.Network.Sockets
                         SocketClient = new SocketClientComponent(item.Guid, Logger);
                         Add(new SocketClientComponent[] { SocketClient });
                         SocketClient.UpdateProperties(item);
+                        SocketClient.Start(m_MultiPlugStarted);
                     }
                 }
             }
