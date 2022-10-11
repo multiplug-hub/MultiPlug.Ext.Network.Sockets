@@ -29,7 +29,6 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
         public string LogEventId { get { return m_LoggingService.EventId; } }
 
         private System.Timers.Timer m_InitialiseDelayTimer;
-        private readonly object m_InitialisationLock = new object();
         private const double c_InitialiseDelay = 2000;
 
         private bool m_MultiPlugStarted = false;
@@ -43,6 +42,8 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             m_LoggingService = theLoggingService;
 
             m_MessageBuffer = new MessageBuffer(theGuid, "SocketClient");
+
+            m_InitialiseDelayTimer = new System.Timers.Timer(c_InitialiseDelay);
 
             SubscriptionsControlConnect = true;
             Enabled = true;
@@ -178,8 +179,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
         internal void Start(bool MultiPlugHasStarted)
         {
-            m_MultiPlugStarted = MultiPlugHasStarted;
-            InitialiseSetup();
+            if( ! m_MultiPlugStarted && MultiPlugHasStarted)
+            {
+                m_MultiPlugStarted = MultiPlugHasStarted;
+                InitialiseSetup();
+            }
         }
 
         internal string TraceLog
@@ -294,13 +298,17 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                 return;
             }
 
-
             if (Enabled == false)
             {
                 return;
             }
 
-            lock(m_InitialisationLock)
+            if(m_InitialiseDelayTimer.Enabled)
+            {
+                return;
+            }
+
+            lock(this)
             {
                 if (m_ConnectionInitialising)
                 {
@@ -370,7 +378,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
         private void InitialiseAfterDelay()
         {
-            if( Enabled == true && ( m_InitialiseDelayTimer == null || ( ! m_InitialiseDelayTimer.Enabled ) ) )
+            if( Enabled == true && !m_ConnectionInitialising && ( ! m_InitialiseDelayTimer.Enabled ) )
             {
                 m_InitialiseDelayTimer = new System.Timers.Timer(c_InitialiseDelay);
                 m_InitialiseDelayTimer.AutoReset = false;
@@ -478,7 +486,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                     {
                         OnLogWriteEntry(EventLogEntryCodes.SocketClientClosedWhileReceive, new string[0]);
                     }
-                    InitialiseAfterDelay();
+
+                    if( (! m_ConnectionInitialising ) && (! m_InitialiseDelayTimer.Enabled ) )
+                    {
+                        InitialiseAfterDelay();
+                    }
                     return;
                 }
 
