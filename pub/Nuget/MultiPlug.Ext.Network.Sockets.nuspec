@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>MultiPlug.Ext.Network.Sockets</id>
-    <version>1.0.12</version>
+    <version>1.0.13</version>
     <title>Network Sockets Extension for the MultiPlug .Net Edge Computing Platform</title>
     <authors>MultiPlugHub</authors>
     <owners>MultiPlugHub</owners>
@@ -11,7 +11,8 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Use Network Sockets with this MultiPlug Extension</description>
 	<license type="expression">MIT</license>
-	<releaseNotes>1.0.12 https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/25
+	<releaseNotes>1.0.13 https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/26
+1.0.12 https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/25
 1.0.11 https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/23
 https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/22
 https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/21
@@ -44,7 +45,7 @@ https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/3
       <group targetFramework=".NETFramework4.7.2">
         <dependency id="MultiPlug.Base" version="1.0.69" />
         <dependency id="MultiPlug.Extension.Core" version="1.0.63" />
-        <dependency id="MultiPlug.Core" version="2.2.79" />
+        <dependency id="MultiPlug.Core" version="2.2.81" />
       </group>
     </dependencies>
   </metadata>
