@@ -161,7 +161,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
                 foreach (Subscription Subscription in NewSubscriptions)
                 {
-                    Subscription.Guid = System.Guid.NewGuid().ToString();
+                    Subscription.Guid = string.IsNullOrEmpty(Subscription.Guid) ? System.Guid.NewGuid().ToString() : Subscription.Guid;
                     Subscription.Event += m_Listener.OnSubscriptionEvent;
                     Subscription.EnabledStatus += OnSubscriptionStatusChanged;
                 }
