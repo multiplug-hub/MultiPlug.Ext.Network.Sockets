@@ -12,6 +12,7 @@
 }
 <div class="row-fluid">
     <ul class="nav nav-tabs">
+        <li><a href="@Raw(Model.Context.Paths.Home)">Home</a></li>
         <li class="@NavLocationIsHome()"><a href="@Raw(Model.Context.Paths.Home)socketendpoint/?id=@Model.Extension.Model.Guid">Status</a></li>
         <li class="@NavLocationIsSetup()"><a href="@Raw(Model.Context.Paths.Home)socketendpoint/setup/?id=@Model.Extension.Model.Guid">Setup</a></li>
     </ul>

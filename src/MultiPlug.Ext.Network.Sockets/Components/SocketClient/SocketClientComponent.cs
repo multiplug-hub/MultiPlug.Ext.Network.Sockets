@@ -9,6 +9,7 @@ using MultiPlug.Base.Exchange.API;
 using MultiPlug.Ext.Network.Sockets.Models.Components;
 using MultiPlug.Ext.Network.Sockets.Diagnostics;
 using MultiPlug.Ext.Network.Sockets.Components.Utils;
+using MultiPlug.Ext.Network.Sockets.Models.Exchange;
 
 namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 {
@@ -36,9 +37,9 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
         public SocketClientComponent( string theGuid, ILoggingService theLoggingService)
         {
             Guid = theGuid;
-            ReadEvent = new Event { Guid = theGuid, Id = System.Guid.NewGuid().ToString(), Description = "", Subjects = new[] { "value" } };
+            ReadEvent = new Event { Guid = theGuid, Id = System.Guid.NewGuid().ToString(), Description = "", Subjects = new[] { "value" }, Group = "Client" };
             ReadEvent.Enabled = false;
-            WriteSubscriptions = new Subscription[0];
+            WriteSubscriptions = new WriteSubscription[0];
             m_LoggingService = theLoggingService;
 
             m_MessageBuffer = new MessageBuffer(theGuid, "SocketClient");
@@ -110,11 +111,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
             if (theNewProperties.WriteSubscriptions != null)
             {
-                List<Subscription> NewSubscriptions = new List<Subscription>();
+                List<WriteSubscription> NewSubscriptions = new List<WriteSubscription>();
 
-                foreach ( Subscription Subscription in theNewProperties.WriteSubscriptions)
+                foreach (WriteSubscription Subscription in theNewProperties.WriteSubscriptions)
                 {
-                    Subscription Search = WriteSubscriptions.FirstOrDefault(ne => ne.Guid == Subscription.Guid);
+                    WriteSubscription Search = WriteSubscriptions.FirstOrDefault(ne => ne.Guid == Subscription.Guid);
 
                     if( Search == null)
                     {
@@ -122,7 +123,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                     }
                     else
                     {
-                        if (Subscription.Merge(Search, Subscription))
+                        if (WriteSubscription.Merge(Search, Subscription))
                         {
                             SubscriptionsUpdatedFlag = true;
                         }
@@ -134,14 +135,14 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                     SubscriptionsUpdatedFlag = true;
                 }
 
-                foreach (Subscription Subscription in NewSubscriptions)
+                foreach (WriteSubscription Subscription in NewSubscriptions)
                 {
                     Subscription.Guid = string.IsNullOrEmpty(Subscription.Guid) ? System.Guid.NewGuid().ToString() : Subscription.Guid;
-                    Subscription.Event += OnSubscriptionEvent;
+                    Subscription.WriteEvent += OnSubscriptionEvent;
                     Subscription.EnabledStatus += OnSubscriptionStatusChanged;
                 }
 
-                List<Subscription> List = WriteSubscriptions == null ? new List<Subscription>() : WriteSubscriptions.ToList();
+                List<WriteSubscription> List = WriteSubscriptions == null ? new List<WriteSubscription>() : WriteSubscriptions.ToList();
 
                 List.AddRange(NewSubscriptions);
                 WriteSubscriptions = List.ToArray();
@@ -222,39 +223,47 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             }
         }
 
-        private void OnSubscriptionEvent(SubscriptionEvent theSubscriptionEvent)
+        private void OnSubscriptionEvent(SubscriptionEvent theSubscriptionEvent, WriteSubscription theWriteSubscription)
         {
-            foreach(var Subject in theSubscriptionEvent.PayloadSubjects)
+            string WriteValue = string.Empty;
+
+            if (theWriteSubscription.IgnoreData.Value == false)
             {
-                if (m_Socket != null && m_Socket.Connected)
+                string WriteSeparator = theWriteSubscription.WriteSeparatorUnescaped;
+                string[] AllSubjectValues = theSubscriptionEvent.PayloadSubjects.Select(item => item.Value).ToArray();
+                WriteValue = string.Join(WriteSeparator, AllSubjectValues);
+            }
+
+            WriteValue = string.Concat(new string[] { theWriteSubscription.WritePrefixUnescaped, WriteValue, theWriteSubscription.WriteAppendUnescaped });
+
+            if (m_Socket != null && m_Socket.Connected)
+            {
+                Send(theWriteSubscription.IsHex.Value ? Text.HexStringToBytes(WriteValue) : Encoding.ASCII.GetBytes(WriteValue));
+                if (LoggingLevel == 1)
                 {
-                    Send(Encoding.ASCII.GetBytes(Subject.Value));
-                    if (LoggingLevel == 1)
-                    {
-                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { string.Empty });
-                    }
-                    else if (LoggingLevel == 2)
-                    {
-                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { theSubscriptionEvent.Payload.Subjects[0].Value });
-                    }
+                    OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { string.Empty });
                 }
-                else
+                else if (LoggingLevel == 2)
                 {
-                    m_MessageBuffer.Enqueue(theSubscriptionEvent.Payload.Subjects[0].Value, theSubscriptionEvent.Payload.TimeToLive);
+                    OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { theSubscriptionEvent.Payload.Subjects[0].Value });
                 }
+            }
+            else
+            {
+                m_MessageBuffer.Enqueue(WriteValue, theSubscriptionEvent.Payload.TimeToLive, theWriteSubscription.IsHex.Value);
             }
         }
 
         internal void RemoveSubcription(string theSubcriptionGuid)
         {
-            Subscription Search = WriteSubscriptions.FirstOrDefault(s => s.Guid == theSubcriptionGuid);
+            WriteSubscription Search = WriteSubscriptions.FirstOrDefault(s => s.Guid == theSubcriptionGuid);
 
             if (Search != null)
             {
-                Search.Event -= OnSubscriptionEvent;
+                Search.WriteEvent -= OnSubscriptionEvent;
                 Search.EnabledStatus -= OnSubscriptionStatusChanged;
 
-                List<Subscription> SubscriptionsList = WriteSubscriptions.ToList();
+                List<WriteSubscription> SubscriptionsList = WriteSubscriptions.ToList();
                 SubscriptionsList.Remove(Search);
                 WriteSubscriptions = SubscriptionsList.ToArray();
 
@@ -417,12 +426,10 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
                 Receive(client);
 
-                string item = m_MessageBuffer.Peek();
-                while ( item != string.Empty)
+                byte[] item = m_MessageBuffer.Peek();
+                while ( item.Length > 0)
                 {
-                    byte[] byteData = Encoding.ASCII.GetBytes(item);
-
-                    if( !Send(byteData) )
+                    if( !Send(item) )
                     {
                         break;
 

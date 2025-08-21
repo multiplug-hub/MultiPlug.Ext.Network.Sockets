@@ -1,6 +1,7 @@
 ﻿using System.Runtime.Serialization;
 using MultiPlug.Base;
 using MultiPlug.Base.Exchange;
+using MultiPlug.Ext.Network.Sockets.Models.Exchange;
 
 namespace MultiPlug.Ext.Network.Sockets.Models.Components
 {
@@ -12,7 +13,7 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Components
         [DataMember]
         public Event ReadEvent { get; set; }
         [DataMember]
-        public Subscription[] WriteSubscriptions { get; set; }
+        public WriteSubscription[] WriteSubscriptions { get; set; }
         [DataMember]
         public string HostName { get; set; }
         [DataMember]

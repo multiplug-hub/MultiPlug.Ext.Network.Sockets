@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
+using MultiPlug.Ext.Network.Sockets.Components.Utils;
 
 namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 {
@@ -10,6 +12,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
         {
             public string Id { get; set; }
             public DateTime TimeToLive { get; set; }
+            public bool IsHex { get; set; }
         }
 
 
@@ -24,17 +27,17 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
         }
 
-        public void Enqueue(string theMessage, DateTime rheTimeToLive)
+        public void Enqueue(string theMessage, DateTime rheTimeToLive, bool isHex)
         {
             var MessageGuid = Guid.NewGuid().ToString();
 
             File.WriteAllText(Path.Combine(m_MessageDirectory, MessageGuid + ".txt"), theMessage);
 
-            m_Q.Enqueue(new QItem { Id = MessageGuid, TimeToLive = rheTimeToLive });
+            m_Q.Enqueue(new QItem { Id = MessageGuid, TimeToLive = rheTimeToLive, IsHex = isHex });
 
         }
 
-        public string Peek()
+        public byte[] Peek()
         {
             QItem peek;
 
@@ -50,10 +53,12 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             }
             catch (InvalidOperationException)
             {
-                return string.Empty;
+                return new byte[0];
             }
 
-            return File.ReadAllText(Path.Combine(m_MessageDirectory, peek.Id + ".txt"));
+            string FileRead = File.ReadAllText(Path.Combine(m_MessageDirectory, peek.Id + ".txt"));
+
+            return peek.IsHex ? Text.HexStringToBytes(FileRead) : Encoding.ASCII.GetBytes(FileRead);
         }
 
         public void Dequeue()

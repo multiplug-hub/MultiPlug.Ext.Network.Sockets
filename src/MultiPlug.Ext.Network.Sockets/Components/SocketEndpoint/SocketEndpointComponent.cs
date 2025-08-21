@@ -9,6 +9,7 @@ using MultiPlug.Base.Exchange.API;
 using MultiPlug.Ext.Network.Sockets.Models.Components;
 using MultiPlug.Ext.Network.Sockets.Diagnostics;
 using MultiPlug.Ext.Network.Sockets.Components.Utils;
+using MultiPlug.Ext.Network.Sockets.Models.Exchange;
 
 namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 {
@@ -33,8 +34,8 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             Guid = theGuid;
             m_LoggingService = theLoggingService;
 
-            ReadEvent = new Event { Guid = theGuid, Id = System.Guid.NewGuid().ToString(), Description = "", Subjects = new[] { "value" } };
-            WriteSubscriptions = new Subscription[0];
+            ReadEvent = new Event { Guid = theGuid, Id = System.Guid.NewGuid().ToString(), Description = "", Subjects = new[] { "value" }, Group = "Endpoint" };
+            WriteSubscriptions = new WriteSubscription[0];
 
             m_Listener = new SocketEndpointListener(this);
             m_Listener.Log += OnLogWriteEntry;
@@ -135,11 +136,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
             if (theNewProperties.WriteSubscriptions != null)
             {
-                List<Subscription> NewSubscriptions = new List<Subscription>();
+                List<WriteSubscription> NewSubscriptions = new List<WriteSubscription>();
 
-                foreach (Subscription Subscription in theNewProperties.WriteSubscriptions)
+                foreach (WriteSubscription Subscription in theNewProperties.WriteSubscriptions)
                 {
-                    Subscription Search = WriteSubscriptions.FirstOrDefault(ne => ne.Guid == Subscription.Guid);
+                    WriteSubscription Search = WriteSubscriptions.FirstOrDefault(ne => ne.Guid == Subscription.Guid);
 
                     if (Search == null)
                     {
@@ -147,7 +148,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                     }
                     else
                     {
-                        if (Subscription.Merge(Search, Subscription))
+                        if (WriteSubscription.Merge(Search, Subscription))
                         {
                             SubscriptionsUpdatedFlag = true;
                         }
@@ -159,14 +160,14 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                     SubscriptionsUpdatedFlag = true;
                 }
 
-                foreach (Subscription Subscription in NewSubscriptions)
+                foreach (WriteSubscription Subscription in NewSubscriptions)
                 {
                     Subscription.Guid = string.IsNullOrEmpty(Subscription.Guid) ? System.Guid.NewGuid().ToString() : Subscription.Guid;
-                    Subscription.Event += m_Listener.OnSubscriptionEvent;
+                    Subscription.WriteEvent += m_Listener.OnSubscriptionEvent;
                     Subscription.EnabledStatus += OnSubscriptionStatusChanged;
                 }
 
-                List<Subscription> List = WriteSubscriptions == null ? new List<Subscription>() : WriteSubscriptions.ToList();
+                List<WriteSubscription> List = WriteSubscriptions == null ? new List<WriteSubscription>() : WriteSubscriptions.ToList();
 
                 List.AddRange(NewSubscriptions);
                 WriteSubscriptions = List.ToArray();
@@ -247,14 +248,14 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
         internal void RemoveSubcription(string theSubcriptionGuid)
         {
-            Subscription Search = WriteSubscriptions.FirstOrDefault(s => s.Guid == theSubcriptionGuid);
+            WriteSubscription Search = WriteSubscriptions.FirstOrDefault(s => s.Guid == theSubcriptionGuid);
 
             if (Search != null)
             {
-                Search.Event -= m_Listener.OnSubscriptionEvent;
+                Search.WriteEvent -= m_Listener.OnSubscriptionEvent;
                 Search.EnabledStatus -= OnSubscriptionStatusChanged;
 
-                List<Subscription> SubscriptionsList = WriteSubscriptions.ToList();
+                List<WriteSubscription> SubscriptionsList = WriteSubscriptions.ToList();
                 SubscriptionsList.Remove(Search);
                 WriteSubscriptions = SubscriptionsList.ToArray();
 

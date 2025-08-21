@@ -31,12 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MultiPlug.Base, Version=1.0.69.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MultiPlug.Base.1.0.69\lib\net472\MultiPlug.Base.dll</HintPath>
+    <Reference Include="MultiPlug.Base, Version=1.0.76.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MultiPlug.Base.1.0.76\lib\net472\MultiPlug.Base.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MultiPlug.Extension.Core, Version=1.0.63.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MultiPlug.Extension.Core.1.0.63\lib\net472\MultiPlug.Extension.Core.dll</HintPath>
+    <Reference Include="MultiPlug.Extension.Core, Version=1.0.64.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MultiPlug.Extension.Core.1.0.64\lib\net472\MultiPlug.Extension.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -57,6 +57,7 @@
     <Compile Include="Components\SocketEndpoint\SocketEndpointListener.cs" />
     <Compile Include="Components\Utils\LocalIPAddressList.cs" />
     <Compile Include="Components\Utils\TcpSocket.cs" />
+    <Compile Include="Components\Utils\Text.cs" />
     <Compile Include="Controllers\Assets\AssetsEndpoint.cs" />
     <Compile Include="Controllers\Assets\ImageController.cs" />
     <Compile Include="Controllers\Settings\Home\HomeController.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Models\Components\SocketClientProperties.cs" />
     <Compile Include="Models\Components\SocketEndpointProperties.cs" />
     <Compile Include="Models\Components\SocketState.cs" />
+    <Compile Include="Models\Exchange\WriteSubscription.cs" />
     <Compile Include="Models\Load\LoadModel.cs" />
     <Compile Include="Models\Settings\Home.cs" />
     <Compile Include="Models\Settings\SocketClientPostModel.cs" />

@@ -9,6 +9,7 @@ using MultiPlug.Base.Exchange;
 using MultiPlug.Ext.Network.Sockets.Models.Components;
 using MultiPlug.Ext.Network.Sockets.Diagnostics;
 using MultiPlug.Ext.Network.Sockets.Components.Utils;
+using MultiPlug.Ext.Network.Sockets.Models.Exchange;
 
 namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 {
@@ -256,7 +257,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             }
         }
 
-        internal void Send(string data)
+        internal void Send(string data, bool isHex)
         {
             if (m_Properties.LoggingLevel == 1)
             {
@@ -268,7 +269,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             }
 
             // Convert the string data to byte data using ASCII encoding.  
-            byte[] byteData = Encoding.ASCII.GetBytes(data);
+            byte[] byteData = isHex ? Text.HexStringToBytes(data) : Encoding.ASCII.GetBytes(data);
 
             var Sockets = m_Sockets;
 
@@ -342,12 +343,20 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             }
         }
 
-        public void OnSubscriptionEvent(SubscriptionEvent theSubscriptionEvent)
+        public void OnSubscriptionEvent(SubscriptionEvent theSubscriptionEvent, WriteSubscription theWriteSubscription)
         {
-            foreach( var Subject in theSubscriptionEvent.PayloadSubjects)
+            string WriteValue = string.Empty;
+
+            if (theWriteSubscription.IgnoreData.Value == false)
             {
-                Send(Subject.Value);
+                string WriteSeparator = theWriteSubscription.WriteSeparatorUnescaped;
+                string[] AllSubjectValues = theSubscriptionEvent.PayloadSubjects.Select(item => item.Value).ToArray();
+                WriteValue = string.Join(WriteSeparator, AllSubjectValues);
             }
+
+            WriteValue = string.Concat(new string[] { theWriteSubscription.WritePrefixUnescaped, WriteValue, theWriteSubscription.WriteAppendUnescaped });
+
+            Send(WriteValue, theWriteSubscription.IsHex.Value);
         }
     }
 }

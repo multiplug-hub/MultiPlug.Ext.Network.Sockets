@@ -7,6 +7,7 @@ using MultiPlug.Base.Http;
 using MultiPlug.Ext.Network.Sockets.Components.SocketClient;
 using MultiPlug.Ext.Network.Sockets.Models.Components;
 using MultiPlug.Ext.Network.Sockets.Models.Settings.SocketClient;
+using MultiPlug.Ext.Network.Sockets.Models.Exchange;
 
 namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
 {
@@ -45,9 +46,16 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
                     ReadEventDescription = SocketClient.ReadEvent.Description,
                     ReadEventSubject = (SocketClient.ReadEvent.Subjects.Length > 0) ? SocketClient.ReadEvent.Subjects[0] : string.Empty,
 
-                    WriteSubscriptionGuid = SocketClient.WriteSubscriptions.Select(s => s.Guid).ToArray(),
-                    WriteSubscriptionId = SocketClient.WriteSubscriptions.Select(s => s.Id).ToArray(),
-                    WriteSubscriptionConnected = SocketClient.WriteSubscriptions.Select(s => s.Connected).ToArray(),
+                    WriteSubscriptionGuids = SocketClient.WriteSubscriptions.Select(s => s.Guid).ToArray(),
+                    WriteSubscriptionIds = SocketClient.WriteSubscriptions.Select(s => s.Id).ToArray(),
+                    WriteSubscriptionConnecteds = SocketClient.WriteSubscriptions.Select(s => s.Connected).ToArray(),
+
+                    WriteSubscriptionWritePrefixs = SocketClient.WriteSubscriptions.Select(x => x.WritePrefix).ToArray(),
+                    WriteSubscriptionWriteSeparators = SocketClient.WriteSubscriptions.Select(x => x.WriteSeparator).ToArray(),
+                    WriteSubscriptionWriteSuffixs = SocketClient.WriteSubscriptions.Select(x => x.WriteAppend).ToArray(),
+                    WriteSubscriptionIsHexs = SocketClient.WriteSubscriptions.Select(x => x.IsHex.Value).ToArray(),
+                    WriteSubscriptionIgnoreDatas = SocketClient.WriteSubscriptions.Select(x => x.IgnoreData.Value).ToArray(),
+
                     SubscriptionsControlConnect = (SocketClient.SubscriptionsControlConnect == true)
 
                 };
@@ -66,9 +74,14 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
                     ReadEventDescription = "Socket Read",
                     ReadEventSubject = "value",
 
-                    WriteSubscriptionGuid = new string[0],
-                    WriteSubscriptionId = new string[0],
-                    WriteSubscriptionConnected = new bool[0],
+                    WriteSubscriptionGuids = new string[0],
+                    WriteSubscriptionIds = new string[0],
+                    WriteSubscriptionConnecteds = new bool[0],
+                    WriteSubscriptionWritePrefixs = new string[0],
+                    WriteSubscriptionWriteSeparators = new string[0],
+                    WriteSubscriptionWriteSuffixs = new string[0],
+                    WriteSubscriptionIsHexs = new bool[0],
+                    WriteSubscriptionIgnoreDatas = new bool[0],
                     SubscriptionsControlConnect = true
                 };
 
@@ -83,6 +96,29 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
             };
         }
 
+        private bool[] RemoveDuplicates(int theParentLength, bool[] theArrayWithDuplicates)
+        {
+            bool[] TheResult = new bool[theParentLength];
+
+            int index = 0;
+
+            for (int i = 0; i < theArrayWithDuplicates.Length; i++)
+            {
+                if ((i + 1) < theArrayWithDuplicates.Length && theArrayWithDuplicates[i + 1])
+                {
+                    TheResult[index] = true;
+                    i++;
+                }
+                else
+                {
+                    TheResult[index] = false;
+                }
+                index++;
+            }
+
+            return TheResult;
+        }
+
         public Response Post(SocketClientSetupModel theModel)
         {
             if (theModel != null &&
@@ -93,23 +129,39 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
             {
                 string EndpointGuid = string.IsNullOrEmpty(theModel.Guid) ? Guid.NewGuid().ToString() : theModel.Guid;
 
-                var Subscriptions = new List<Subscription>();
+                bool[] IsHexs = RemoveDuplicates(theModel.WriteSubscriptionGuids.Length, theModel.WriteSubscriptionIsHexs);
+                bool[] IgnoreDatas = RemoveDuplicates(theModel.WriteSubscriptionGuids.Length, theModel.WriteSubscriptionIgnoreDatas);
 
-                if (theModel.WriteSubscriptionGuid != null &&
-                    theModel.WriteSubscriptionId != null &&
-                    theModel.WriteSubscriptionGuid.Length == theModel.WriteSubscriptionId.Length)
+                var Subscriptions = new List<WriteSubscription>();
+
+                if (theModel.WriteSubscriptionGuids != null &&
+                    theModel.WriteSubscriptionIds != null &&
+                    theModel.WriteSubscriptionWritePrefixs != null &&
+                    theModel.WriteSubscriptionWriteSeparators != null &&
+                    theModel.WriteSubscriptionWriteSuffixs != null &&
+                    theModel.WriteSubscriptionGuids.Length == theModel.WriteSubscriptionIds.Length &&
+                    theModel.WriteSubscriptionGuids.Length == theModel.WriteSubscriptionWritePrefixs.Length &&
+                    theModel.WriteSubscriptionGuids.Length == theModel.WriteSubscriptionWriteSeparators.Length &&
+                    theModel.WriteSubscriptionGuids.Length == theModel.WriteSubscriptionWriteSuffixs.Length &&
+                    theModel.WriteSubscriptionGuids.Length == IsHexs.Length &&
+                    theModel.WriteSubscriptionGuids.Length == IgnoreDatas.Length)
                 {
-                    for (int i = 0; i < theModel.WriteSubscriptionGuid.Length; i++)
+                    for (int i = 0; i < theModel.WriteSubscriptionGuids.Length; i++)
                     {
-                        if (string.IsNullOrEmpty(theModel.WriteSubscriptionId[i]))
+                        if (string.IsNullOrEmpty(theModel.WriteSubscriptionIds[i]))
                         {
                             continue;
                         }
 
-                        Subscriptions.Add(new Subscription
+                        Subscriptions.Add(new WriteSubscription
                         {
-                            Guid = (string.IsNullOrEmpty(theModel.WriteSubscriptionGuid[i])) ? Guid.NewGuid().ToString() : theModel.WriteSubscriptionGuid[i],
-                            Id = theModel.WriteSubscriptionId[i]
+                            Guid = (string.IsNullOrEmpty(theModel.WriteSubscriptionGuids[i])) ? Guid.NewGuid().ToString() : theModel.WriteSubscriptionGuids[i],
+                            Id = theModel.WriteSubscriptionIds[i],
+                            WritePrefix = theModel.WriteSubscriptionWritePrefixs[i],
+                            WriteSeparator = theModel.WriteSubscriptionWriteSeparators[i],
+                            WriteAppend = theModel.WriteSubscriptionWriteSuffixs[i],
+                            IsHex = IsHexs[i],
+                            IgnoreData = IgnoreDatas[i]
                         });
                     }
                 }
