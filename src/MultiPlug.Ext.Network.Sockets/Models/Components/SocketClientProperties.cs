@@ -25,5 +25,12 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Components
         //[DataMember] Future User Settable
         public bool? Enabled { get; set; }
 
+        [DataMember]
+        public bool? ReadTrim { get; set; }
+        [DataMember]
+        public string ReadPrefix { get; set; }
+        [DataMember]
+        public string ReadAppend { get; set; }
+
     }
 }

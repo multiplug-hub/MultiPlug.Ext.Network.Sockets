@@ -18,5 +18,8 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Settings.SocketClient
         public string[] WriteSubscriptionWriteSuffixs { get; internal set; }
         public bool[] WriteSubscriptionIsHexs { get; internal set; }
         public bool[] WriteSubscriptionIgnoreDatas { get; internal set; }
+        public bool ReadTrim { get; internal set; }
+        public string ReadPrefix { get; internal set; }
+        public string ReadAppend { get; internal set; }
     }
 }

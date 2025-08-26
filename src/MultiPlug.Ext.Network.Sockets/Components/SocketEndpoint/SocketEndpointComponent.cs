@@ -43,6 +43,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             SubscriptionsControlConnect = true;
 
             AllowedList = new string[0];
+            ReadTrim = false;
         }
 
         internal new void Dispose()
@@ -97,6 +98,21 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 {
                     EventsUpdatedFlag = true;
                 }
+            }
+
+            if (theNewProperties.ReadTrim != null && ReadTrim != theNewProperties.ReadTrim)
+            {
+                ReadTrim = theNewProperties.ReadTrim;
+            }
+
+            if (theNewProperties.ReadPrefix != null && ReadPrefix != theNewProperties.ReadPrefix)
+            {
+                ReadPrefix = theNewProperties.ReadPrefix;
+            }
+
+            if (theNewProperties.ReadAppend != null && ReadAppend != theNewProperties.ReadAppend)
+            {
+                ReadAppend = theNewProperties.ReadAppend;
             }
 
             if (theNewProperties.IPAddress != null && theNewProperties.IPAddress != IPAddress )

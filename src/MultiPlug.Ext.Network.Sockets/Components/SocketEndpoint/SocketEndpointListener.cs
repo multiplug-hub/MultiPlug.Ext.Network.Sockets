@@ -196,6 +196,21 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                             Log?.Invoke(EventLogEntryCodes.SocketEndpointDataReceived, new string[] { response });
                         }
 
+                        if (m_Properties.ReadTrim.Value)
+                        {
+                            response = response.Trim();
+                        }
+
+                        if (!string.IsNullOrEmpty(m_Properties.ReadPrefix))
+                        {
+                            response = m_Properties.ReadPrefix + response;
+                        }
+
+                        if (!string.IsNullOrEmpty(m_Properties.ReadAppend))
+                        {
+                            response = response + m_Properties.ReadAppend;
+                        }
+
                         m_Properties.ReadEvent.Invoke(new Payload
                         (
                             m_Properties.ReadEvent.Id,

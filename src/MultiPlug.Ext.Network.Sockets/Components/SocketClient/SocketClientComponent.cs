@@ -48,6 +48,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
             SubscriptionsControlConnect = true;
             Enabled = true;
+            ReadTrim = false;
         }
 
         internal new void Dispose()
@@ -91,6 +92,21 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                 {
                     EventsUpdatedFlag = true;
                 }
+            }
+
+            if (theNewProperties.ReadTrim != null && ReadTrim != theNewProperties.ReadTrim)
+            {
+                ReadTrim = theNewProperties.ReadTrim;
+            }
+
+            if (theNewProperties.ReadPrefix != null && ReadPrefix != theNewProperties.ReadPrefix)
+            {
+                ReadPrefix = theNewProperties.ReadPrefix;
+            }
+
+            if (theNewProperties.ReadAppend != null && ReadAppend != theNewProperties.ReadAppend)
+            {
+                ReadAppend = theNewProperties.ReadAppend;
             }
 
             if (theNewProperties.HostName != null && theNewProperties.HostName != HostName)
@@ -522,6 +538,21 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                         else if (LoggingLevel == 2)
                         {
                             OnLogWriteEntry(EventLogEntryCodes.SocketClientDataReceived, new string[] { response });
+                        }
+
+                        if (ReadTrim.Value)
+                        {
+                            response = response.Trim();
+                        }
+
+                        if (!string.IsNullOrEmpty(ReadPrefix))
+                        {
+                            response = ReadPrefix + response;
+                        }
+
+                        if (!string.IsNullOrEmpty(ReadAppend))
+                        {
+                            response = response + ReadAppend;
                         }
 
                         ReadEvent.Invoke(new Payload

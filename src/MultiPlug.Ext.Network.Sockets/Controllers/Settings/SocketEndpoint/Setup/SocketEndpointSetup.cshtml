@@ -114,6 +114,37 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row-fluid">
+                                <div class="span4">
+                                    <div class="row-fluid"><div class="span12">Trim (Remove white-space)</div></div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <input type="checkbox" name="ReadTrim" value="true" @Raw(isEnabled(Model.Extension.Model.ReadTrim))>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="span4">
+                                    <div class="span12">
+                                        <div class="row-fluid"><div class="span12">Prefix</div></div>
+                                        <div class="row-fluid">
+                                            <div class="span12">
+                                                <input name="ReadPrefix" class="input-block-level" type="text" value="@Model.Extension.Model.ReadPrefix" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="span4">
+                                    <div class="row-fluid"><div class="span12">Suffix</div></div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <input name="ReadAppend" class="input-block-level" type="text" value="@Model.Extension.Model.ReadAppend">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

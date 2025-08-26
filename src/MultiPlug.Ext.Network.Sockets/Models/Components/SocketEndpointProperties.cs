@@ -39,5 +39,12 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Components
         [DataMember]
         public string[] AllowedList { get; set; }
 
+        [DataMember]
+        public bool? ReadTrim { get; set; }
+        [DataMember]
+        public string ReadPrefix { get; set; }
+        [DataMember]
+        public string ReadAppend { get; set; }
+
     }
 }

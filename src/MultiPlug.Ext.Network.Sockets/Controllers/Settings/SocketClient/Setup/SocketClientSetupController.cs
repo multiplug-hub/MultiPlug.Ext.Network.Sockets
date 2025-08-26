@@ -45,6 +45,9 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
                     ReadEventId = SocketClient.ReadEvent.Id,
                     ReadEventDescription = SocketClient.ReadEvent.Description,
                     ReadEventSubject = (SocketClient.ReadEvent.Subjects.Length > 0) ? SocketClient.ReadEvent.Subjects[0] : string.Empty,
+                    ReadTrim = SocketClient.ReadTrim.Value,
+                    ReadPrefix = SocketClient.ReadPrefix,
+                    ReadAppend = SocketClient.ReadAppend,
 
                     WriteSubscriptionGuids = SocketClient.WriteSubscriptions.Select(s => s.Guid).ToArray(),
                     WriteSubscriptionIds = SocketClient.WriteSubscriptions.Select(s => s.Id).ToArray(),
@@ -73,6 +76,9 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
                     ReadEventId = Guid,
                     ReadEventDescription = "Socket Read",
                     ReadEventSubject = "value",
+                    ReadTrim = false,
+                    ReadPrefix = string.Empty,
+                    ReadAppend = string.Empty,
 
                     WriteSubscriptionGuids = new string[0],
                     WriteSubscriptionIds = new string[0],
@@ -176,7 +182,10 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
                     HostName = theModel.HostName,
                     Port = theModel.Port,
                     LoggingLevel = -1,
-                    SubscriptionsControlConnect = theModel.SubscriptionsControlConnect
+                    SubscriptionsControlConnect = theModel.SubscriptionsControlConnect,
+                    ReadTrim = theModel.ReadTrim,
+                    ReadPrefix = theModel.ReadPrefix,
+                    ReadAppend = theModel.ReadAppend
                 } });
 
                 return new Response

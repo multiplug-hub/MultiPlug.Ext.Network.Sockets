@@ -51,6 +51,9 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Setu
                     ReadEventId = SocketEndpoint.ReadEvent.Id,
                     ReadEventDescription = SocketEndpoint.ReadEvent.Description,
                     ReadEventSubject = (SocketEndpoint.ReadEvent.Subjects.Length > 0 ) ? SocketEndpoint.ReadEvent.Subjects[0] : string.Empty,
+                    ReadTrim = SocketEndpoint.ReadTrim.Value,
+                    ReadPrefix = SocketEndpoint.ReadPrefix,
+                    ReadAppend = SocketEndpoint.ReadAppend,
 
                     WriteSubscriptionGuids = SocketEndpoint.WriteSubscriptions.Select( s => s.Guid ).ToArray(),
                     WriteSubscriptionIds = SocketEndpoint.WriteSubscriptions.Select(s => s.Id ).ToArray(),
@@ -84,6 +87,9 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Setu
                     ReadEventId = Guid,
                     ReadEventDescription = "Socket Read",
                     ReadEventSubject = "value",
+                    ReadTrim = false,
+                    ReadPrefix = string.Empty,
+                    ReadAppend = string.Empty,
 
                     WriteSubscriptionGuids = new string[0],
                     WriteSubscriptionIds = new string[0],
@@ -189,7 +195,10 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Setu
                     Backlog = theModel.Backlog,
                     LoggingLevel = -1,
                     SubscriptionsControlConnect = theModel.SubscriptionsControlConnect,
-                    AllowedList = theModel.AllowedList == null ? new string[0] : theModel.AllowedList
+                    AllowedList = theModel.AllowedList == null ? new string[0] : theModel.AllowedList,
+                    ReadTrim = theModel.ReadTrim,
+                    ReadPrefix = theModel.ReadPrefix,
+                    ReadAppend = theModel.ReadAppend
                 } });
 
                 return new Response
