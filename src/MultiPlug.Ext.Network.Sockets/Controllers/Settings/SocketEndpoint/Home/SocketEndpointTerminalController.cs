@@ -11,9 +11,9 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Home
         {
             if (!string.IsNullOrEmpty(id))
             {
-                var SocketClient = Core.Instance.SocketEndpoints.FirstOrDefault(Client => Client.Guid == id);
+                var SocketEndpoint = Core.Instance.SocketEndpoints.FirstOrDefault(Client => Client.Guid == id);
 
-                if (SocketClient == null)
+                if (SocketEndpoint == null)
                 {
                     return new Response
                     {
@@ -21,7 +21,7 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Home
                     };
                 }
 
-                SocketClient.TerminalSend(send);
+                SocketEndpoint.TerminalSend(send);
 
                 return new Response
                 {

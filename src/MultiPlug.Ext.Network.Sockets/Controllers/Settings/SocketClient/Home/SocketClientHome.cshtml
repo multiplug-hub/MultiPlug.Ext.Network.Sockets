@@ -192,7 +192,7 @@
 
     $(".btn-terminal-send").click(function (event) {
         event.preventDefault();
-        $.post('@Raw(Model.Context.Paths.Current)' + '/terminal' + '?id=@Model.Extension.Model.Guid' + '&send=' + $("#TerminalSend").val(), function (data) {
+        $.post('@Raw(Model.Context.Paths.Current)' + 'terminal' + '?id=@Model.Extension.Model.Guid' + '&send=' + $("#TerminalSend").val(), function (data) {
         })
         .done(function () {
         });
