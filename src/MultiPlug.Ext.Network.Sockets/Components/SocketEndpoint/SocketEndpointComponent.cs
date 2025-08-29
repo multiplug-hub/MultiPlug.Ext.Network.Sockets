@@ -44,7 +44,8 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
             AllowedList = new string[0];
             ReadTrim = false;
-        }
+            LoggingShowControlCharacters = false;
+    }
 
         internal new void Dispose()
         {
@@ -138,7 +139,12 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 LoggingLevel = theNewProperties.LoggingLevel;
             }
 
-            if(theNewProperties.NICIndex != -1 && theNewProperties.NICIndex != NICIndex)
+            if (theNewProperties.LoggingShowControlCharacters != null && theNewProperties.LoggingShowControlCharacters != LoggingShowControlCharacters)
+            {
+                LoggingShowControlCharacters = theNewProperties.LoggingShowControlCharacters;
+            }
+
+            if (theNewProperties.NICIndex != -1 && theNewProperties.NICIndex != NICIndex)
             {
                 NICIndex = theNewProperties.NICIndex;
             }

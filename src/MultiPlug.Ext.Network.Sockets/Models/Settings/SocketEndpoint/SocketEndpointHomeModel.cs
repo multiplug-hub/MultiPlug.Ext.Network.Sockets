@@ -9,5 +9,6 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Settings.SocketEndpoint
         public ConnectedClient[] ConnectedClients { get; internal set; }
         public int LoggingLevel { get; internal set; }
         public string TraceLog { get; internal set; }
+        public bool LoggingShowControlCharacters { get; internal set; }
     }
 }

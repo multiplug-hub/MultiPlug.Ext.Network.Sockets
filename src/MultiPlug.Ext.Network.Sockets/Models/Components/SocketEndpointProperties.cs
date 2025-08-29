@@ -45,6 +45,7 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Components
         public string ReadPrefix { get; set; }
         [DataMember]
         public string ReadAppend { get; set; }
-
+        [DataMember]
+        public bool? LoggingShowControlCharacters { get; set; }
     }
 }

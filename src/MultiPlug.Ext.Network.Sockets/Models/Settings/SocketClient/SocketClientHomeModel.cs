@@ -7,6 +7,7 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Settings.SocketClient
         public bool ConnectionInError { get; internal set; }
         public string Guid { get; internal set; }
         public int LoggingLevel { get; internal set; }
+        public bool LoggingShowControlCharacters { get; internal set; }
         public string TraceLog { get; internal set; }
     }
 }

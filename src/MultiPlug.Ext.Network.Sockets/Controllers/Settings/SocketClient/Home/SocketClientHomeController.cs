@@ -16,13 +16,13 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
     {
         public Response Get(string id)
         {
-            SocketClientComponent SocketEndpoint = null;
+            SocketClientComponent SocketClient = null;
 
             if ( ! string.IsNullOrEmpty(id))
             {
-                SocketEndpoint = Core.Instance.SocketClients.FirstOrDefault(t => t.Guid == id);
+                SocketClient = Core.Instance.SocketClients.FirstOrDefault(t => t.Guid == id);
 
-                if( SocketEndpoint == null)
+                if( SocketClient == null)
                 {
                     return new Response
                     {
@@ -34,17 +34,18 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
             SocketClientHomeModel Model;
             Subscription[] Subscriptions = null;
 
-            if (SocketEndpoint != null)
+            if (SocketClient != null)
             {
                 Model = new SocketClientHomeModel
                 {
-                    Guid = SocketEndpoint.Guid,
-                    LoggingLevel = SocketEndpoint.LoggingLevel,
-                    TraceLog = SocketEndpoint.TraceLog,
-                    Connected = SocketEndpoint.Connected,
-                    ConnectionInError = SocketEndpoint.ConnectionInError
+                    Guid = SocketClient.Guid,
+                    LoggingLevel = SocketClient.LoggingLevel,
+                    TraceLog = SocketClient.TraceLog,
+                    Connected = SocketClient.Connected,
+                    ConnectionInError = SocketClient.ConnectionInError,
+                    LoggingShowControlCharacters = SocketClient.LoggingShowControlCharacters.Value
                 };
-                Subscriptions = new Subscription[] { new Subscription { Id = SocketEndpoint.LogEventId } };
+                Subscriptions = new Subscription[] { new Subscription { Id = SocketClient.LogEventId } };
             }
             else
             {
@@ -56,7 +57,8 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
                     LoggingLevel = 0,
                     TraceLog = string.Empty,
                     Connected = false,
-                    ConnectionInError = false
+                    ConnectionInError = false,
+                    LoggingShowControlCharacters = false
                 };
 
                 Subscriptions = new Subscription[0];
@@ -81,6 +83,7 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
                     {
                         Guid = EndpointGuid,
                         LoggingLevel = theModel.LoggingLevel,
+                        LoggingShowControlCharacters = theModel.LoggingShowControlCharacters
                     }
                 });
 

@@ -6,6 +6,10 @@
     {
         return (@Model.Extension.Model.LoggingLevel == theLevel) ? "selected" : "";
     }
+    string isChecked(bool theValue)
+    {
+        return (theValue) ? "checked" : "";
+    }
 }
 
 <form action="" id="FormLogging" style="display:none;" method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded"></form>
@@ -65,25 +69,41 @@
 
                 <h3 class="box-header">Logging</h3>
                 <div class="box">
-                    <h4>Level</h4>
                     <div class="row-fluid">
                         <div class="well">
                             <div class="row-fluid">
-                                <select name="LoggingLevel" form="FormLogging">
-                                    <option value="0" @isCurrentLoggingLevel(0)>Errors</option>
-                                    <option value="1" @isCurrentLoggingLevel(1)>Basic</option>
-                                    <option value="2" @isCurrentLoggingLevel(2)>Verbose</option>
-                                </select>
+                                <div class="span6">
+                                    <div class="row-fluid"><div class="span12">Level</div></div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <select name="LoggingLevel" form="FormLogging">
+                                                <option value="0" @isCurrentLoggingLevel(0)>Errors</option>
+                                                <option value="1" @isCurrentLoggingLevel(1)>Basic</option>
+                                                <option value="2" @isCurrentLoggingLevel(2)>Verbose</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="span6">
+                                    <div class="row-fluid"><div class="span12">Show Control Characters</div></div>
+                                    <div class="row-fluid">
+                                        <div class="span12">
+                                            <input type="checkbox" name="LoggingShowControlCharacters" value="true" form="FormLogging" @Raw(isChecked(Model.Extension.Model.LoggingShowControlCharacters))>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <h4>Log</h4>
+                    <h4>Event Log</h4>
                     <div class="row-fluid">
                         <div class="well">
                             <div class="row-fluid">
                                 <div class="span12">
-                                    <textarea id="Logging" spellcheck="false" rows="10" class="input-block-level">@Model.Extension.Model.TraceLog</textarea>
+                                    <textarea id="Logging" spellcheck="false" rows="10" class="input-block-level">@Model.Extension.Model.TraceLog
+</textarea>
                                 </div>
                             </div>
                         </div>
@@ -94,11 +114,18 @@
     </section>
 
 <script>
+    function scrollLogToBottom(loggingTextArea) {
+        var textarea = document.getElementById(loggingTextArea);
+        textarea.scrollTop = textarea.scrollHeight;
+    }
+
     $.connection.wS.on("Send", function (id, Group) {
         var loggingTextArea = $('#Logging');
         loggingTextArea.text(loggingTextArea.text() + Group.Subjects[1].Value + '\n');
+        scrollLogToBottom('Logging');
+    });
 
-        if (loggingTextArea.length)
-            loggingTextArea.scrollTop(loggingTextArea[0].scrollHeight - loggingTextArea.height());
+    $(document).ready(function () {
+        scrollLogToBottom('Logging');
     });
 </script>

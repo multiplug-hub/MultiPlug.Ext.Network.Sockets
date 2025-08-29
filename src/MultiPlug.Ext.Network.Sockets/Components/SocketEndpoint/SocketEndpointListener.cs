@@ -187,15 +187,6 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
                         state.sb.Clear();
 
-                        if (m_Properties.LoggingLevel == 1)
-                        {
-                            Log?.Invoke(EventLogEntryCodes.SocketEndpointDataReceived, new string[] { string.Empty });
-                        }
-                        else if (m_Properties.LoggingLevel == 2)
-                        {
-                            Log?.Invoke(EventLogEntryCodes.SocketEndpointDataReceived, new string[] { response });
-                        }
-
                         if (m_Properties.ReadTrim.Value)
                         {
                             response = response.Trim();
@@ -209,6 +200,36 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                         if (!string.IsNullOrEmpty(m_Properties.ReadAppend))
                         {
                             response = response + m_Properties.ReadAppend;
+                        }
+
+                        if (m_Properties.LoggingLevel == 1)
+                        {
+                            Log?.Invoke(EventLogEntryCodes.SocketEndpointDataReceived, new string[] { string.Empty });
+                        }
+                        else if (m_Properties.LoggingLevel == 2)
+                        {
+                            if (m_Properties.LoggingShowControlCharacters.Value == true)
+                            {
+                                StringBuilder SB = new StringBuilder();
+
+                                foreach (char aChar in response)
+                                {
+                                    if (char.IsControl(aChar))
+                                    {
+                                        SB.AppendFormat(ControlCharacters.Lookup(Convert.ToUInt32(aChar)));
+                                    }
+                                    else
+                                    {
+                                        SB.Append(aChar);
+                                    }
+                                }
+
+                                Log?.Invoke(EventLogEntryCodes.SocketEndpointDataReceived, new string[] { SB.ToString() });
+                            }
+                            else
+                            {
+                                Log?.Invoke(EventLogEntryCodes.SocketEndpointDataReceived, new string[] { response });
+                            }
                         }
 
                         m_Properties.ReadEvent.Invoke(new Payload
@@ -280,7 +301,28 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             }
             else if (m_Properties.LoggingLevel == 2)
             {
-                Log?.Invoke(EventLogEntryCodes.SocketEndpointSending, new string[] { data });
+                if (m_Properties.LoggingShowControlCharacters.Value == true)
+                {
+                    StringBuilder SB = new StringBuilder();
+
+                    foreach (char aChar in data)
+                    {
+                        if (char.IsControl(aChar))
+                        {
+                            SB.AppendFormat(ControlCharacters.Lookup(Convert.ToUInt32(aChar)));
+                        }
+                        else
+                        {
+                            SB.Append(aChar);
+                        }
+                    }
+
+                    Log?.Invoke(EventLogEntryCodes.SocketEndpointSending, new string[] { SB.ToString() });
+                }
+                else
+                {
+                    Log?.Invoke(EventLogEntryCodes.SocketEndpointSending, new string[] { data });
+                }
             }
 
             // Convert the string data to byte data using ASCII encoding.  

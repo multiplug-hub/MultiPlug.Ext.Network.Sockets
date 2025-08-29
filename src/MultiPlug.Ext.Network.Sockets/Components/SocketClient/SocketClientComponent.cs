@@ -49,6 +49,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             SubscriptionsControlConnect = true;
             Enabled = true;
             ReadTrim = false;
+            LoggingShowControlCharacters = false;
         }
 
         internal new void Dispose()
@@ -123,6 +124,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             if (theNewProperties.LoggingLevel != -1 && theNewProperties.LoggingLevel != LoggingLevel)
             {
                 LoggingLevel = theNewProperties.LoggingLevel;
+            }
+
+            if (theNewProperties.LoggingShowControlCharacters != null && theNewProperties.LoggingShowControlCharacters != LoggingShowControlCharacters)
+            {
+                LoggingShowControlCharacters = theNewProperties.LoggingShowControlCharacters;
             }
 
             if (theNewProperties.WriteSubscriptions != null)
@@ -255,13 +261,35 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             if (m_Socket != null && m_Socket.Connected)
             {
                 Send(theWriteSubscription.IsHex.Value ? Text.HexStringToBytes(WriteValue) : Encoding.ASCII.GetBytes(WriteValue));
+
                 if (LoggingLevel == 1)
                 {
                     OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { string.Empty });
                 }
                 else if (LoggingLevel == 2)
                 {
-                    OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { theSubscriptionEvent.Payload.Subjects[0].Value });
+                    if (LoggingShowControlCharacters.Value == true)
+                    {
+                        StringBuilder SB = new StringBuilder();
+
+                        foreach (char aChar in WriteValue)
+                        {
+                            if (char.IsControl(aChar))
+                            {
+                                SB.AppendFormat(ControlCharacters.Lookup(Convert.ToUInt32(aChar)));
+                            }
+                            else
+                            {
+                                SB.Append(aChar);
+                            }
+                        }
+
+                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { SB.ToString() });
+                    }
+                    else
+                    {
+                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { WriteValue });
+                    }
                 }
             }
             else
@@ -531,15 +559,6 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
                         state.sb.Clear();
 
-                        if( LoggingLevel == 1)
-                        {
-                            OnLogWriteEntry(EventLogEntryCodes.SocketClientDataReceived, new string[] { string.Empty });
-                        }
-                        else if (LoggingLevel == 2)
-                        {
-                            OnLogWriteEntry(EventLogEntryCodes.SocketClientDataReceived, new string[] { response });
-                        }
-
                         if (ReadTrim.Value)
                         {
                             response = response.Trim();
@@ -553,6 +572,36 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                         if (!string.IsNullOrEmpty(ReadAppend))
                         {
                             response = response + ReadAppend;
+                        }
+
+                        if (LoggingLevel == 1)
+                        {
+                            OnLogWriteEntry(EventLogEntryCodes.SocketClientDataReceived, new string[] { string.Empty });
+                        }
+                        else if (LoggingLevel == 2)
+                        {
+                            if (LoggingShowControlCharacters.Value == true)
+                            {
+                                StringBuilder SB = new StringBuilder();
+
+                                foreach (char aChar in response)
+                                {
+                                    if (char.IsControl(aChar))
+                                    {
+                                        SB.AppendFormat(ControlCharacters.Lookup(Convert.ToUInt32(aChar)));
+                                    }
+                                    else
+                                    {
+                                        SB.Append(aChar);
+                                    }
+                                }
+
+                                OnLogWriteEntry(EventLogEntryCodes.SocketClientDataReceived, new string[] { SB.ToString() });
+                            }
+                            else
+                            {
+                                OnLogWriteEntry(EventLogEntryCodes.SocketClientDataReceived, new string[] { response });
+                            }
                         }
 
                         ReadEvent.Invoke(new Payload
