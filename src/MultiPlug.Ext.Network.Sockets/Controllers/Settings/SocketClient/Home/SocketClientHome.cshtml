@@ -17,8 +17,23 @@
         return (theValue) ? "checked" : "";
     }
 }
+@{
+    string[][] WriteSugestions = new string[][]
+    {
+        new string[]{ "\\u0020", "Space" },
+        new string[]{ "\\u0000", "NUL (Null)" },
+        new string[]{ "\\u0001", "SOH (Start of Heading)" },
+        new string[]{ "\\u0002", "STX (Start of Text)" },
+        new string[]{ "\\u0003", "ETX (End of Text)" },
+        new string[]{ "\\u0004", "EOT (End of Transmission)" },
+        new string[]{ "\\u0005", "ENQ (Enquiry)" },
+        new string[]{ "\\u0006", "ACK (Acknowledge)" },
+        new string[]{ "\\u000A", "LF (Line Feed)" },
+        new string[]{ "\\u000D", "CR (Carriage Return)" }
+    };
+}
 
-<form action="" method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded">
+<form action="" method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded" spellcheck="false" autocomplete="off">
     <section class="row-fluid">
 
         <div class="row-fluid">
@@ -42,27 +57,61 @@
         <div class="row-fluid">
             <div class="box">
                 <h3 class="box-header">Connection</h3>
-                <div class="box">
-                    <h4>Connected</h4>
+                <div class="box non-collapsible">
                     <div class="row-fluid">
-                        <div class="well">
+                        <div class="span6">
+                            <h4>Connected</h4>
                             <div class="row-fluid">
-                                @isConnected(Model.Extension.Model.Connected)
+                                <div class="well">
+                                    <div class="row-fluid">
+                                        @isConnected(Model.Extension.Model.Connected)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span6">
+                            <h4>Errored</h4>
+                            <div class="row-fluid">
+                                <div class="well">
+                                    <div class="row-fluid">
+                                        @isConnected(Model.Extension.Model.ConnectionInError)
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <h4>Errored</h4>
+                </div>
+
+                <h3 class="box-header">Terminal</h3>
+                <div class="box non-collapsible">
                     <div class="row-fluid">
-                        <div class="well">
-                            <div class="row-fluid">
-                                @isConnected(Model.Extension.Model.ConnectionInError)
+                        <div class="row-fluid">
+                            <div class="input-prepend input-append" style="display:flex; margin-bottom: 0px">
+                                <div class="btn-group">
+                                    <button class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1">
+                                        <span class="caret">
+                                        </span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        @for (int j = 0; j < WriteSugestions.Length; j++)
+                                        {
+                                            <li>
+                                                <a class="WriteSuggestion" data-suggestiontext="@WriteSugestions[j][0]" href="#">@WriteSugestions[j][1]</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                                <input id="TerminalSend" class="span12" type="text" value="" spellcheck="false" autocomplete="off">
+                                <div class="btn-group">
+                                    <button class="btn btn-blue btn-terminal-send" tabindex="-1">Send</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <h3 class="box-header">Logging</h3>
-                <div class="box">
+                <div class="box non-collapsible">
                     <div class="row-fluid">
                         <div class="well">
                             <div class="row-fluid">
@@ -122,6 +171,31 @@
 
     $(document).ready(function () {
         scrollLogToBottom('Logging');
+
+        $(window).keydown(function (event) {
+            if (event.keyCode == 13) {
+                event.preventDefault();
+                $(".btn-terminal-send").click();
+            }
+        });
+    });
+
+    function applyWriteSuggestion() {
+        $('.WriteSuggestion').click(function (event) {
+            event.preventDefault();
+            var inputtext = $(this).closest(".input-prepend").find("input");
+            $(inputtext).val($(inputtext).val() + $(this).attr("data-suggestiontext"));
+        });
+    }
+
+    applyWriteSuggestion();
+
+    $(".btn-terminal-send").click(function (event) {
+        event.preventDefault();
+        $.post('@Raw(Model.Context.Paths.Current)' + '/terminal' + '?id=@Model.Extension.Model.Guid' + '&send=' + $("#TerminalSend").val(), function (data) {
+        })
+        .done(function () {
+        });
     });
 
 </script>

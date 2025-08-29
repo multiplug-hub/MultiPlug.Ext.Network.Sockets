@@ -64,9 +64,11 @@
     <Compile Include="Controllers\Settings\Home\HomeController.cs" />
     <Compile Include="Controllers\Settings\SettingsApp.cs" />
     <Compile Include="Controllers\Settings\SocketClient\Home\SocketClientHomeController.cs" />
+    <Compile Include="Controllers\Settings\SocketClient\Home\SocketClientTerminalController.cs" />
     <Compile Include="Controllers\Settings\SocketClient\Setup\DeleteSocketClientController.cs" />
     <Compile Include="Controllers\Settings\SocketClient\Setup\DeleteSubcriptionController.cs" />
     <Compile Include="Controllers\Settings\SocketClient\Setup\SocketClientSetupController.cs" />
+    <Compile Include="Controllers\Settings\SocketEndpoint\Home\SocketEndpointTerminalController.cs" />
     <Compile Include="Controllers\Settings\SocketEndpoint\Home\SocketEndpointDisconnectClientController.cs" />
     <Compile Include="Controllers\Settings\SocketEndpoint\Setup\DeleteSocketEndpointController.cs" />
     <Compile Include="Controllers\Settings\SocketEndpoint\Setup\DeleteSubcriptionController.cs" />

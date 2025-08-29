@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading;
 using System.Net.Sockets;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using MultiPlug.Base.Exchange;
 using MultiPlug.Base.Exchange.API;
 using MultiPlug.Ext.Network.Sockets.Models.Components;
@@ -45,7 +46,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             AllowedList = new string[0];
             ReadTrim = false;
             LoggingShowControlCharacters = false;
-    }
+        }
 
         internal new void Dispose()
         {
@@ -72,21 +73,21 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 return;
             }
 
-            if(theNewProperties.SubscriptionsControlConnect != null && SubscriptionsControlConnect != theNewProperties.SubscriptionsControlConnect )
+            if (theNewProperties.SubscriptionsControlConnect != null && SubscriptionsControlConnect != theNewProperties.SubscriptionsControlConnect)
             {
                 SubscriptionsControlConnect = theNewProperties.SubscriptionsControlConnect;
 
-                if( SubscriptionsControlConnect == false )
+                if (SubscriptionsControlConnect == false)
                 {
                     ForceInitialise = true;
                 }
             }
 
-            if(theNewProperties.AllowedList != null)
+            if (theNewProperties.AllowedList != null)
             {
                 AllowedList = theNewProperties.AllowedList
                     .Where(x => !string.IsNullOrEmpty(x))
-                    .Where(x => 
+                    .Where(x =>
                     {
                         IPAddress address;
                         return System.Net.IPAddress.TryParse(x, out address);
@@ -95,7 +96,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
             if (theNewProperties.ReadEvent != null)
             {
-                if ( Event.Merge(ReadEvent, theNewProperties.ReadEvent) )
+                if (Event.Merge(ReadEvent, theNewProperties.ReadEvent))
                 {
                     EventsUpdatedFlag = true;
                 }
@@ -116,25 +117,25 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 ReadAppend = theNewProperties.ReadAppend;
             }
 
-            if (theNewProperties.IPAddress != null && theNewProperties.IPAddress != IPAddress )
+            if (theNewProperties.IPAddress != null && theNewProperties.IPAddress != IPAddress)
             {
                 IPAddress = theNewProperties.IPAddress;
                 ForceInitialise = true;
             }
 
-            if(theNewProperties.Port != -1 && theNewProperties.Port != Port )
+            if (theNewProperties.Port != -1 && theNewProperties.Port != Port)
             {
                 Port = theNewProperties.Port;
                 ForceInitialise = true;
             }
 
-            if(theNewProperties.Backlog != -1 && theNewProperties.Backlog != Backlog )
+            if (theNewProperties.Backlog != -1 && theNewProperties.Backlog != Backlog)
             {
                 Backlog = theNewProperties.Backlog;
                 ForceInitialise = true;
             }
 
-            if( theNewProperties.LoggingLevel != -1 && theNewProperties.LoggingLevel != LoggingLevel )
+            if (theNewProperties.LoggingLevel != -1 && theNewProperties.LoggingLevel != LoggingLevel)
             {
                 LoggingLevel = theNewProperties.LoggingLevel;
             }
@@ -151,7 +152,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
             int NICIndexSearch = LocalIPAddressList.GetIndex(IPAddress);
 
-            if(NICIndexSearch != -1)
+            if (NICIndexSearch != -1)
             {
                 NICIndex = NICIndexSearch;
             }
@@ -226,7 +227,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             m_Listener.DisconnectClient(theClientGuidToDelete);
         }
 
-        internal void Start( bool MultiPlugHasStarted)
+        internal void Start(bool MultiPlugHasStarted)
         {
             m_MultiPlugStarted = MultiPlugHasStarted;
             InitialiseSetup();
@@ -242,11 +243,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
         private void OnSubscriptionStatusChanged(bool isEnabled /*Unused*/)
         {
-            if( SubscriptionsControlConnect == true )
+            if (SubscriptionsControlConnect == true)
             {
-                if ( WriteSubscriptions.All( Subscription => Subscription.Enabled ) )
+                if (WriteSubscriptions.All(Subscription => Subscription.Enabled))
                 {
-                    if ( ! m_Listener.Listening )
+                    if (!m_Listener.Listening)
                     {
                         InitialiseSetup();
                     }
@@ -301,7 +302,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
         private void InitialiseSetup()
         {
-            if(! m_MultiPlugStarted)
+            if (!m_MultiPlugStarted)
             {
                 return;
             }
@@ -333,9 +334,9 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
             // If the IPAddress has been updated, we attempt to update it using the NIC index
 
-            if( ! IPAddressList.Contains(IPAddress) )
+            if (!IPAddressList.Contains(IPAddress))
             {
-                if(NICIndex < IPAddressList.Length)
+                if (NICIndex < IPAddressList.Length)
                 {
                     IPAddress = IPAddressList[NICIndex];
                     OnLogWriteEntry(EventLogEntryCodes.SocketEndpointLocalIPAddressUpdated, new string[] { IPAddress });
@@ -351,7 +352,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
             IPAddress ipAddr;
 
-            if ( !System.Net.IPAddress.TryParse( IPAddress, out ipAddr) )
+            if (!System.Net.IPAddress.TryParse(IPAddress, out ipAddr))
             {
                 OnLogWriteEntry(EventLogEntryCodes.LocalIPAddressParse, null);
                 return;
@@ -389,6 +390,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             {
                 m_LoggingService.WriteEntry((uint)theLogCode);
             }
+        }
+
+        internal void TerminalSend(string theWriteValue)
+        {
+            m_Listener.Send(Regex.Unescape(theWriteValue), false);
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using MultiPlug.Base.Exchange;
 using MultiPlug.Base.Exchange.API;
 using MultiPlug.Ext.Network.Sockets.Models.Components;
@@ -712,6 +713,60 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             catch (Exception theException)
             {
                 OnLogWriteEntry(EventLogEntryCodes.SocketClientException, new string[] { theException.Message });
+            }
+        }
+
+        internal bool TerminalSend(string theWriteValue)
+        {
+            if(string.IsNullOrEmpty(theWriteValue))
+            {
+                return false;
+            }
+
+            if (m_Socket != null && m_Socket.Connected)
+            {
+                var Result = Send(Encoding.ASCII.GetBytes(Regex.Unescape(theWriteValue) ));
+
+                if(!Result)
+                {
+                    return Result;
+                }
+
+                if (LoggingLevel == 1)
+                {
+                    OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { string.Empty });
+                }
+                else if (LoggingLevel == 2)
+                {
+                    if (LoggingShowControlCharacters.Value == true)
+                    {
+                        StringBuilder SB = new StringBuilder();
+
+                        foreach (char aChar in theWriteValue)
+                        {
+                            if (char.IsControl(aChar))
+                            {
+                                SB.AppendFormat(ControlCharacters.Lookup(Convert.ToUInt32(aChar)));
+                            }
+                            else
+                            {
+                                SB.Append(aChar);
+                            }
+                        }
+
+                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { SB.ToString() });
+                    }
+                    else
+                    {
+                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { theWriteValue });
+                    }
+                }
+
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
