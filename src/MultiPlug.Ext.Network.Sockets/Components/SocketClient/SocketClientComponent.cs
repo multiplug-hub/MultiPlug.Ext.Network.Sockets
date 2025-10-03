@@ -31,7 +31,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
         public string LogEventId { get { return m_LoggingService.EventId; } }
 
         private System.Timers.Timer m_InitialiseDelayTimer;
-        private const double c_InitialiseDelay = 2000;
+        private const double c_InitialiseDelay = 3000;
 
         private bool m_MultiPlugStarted = false;
 
@@ -667,6 +667,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                     }
                     else
                     {
+                        m_SupressLoggingInErrorsOnly = false;
                         ReadEvent.Enabled = true;
 
                         ReadEvent.Invoke(new Payload
@@ -801,23 +802,14 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             return Sent;
         }
 
+        private bool m_SupressLoggingInErrorsOnly = false; // Prevents repetitive logging of same Errors after SocketException
+
         private void OnSocketException(SocketException theException)
         {
-            switch( theException.SocketErrorCode)
+            if (LoggingLevel > 0 || m_SupressLoggingInErrorsOnly == false)
             {
-                case SocketError.AddressNotAvailable:
-                case SocketError.TimedOut:
-                case SocketError.ConnectionReset:
-                case SocketError.Interrupted:
-                case SocketError.Shutdown:
-                    if (LoggingLevel > 0)
-                    {
-                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSocketExceptionCode, new string[] { theException.SocketErrorCode.ToString() });
-                    }
-                    break;
-                default:
-                    OnLogWriteEntry(EventLogEntryCodes.SocketClientSocketExceptionCode, new string[] { theException.SocketErrorCode.ToString() });
-                    break;
+                m_SupressLoggingInErrorsOnly = true;
+                OnLogWriteEntry(EventLogEntryCodes.SocketClientSocketExceptionCode, new string[] { theException.SocketErrorCode.ToString() });
             }
 
             ConnectionInError = true;

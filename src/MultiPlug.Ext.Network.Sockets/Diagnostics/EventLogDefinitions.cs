@@ -55,7 +55,7 @@ namespace MultiPlug.Ext.Network.Sockets.Diagnostics
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientObjectDisposedException, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Object Disposed Exception: {0}", Type = EventLogEntryType.Warning },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientClosedWhileReceive, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Connection Closed while Receiving", Type = EventLogEntryType.Warning },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientSocketConnectingDueToSubscriptionControl, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Socket connecting due to Subscription Control", Type = EventLogEntryType.Information },
-            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientSocketWaitingBeforeInitialisation, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Waiting 2 seconds before re-initialisation", Type = EventLogEntryType.Information }
+            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketClientSocketWaitingBeforeInitialisation, Source = (uint) EventLogEntryCodes.SourceSocketClient, StringFormat = "Waiting 3 seconds before re-initialisation", Type = EventLogEntryType.Information }
         };
     }
 }
