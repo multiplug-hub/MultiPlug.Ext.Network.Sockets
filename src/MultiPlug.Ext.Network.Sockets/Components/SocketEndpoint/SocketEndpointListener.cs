@@ -84,8 +84,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 Array.ForEach(m_Sockets, s =>
                 {
                    // s.workSocket.Disconnect(false);
-                    s.workSocket.Shutdown(SocketShutdown.Both);
-                    s.workSocket.Close();
+                   if(s.workSocket.Connected)
+                    {
+                        s.workSocket.Shutdown(SocketShutdown.Both);
+                        s.workSocket.Close();
+                    }
                 });
                 m_Sockets = new SocketState[0];
                 m_Properties.ReadEvent.Enabled = false;
