@@ -25,24 +25,23 @@
 }
 
 <form action="" method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded" autocomplete="off">
-    <section class="row-fluid">
-
-        <div class="row-fluid">
-            <div class="box">
-                <div class="span3">
-                    <a style="line-height: 52px;" href="#"><img alt="Network Logo" src="@Raw(Model.Context.Paths.Assets)images/networks.png"></a>
-                </div>
-                <div class="span6">
-                    <p style="font-size:26px; line-height: 54px; text-align: center; margin: 0px;">Socket Client</p>
-                </div>
-                <div class="span3" style="text-align: right;">
-                    <button type="submit" value="submit" style="height:54px; width:65px" class="item btn btn-green"><i class="icon-save icon-large"></i><p>Save</p></button>
-                </div>
+    <div class="row-fluid" style="position:sticky; top: 41px; z-index: 1;">
+        <div class="box">
+            <div class="span3">
+                <a style="line-height: 52px;" href="#"><img alt="Network Logo" src="@Raw(Model.Context.Paths.Assets)images/networks.png"></a>
+            </div>
+            <div class="span6">
+                <p style="font-size:26px; line-height: 54px; text-align: center; margin: 0px;">Socket Client</p>
+            </div>
+            <div class="span3" style="text-align: right;">
+                <button type="submit" value="submit" style="height:54px; width:65px" class="item btn"><i class="icon-save icon-large"></i><p>Save</p></button>
             </div>
         </div>
-
+    </div>
+    <section class="row-fluid">
         <input type="hidden" name="guid" value="@Model.Extension.Model.Guid">
 
+        @Include("MultiPlug.Ext.Network.Sockets.NetworkSocketsNavigation")
         @Include("MultiPlug.Ext.Network.Sockets.NetworkSocketsClientNavigation")
 
         <div class="row-fluid">
@@ -174,7 +173,7 @@
                                                 <td class="span2">
                                                     <div class="input-prepend">
                                                         <div class="btn-group">
-                                                            <button class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1">
+                                                            <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" tabindex="-1">
                                                                 <span class="caret">
                                                                 </span>
                                                             </button>
@@ -193,7 +192,7 @@
                                                 <td class="span2">
                                                     <div class="input-prepend">
                                                         <div class="btn-group">
-                                                            <button class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1">
+                                                            <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" tabindex="-1">
                                                                 <span class="caret">
                                                                 </span>
                                                             </button>
@@ -212,7 +211,7 @@
                                                 <td class="span2">
                                                     <div class="input-prepend">
                                                         <div class="btn-group">
-                                                            <button class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1">
+                                                            <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" tabindex="-1">
                                                                 <span class="caret">
                                                                 </span>
                                                             </button>
@@ -259,7 +258,14 @@
         </div>
     </section>
 </form>
+<script type="text/javascript" src="@Raw(Model.Context.Paths.Assets)js/jquery.dirty.min.js"></script>
 <script>
+
+@if ( string.IsNullOrEmpty( Model.Extension.Model.Guid))
+{
+    <text>$("form").dirty("setAsDirtyPermanent");</text>
+}
+
     var writeSuggestionList = [];
     var html1 = '<li><a class="WriteSuggestion" data-suggestiontext="';
     var html2 = '" href="#">'
@@ -300,7 +306,7 @@
             <td class="span2">\
                 <div class="input-prepend">\
                     <div class="btn-group">\
-                        <button class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1">\
+                        <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" tabindex="-1">\
                             <span class="caret">\
                             </span>\
                         </button>\
@@ -314,7 +320,7 @@
             <td class="span2">\
                 <div class="input-prepend">\
                     <div class="btn-group">\
-                        <button class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1">\
+                        <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" tabindex="-1">\
                             <span class="caret">\
                             </span>\
                         </button>\
@@ -328,7 +334,7 @@
             <td class="span2">\
                 <div class="input-prepend">\
                     <div class="btn-group">\
-                        <button class="btn dropdown-toggle" data-toggle="dropdown" tabindex="-1">\
+                        <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" tabindex="-1">\
                             <span class="caret">\
                             </span>\
                         </button>\
@@ -359,24 +365,20 @@
 
         applyWriteSuggestion();
         applyMPEventPickerOnClick();
+        $("form").dirty("setAsDirty");
     });
 
     $(".btn-deletesubscription").click(function (event) {
         event.preventDefault();
-
         var theRow = $(this).closest("tr");
+        if (confirm("Delete the Subscription?")) {
+            $.post($(this).attr('href'), function (data) {
 
-        $.post($(this).attr('href'), function (data) {
-
-        })
-        .done(function () {
-            theRow.remove();
-        });
-    });
-
-    $('.ReadToSuggestion').click(function (event) {
-        event.preventDefault();
-        $("#ReadToValue").val($("#ReadToValue").val() + $(this).attr("data-readto"));
+            })
+            .done(function () {
+                theRow.remove();
+            });
+        }
     });
 
     function applyWriteSuggestion() {
@@ -384,6 +386,7 @@
             event.preventDefault();
             var inputtext = $(this).closest(".input-prepend").find("input");
             $(inputtext).val($(inputtext).val() + $(this).attr("data-suggestiontext"));
+            $("form").dirty("setAsDirty");
         });
     }
 

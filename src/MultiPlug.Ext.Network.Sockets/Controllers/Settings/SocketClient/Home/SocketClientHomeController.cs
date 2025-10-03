@@ -6,7 +6,6 @@ using MultiPlug.Base.Exchange;
 using MultiPlug.Base.Http;
 using MultiPlug.Ext.Network.Sockets.Components.SocketClient;
 using MultiPlug.Ext.Network.Sockets.Models.Components;
-using MultiPlug.Ext.Network.Sockets.Models.Settings;
 using MultiPlug.Ext.Network.Sockets.Models.Settings.SocketClient;
 
 namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup

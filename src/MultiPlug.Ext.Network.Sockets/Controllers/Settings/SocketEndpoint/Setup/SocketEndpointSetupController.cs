@@ -84,7 +84,7 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Setu
                     Backlog = 100,
                     NICIndex = 0,
 
-                    ReadEventId = Guid,
+                    ReadEventId = "Network.Sockets.Endpoint." + System.Guid.NewGuid().ToString().Substring(9, 4),
                     ReadEventDescription = "Socket Read",
                     ReadEventSubject = "value",
                     ReadTrim = false,

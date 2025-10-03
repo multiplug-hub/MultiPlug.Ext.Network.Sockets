@@ -35,7 +35,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             Guid = theGuid;
             m_LoggingService = theLoggingService;
 
-            ReadEvent = new Event { Guid = theGuid, Id = System.Guid.NewGuid().ToString(), Description = "", Subjects = new[] { "value" }, Group = "Endpoint" };
+            ReadEvent = new Event { Guid = theGuid, Id = "Network.Sockets.Endpoint." + System.Guid.NewGuid().ToString().Substring(9, 4), Description = "Socket Read", Subjects = new[] { "value" }, Group = "Endpoint" };
             WriteSubscriptions = new WriteSubscription[0];
 
             m_Listener = new SocketEndpointListener(this);

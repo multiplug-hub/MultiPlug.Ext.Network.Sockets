@@ -73,7 +73,7 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
                     HostName = string.Empty,
                     Port = 0,
 
-                    ReadEventId = Guid,
+                    ReadEventId = "Network.Sockets.Client." + System.Guid.NewGuid().ToString().Substring(9, 4),
                     ReadEventDescription = "Socket Read",
                     ReadEventSubject = "value",
                     ReadTrim = false,

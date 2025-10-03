@@ -11,5 +11,9 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers
         internal const string SettingsSocketEndpointHome = "NetworkSocketsEndpointHome";
         internal const string SettingsSocketEndpointSetup = "NetworkSocketsEndpointSetup";
         internal const string SettingsNotFound = "NetworkSocketsItemNotFound";
+        internal const string SettingsNavigation = "NetworkSocketsNavigation";
+        internal const string SettingsSocketClients = "NetworkSocketsSocketClients";
+        internal const string SettingsSocketEndpoints = "NetworkSocketsSocketEndpoints";
+        internal const string SettingsAbout = "NetworkSocketsAbout";
     }
 }

@@ -63,24 +63,33 @@ namespace MultiPlug.Ext.Network.Sockets.Properties {
         /// <summary>
         ///   Looks up a localized string similar to @model MultiPlug.Base.Http.EdgeApp
         ///
-        ///&lt;section class=&quot;row-fluid&quot;&gt;
-        ///    &lt;div class=&quot;row-fluid&quot;&gt;
-        ///        &lt;div class=&quot;box&quot;&gt;
-        ///            &lt;div class=&quot;span2&quot;&gt;
-        ///                &lt;a href=&quot;/&quot;&gt;&lt;img alt=&quot;Network Icon&quot; src=&quot;@Raw(Model.Context.Paths.Assets)images/networks.png&quot;&gt;&lt;/a&gt;
-        ///            &lt;/div&gt;
-        ///            &lt;div class=&quot;span8&quot;&gt;
-        ///                &lt;p style=&quot;font-size:22.75px; padding-top:10px; text-align:center;&quot;&gt;Network Sockets&lt;/p&gt;
-        ///            &lt;/div&gt;
+        ///&lt;div class=&quot;row-fluid&quot;&gt;
+        ///    &lt;div class=&quot;box&quot;&gt;
+        ///        &lt;div class=&quot;span2&quot;&gt;
+        ///            &lt;a href=&quot;/&quot;&gt;&lt;img alt=&quot;Network Icon&quot; src=&quot;@Raw(Model.Context.Paths.Assets)images/networks.png&quot;&gt;&lt;/a&gt;
+        ///        &lt;/div&gt;
+        ///        &lt;div class=&quot;span8&quot;&gt;
+        ///            &lt;p style=&quot;font-size:22.75px; padding-top:10px; text-align:center;&quot;&gt;MultiPlug.Ext.Network.Sockets&lt;/p&gt;
         ///        &lt;/div&gt;
         ///    &lt;/div&gt;
+        ///&lt;/div&gt;
         ///
-        ///    &lt;div class=&quot;row-fluid&quot;&gt;
-        ///     [rest of string was truncated]&quot;;.
+        ///    @Include(&quot;MultiPlug.Ext.Network.Sockets.NetworkSocketsNavigation&quot;)
+        ///
+        ///&lt;section class [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string HomeRazor {
             get {
                 return ResourceManager.GetString("HomeRazor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to !function (t) { var i = [], e = &quot;dirty&quot;, n = &quot;clean&quot;, s = &quot;dirtyInitialValue&quot;, r = function (t) { var e; return i.forEach(function (i) { i.id === t &amp;&amp; (e = i) }), e }, a = function (i) { i.form.on(&quot;submit&quot;, function () { i.submitting = !0 }), i.options.preventLeaving &amp;&amp; t(window).on(&quot;beforeunload&quot;, function (t) { if (i.isDirty &amp;&amp; !i.submitting) return t.preventDefault(), i.options.leavingMessage }) }, o = function (t) { t.form.find(&quot;input, select, textarea&quot;).on(&quot;change.dirty click.dirty keyup.dirty keydown. [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string jquery_dirty_min_js {
+            get {
+                return ResourceManager.GetString("jquery_dirty_min_js", resourceCulture);
             }
         }
         
@@ -118,6 +127,55 @@ namespace MultiPlug.Ext.Network.Sockets.Properties {
         /// <summary>
         ///   Looks up a localized string similar to @model MultiPlug.Base.Http.EdgeApp
         ///
+        ///&lt;div class=&quot;row-fluid&quot;&gt;
+        ///    &lt;div class=&quot;box&quot;&gt;
+        ///        &lt;div class=&quot;span2&quot;&gt;
+        ///            &lt;a href=&quot;/&quot;&gt;&lt;img alt=&quot;Network Icon&quot; src=&quot;@Raw(Model.Context.Paths.Assets)images/networks.png&quot;&gt;&lt;/a&gt;
+        ///        &lt;/div&gt;
+        ///        &lt;div class=&quot;span8&quot;&gt;
+        ///            &lt;p style=&quot;font-size:22.75px; padding-top:10px; text-align:center;&quot;&gt;About&lt;/p&gt;
+        ///        &lt;/div&gt;
+        ///    &lt;/div&gt;
+        ///&lt;/div&gt;
+        ///
+        ///&lt;section class=&quot;row-fluid&quot;&gt;
+        ///
+        ///    @Include(&quot;MultiPlug.Ext.Network.Sockets.NetworkSocketsNavigation&quot;)
+        ///
+        ///    &lt;di [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string SettingsAbout {
+            get {
+                return ResourceManager.GetString("SettingsAbout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to @model MultiPlug.Base.Http.EdgeApp
+        ///@functions {
+        ///    public string NavLocationIsHome()
+        ///    {
+        ///        return Model.Context.Paths.Current == Model.Context.Paths.Home ? &quot;active&quot; : string.Empty;
+        ///    }
+        ///
+        ///    public string NavLocationIsSocketClient()
+        ///    {
+        ///        return Model.Context.Paths.Current.StartsWith(Model.Context.Paths.Home + &quot;socketclient&quot;) ? &quot;active&quot; : string.Empty;
+        ///    }
+        ///
+        ///    public string NavLocationIsSocketEndpoint()
+        ///    {
+        ///        return Model.Context.Paths.Current.StartsWith(Model.Cont [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string SettingsNavigation {
+            get {
+                return ResourceManager.GetString("SettingsNavigation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to @model MultiPlug.Base.Http.EdgeApp
+        ///
         ///@functions
         ///{
         ///    string isCurrentLoggingLevel(int theLevel)
@@ -130,14 +188,16 @@ namespace MultiPlug.Ext.Network.Sockets.Properties {
         ///        return (theStatus) ? &quot;Yes&quot; : &quot;No&quot;;
         ///    }
         ///
+        ///    string isChecked(bool theValue)
+        ///    {
+        ///        return (theValue) ? &quot;checked&quot; : &quot;&quot;;
+        ///    }
         ///}
-        ///
-        ///&lt;form action=&quot;&quot; method=&quot;post&quot; accept-charset=&quot;utf-8&quot; enctype=&quot;application/x-www-form-urlencoded&quot;&gt;
-        ///    &lt;section class=&quot;row-fluid&quot;&gt;
-        ///
-        ///        &lt;div class=&quot;row-fluid&quot;&gt;
-        ///            &lt;div class=&quot;box&quot;&gt;
-        ///        [rest of string was truncated]&quot;;.
+        ///@{
+        ///    string[][] WriteSugestions = new string[][]
+        ///    {
+        ///        new string[]{ &quot;\\u0020&quot;, &quot;Space&quot; },
+        ///       [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string SocketClientHome {
             get {
@@ -171,26 +231,46 @@ namespace MultiPlug.Ext.Network.Sockets.Properties {
         /// <summary>
         ///   Looks up a localized string similar to @model MultiPlug.Base.Http.EdgeApp
         ///
+        ///&lt;section class=&quot;row-fluid&quot;&gt;
+        ///    &lt;div class=&quot;row-fluid&quot;&gt;
+        ///        &lt;div class=&quot;box&quot;&gt;
+        ///            &lt;div class=&quot;span2&quot;&gt;
+        ///                &lt;a href=&quot;/&quot;&gt;&lt;img alt=&quot;Network Icon&quot; src=&quot;@Raw(Model.Context.Paths.Assets)images/networks.png&quot;&gt;&lt;/a&gt;
+        ///            &lt;/div&gt;
+        ///            &lt;div class=&quot;span8&quot;&gt;
+        ///                &lt;p style=&quot;font-size:22.75px; padding-top:10px; text-align:center;&quot;&gt;Clients&lt;/p&gt;
+        ///            &lt;/div&gt;
+        ///        &lt;/div&gt;
+        ///    &lt;/div&gt;
+        ///
+        ///    @Include(&quot;MultiPlug.Ext.Network.Socke [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string SocketClients {
+            get {
+                return ResourceManager.GetString("SocketClients", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to @model MultiPlug.Base.Http.EdgeApp
+        ///
         ///@functions
         ///{
-        ///    string isCurrentLoggingLevel(int theLevel)
+        ///    string isEnabled(bool theValue)
         ///    {
-        ///        return (@Model.Extension.Model.LoggingLevel == theLevel) ? &quot;selected&quot; : &quot;&quot;;
+        ///        return (theValue) ? &quot;checked&quot; : &quot;&quot;;
         ///    }
-        ///
-        ///    string isConnected(bool theStatus)
-        ///    {
-        ///        return (theStatus) ? &quot;Yes&quot; : &quot;No&quot;;
-        ///    }
-        ///
         ///}
         ///
-        ///&lt;form action=&quot;&quot; method=&quot;post&quot; accept-charset=&quot;utf-8&quot; enctype=&quot;application/x-www-form-urlencoded&quot;&gt;
-        ///    &lt;section class=&quot;row-fluid&quot;&gt;
-        ///
-        ///        &lt;div class=&quot;row-fluid&quot;&gt;
-        ///            &lt;div class=&quot;box&quot;&gt;
-        ///        [rest of string was truncated]&quot;;.
+        ///@{
+        ///    string[][] WriteSugestions = new string[][]
+        ///    {
+        ///        new string[]{ &quot;\\u0020&quot;, &quot;Space&quot; },
+        ///        new string[]{ &quot;\\u0000&quot;, &quot;NUL (Null)&quot; },
+        ///        new string[]{ &quot;\\u0001&quot;, &quot;SOH (Start of Heading)&quot; },
+        ///        new string[]{ &quot;\\u0002&quot;, &quot;STX (Start of Text)&quot; },
+        ///        new string[]{ &quot;\\u0003&quot;, &quot;ETX (End of Text)&quot; },
+        ///        new string[]{ &quot;\\ [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string SocketClientSetup {
             get {
@@ -207,15 +287,17 @@ namespace MultiPlug.Ext.Network.Sockets.Properties {
         ///    {
         ///        return (@Model.Extension.Model.LoggingLevel == theLevel) ? &quot;selected&quot; : &quot;&quot;;
         ///    }
+        ///    string isChecked(bool theValue)
+        ///    {
+        ///        return (theValue) ? &quot;checked&quot; : &quot;&quot;;
+        ///    }
         ///}
-        ///
-        ///&lt;form action=&quot;&quot; method=&quot;post&quot; accept-charset=&quot;utf-8&quot; enctype=&quot;application/x-www-form-urlencoded&quot;&gt;
-        ///    &lt;section class=&quot;row-fluid&quot;&gt;
-        ///
-        ///        &lt;div class=&quot;row-fluid&quot;&gt;
-        ///            &lt;div class=&quot;box&quot;&gt;
-        ///                &lt;div class=&quot;span4&quot;&gt;
-        ///                    &lt;a style=&quot;line-height: 52px;&quot; href=&quot;#&quot;&gt;&lt;img alt=&quot;Net [rest of string was truncated]&quot;;.
+        ///@{
+        ///    string[][] WriteSugestions = new string[][]
+        ///    {
+        ///        new string[]{ &quot;\\u0020&quot;, &quot;Space&quot; },
+        ///        new string[]{ &quot;\\u0000&quot;, &quot;NUL (Null)&quot; },
+        ///        new string[]{ &quot;\\u0001&quot;, &quot;SOH (Start of Heading)&quot;  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string SocketEndpointHome {
             get {
@@ -249,16 +331,46 @@ namespace MultiPlug.Ext.Network.Sockets.Properties {
         /// <summary>
         ///   Looks up a localized string similar to @model MultiPlug.Base.Http.EdgeApp
         ///
-        ///&lt;form action=&quot;&quot; method=&quot;post&quot; accept-charset=&quot;utf-8&quot; enctype=&quot;application/x-www-form-urlencoded&quot;&gt;
-        ///    &lt;section class=&quot;row-fluid&quot;&gt;
+        ///&lt;section class=&quot;row-fluid&quot;&gt;
+        ///    &lt;div class=&quot;row-fluid&quot;&gt;
+        ///        &lt;div class=&quot;box&quot;&gt;
+        ///            &lt;div class=&quot;span2&quot;&gt;
+        ///                &lt;a href=&quot;/&quot;&gt;&lt;img alt=&quot;Network Icon&quot; src=&quot;@Raw(Model.Context.Paths.Assets)images/networks.png&quot;&gt;&lt;/a&gt;
+        ///            &lt;/div&gt;
+        ///            &lt;div class=&quot;span8&quot;&gt;
+        ///                &lt;p style=&quot;font-size:22.75px; padding-top:10px; text-align:center;&quot;&gt;Endpoints&lt;/p&gt;
+        ///            &lt;/div&gt;
+        ///        &lt;/div&gt;
+        ///    &lt;/div&gt;
         ///
-        ///        &lt;div class=&quot;row-fluid&quot;&gt;
-        ///            &lt;div class=&quot;box&quot;&gt;
-        ///                &lt;div class=&quot;span4&quot;&gt;
-        ///                    &lt;a style=&quot;line-height: 52px;&quot; href=&quot;#&quot;&gt;&lt;img alt=&quot;Network Logo&quot; src=&quot;@Raw(Model.Context.Paths.Assets)images/networks.png&quot;&gt;&lt;/a&gt;
-        ///                &lt;/div&gt;
-        ///                &lt;div class=&quot;span3&quot;&gt;
-        ///                    &lt;p style=&quot;f [rest of string was truncated]&quot;;.
+        ///    @Include(&quot;MultiPlug.Ext.Network.Soc [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string SocketEndpoints {
+            get {
+                return ResourceManager.GetString("SocketEndpoints", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to @model MultiPlug.Base.Http.EdgeApp
+        ///
+        ///@functions
+        ///{
+        ///    string isEnabled(bool theValue)
+        ///    {
+        ///        return (theValue) ? &quot;checked&quot; : &quot;&quot;;
+        ///    }
+        ///}
+        ///
+        ///@{
+        ///    string[][] WriteSugestions = new string[][]
+        ///    {
+        ///        new string[]{ &quot;\\u0020&quot;, &quot;Space&quot; },
+        ///        new string[]{ &quot;\\u0000&quot;, &quot;NUL (Null)&quot; },
+        ///        new string[]{ &quot;\\u0001&quot;, &quot;SOH (Start of Heading)&quot; },
+        ///        new string[]{ &quot;\\u0002&quot;, &quot;STX (Start of Text)&quot; },
+        ///        new string[]{ &quot;\\u0003&quot;, &quot;ETX (End of Text)&quot; },
+        ///        new string[]{ &quot;\\ [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string SocketEndpointSetup {
             get {

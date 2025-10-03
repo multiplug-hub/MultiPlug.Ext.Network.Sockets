@@ -55,13 +55,17 @@ namespace MultiPlug.Ext.Network.Sockets
             {
                 return new RazorTemplate[]
                 {
+                    new RazorTemplate(Templates.SettingsNavigation, Resources.SettingsNavigation),
                     new RazorTemplate(Templates.SettingsHome, Resources.HomeRazor),
+                    new RazorTemplate(Templates.SettingsSocketClients, Resources.SocketClients),
                     new RazorTemplate(Templates.SettingsSocketClientNavigation, Resources.SocketClientNavigation),
                     new RazorTemplate(Templates.SettingsSocketClientHome, Resources.SocketClientHome),
                     new RazorTemplate(Templates.SettingsSocketClientSetup, Resources.SocketClientSetup),
+                    new RazorTemplate(Templates.SettingsSocketEndpoints, Resources.SocketEndpoints),
                     new RazorTemplate(Templates.SettingSocketEndpointNavigation, Resources.SocketEndpointNavigation),
                     new RazorTemplate(Templates.SettingsSocketEndpointHome, Resources.SocketEndpointHome),
                     new RazorTemplate(Templates.SettingsSocketEndpointSetup, Resources.SocketEndpointSetup),
+                    new RazorTemplate(Templates.SettingsAbout, Resources.SettingsAbout),
                     new RazorTemplate(Templates.SettingsNotFound, Resources.NotFound),
                 };
             }

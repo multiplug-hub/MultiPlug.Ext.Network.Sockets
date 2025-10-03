@@ -13,9 +13,7 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.Home
                 Model = new Models.Settings.Home
                 {
                     SocketClientCount = Core.Instance.SocketClients.Length.ToString(),
-                    SocketEndpointCount = Core.Instance.SocketEndpoints.Length.ToString(),
-                    SocketClients = Core.Instance.SocketClients,
-                    SocketEndpoints = Core.Instance.SocketEndpoints
+                    SocketEndpointCount = Core.Instance.SocketEndpoints.Length.ToString()
                 },
                 Template = Templates.SettingsHome
             };

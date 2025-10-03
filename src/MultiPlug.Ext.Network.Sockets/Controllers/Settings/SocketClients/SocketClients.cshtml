@@ -1,0 +1,81 @@
+﻿@model MultiPlug.Base.Http.EdgeApp
+
+<section class="row-fluid">
+    <div class="row-fluid">
+        <div class="box">
+            <div class="span2">
+                <a href="/"><img alt="Network Icon" src="@Raw(Model.Context.Paths.Assets)images/networks.png"></a>
+            </div>
+            <div class="span8">
+                <p style="font-size:22.75px; padding-top:10px; text-align:center;">Clients</p>
+            </div>
+        </div>
+    </div>
+
+    @Include("MultiPlug.Ext.Network.Sockets.NetworkSocketsNavigation")
+
+    <div class="row-fluid">
+        <div class="box non-collapsible">
+            <div class="well">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Remote Host</th>
+                            <th>Port</th>
+                            <th>Event ID</th>
+                            <th>Description</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var HttpRequest in @Model.Extension.Model.SocketClients)
+                        {
+                            <tr>
+                                <td><a href="@Raw(Model.Context.Paths.Home)socketclient/?id=@HttpRequest.Guid">@HttpRequest.HostName</a></td>
+                                <td><a href="@Raw(Model.Context.Paths.Home)socketclient/?id=@HttpRequest.Guid">@HttpRequest.Port</a></td>
+                                <td><a href="@Raw(Model.Context.Paths.Home)socketclient/?id=@HttpRequest.Guid">@HttpRequest.ReadEvent.Id</a></td>
+                                <td><a href="@Raw(Model.Context.Paths.Home)socketclient/?id=@HttpRequest.Guid">@HttpRequest.ReadEvent.Description</a></td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a class="btn btn-blue" href="@Raw(Model.Context.Paths.Home)socketclient/?id=@HttpRequest.Guid"><i class="icon-edit"></i></a>
+                                        <a class="btn btn-red delete-item" href="@Raw(Model.Context.Paths.Home)socketclient/delete/?id=@HttpRequest.Guid"><i class="icon-trash"></i></a>
+                                    </div>
+
+                                    @*<form action="@Raw(Model.Context.Paths.Home)socketclient/delete/?id=@HttpRequest.Guid" method="post" accept-charset="utf-8" enctype="application/x-www-form-urlencoded">
+                                        <button type="submit" value="submit" class="btn btn-red"><i class="icon-trash"></i></button>
+                                    </form>*@
+                                </td>
+                            </tr>
+
+                        }
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><a class="btn btn-green" href="@Raw(Model.Context.Paths.Home)socketclient/setup/"><i class="icon-time icon-plus"></i></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    function ApplyDelete(theSelector) {
+        $(theSelector).on('click', '.delete-item', function (event) {
+            event.preventDefault();
+            var closesttr = $(this).closest("tr");
+            if (confirm("Delete the Client?")) {
+                $.ajax({
+                    type: "POST",
+                    url: $(this).attr('href'),
+                    success: function () {
+                        closesttr.remove();
+                    }
+                });
+            }
+        });
+    }
+    ApplyDelete(document);
+</script>

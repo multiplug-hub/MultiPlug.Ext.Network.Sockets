@@ -38,7 +38,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
         public SocketClientComponent( string theGuid, ILoggingService theLoggingService)
         {
             Guid = theGuid;
-            ReadEvent = new Event { Guid = theGuid, Id = System.Guid.NewGuid().ToString(), Description = "", Subjects = new[] { "value" }, Group = "Client" };
+            ReadEvent = new Event { Guid = theGuid, Id = "Network.Sockets.Client." + System.Guid.NewGuid().ToString().Substring(9, 4), Description = "Socket Read", Subjects = new[] { "value" }, Group = "Client" };
             ReadEvent.Enabled = false;
             WriteSubscriptions = new WriteSubscription[0];
             m_LoggingService = theLoggingService;

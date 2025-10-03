@@ -61,13 +61,17 @@
     <Compile Include="Components\Utils\Text.cs" />
     <Compile Include="Controllers\Assets\AssetsEndpoint.cs" />
     <Compile Include="Controllers\Assets\ImageController.cs" />
+    <Compile Include="Controllers\Assets\JavaScriptsController.cs" />
+    <Compile Include="Controllers\Settings\About\AboutController.cs" />
     <Compile Include="Controllers\Settings\Home\HomeController.cs" />
     <Compile Include="Controllers\Settings\SettingsApp.cs" />
+    <Compile Include="Controllers\Settings\SocketClients\SocketClientsController.cs" />
     <Compile Include="Controllers\Settings\SocketClient\Home\SocketClientHomeController.cs" />
     <Compile Include="Controllers\Settings\SocketClient\Home\SocketClientTerminalController.cs" />
     <Compile Include="Controllers\Settings\SocketClient\Setup\DeleteSocketClientController.cs" />
     <Compile Include="Controllers\Settings\SocketClient\Setup\DeleteSubcriptionController.cs" />
     <Compile Include="Controllers\Settings\SocketClient\Setup\SocketClientSetupController.cs" />
+    <Compile Include="Controllers\Settings\SocketEndpoints\SocketEndpointsController.cs" />
     <Compile Include="Controllers\Settings\SocketEndpoint\Home\SocketEndpointTerminalController.cs" />
     <Compile Include="Controllers\Settings\SocketEndpoint\Home\SocketEndpointDisconnectClientController.cs" />
     <Compile Include="Controllers\Settings\SocketEndpoint\Setup\DeleteSocketEndpointController.cs" />
@@ -84,11 +88,14 @@
     <Compile Include="Models\Components\SocketState.cs" />
     <Compile Include="Models\Exchange\WriteSubscription.cs" />
     <Compile Include="Models\Load\LoadModel.cs" />
+    <Compile Include="Models\Settings\AboutModel.cs" />
     <Compile Include="Models\Settings\Home.cs" />
     <Compile Include="Models\Settings\SocketClientPostModel.cs" />
+    <Compile Include="Models\Settings\SocketClientsModel.cs" />
     <Compile Include="Models\Settings\SocketClient\SocketClientHomeModel.cs" />
     <Compile Include="Models\Settings\SocketClient\SocketClientSetupModel.cs" />
     <Compile Include="Models\Settings\SocketEndpointPostModel.cs" />
+    <Compile Include="Models\Settings\SocketEndpointsModel.cs" />
     <Compile Include="Models\Settings\SocketEndpoint\SocketEndpointDisconnectClientModel.cs" />
     <Compile Include="Models\Settings\SocketEndpoint\SocketEndpointHomeModel.cs" />
     <Compile Include="Models\Settings\SocketEndpoint\SocketEndpointSetupModel.cs" />
@@ -101,10 +108,14 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Controllers\Settings\About\SettingsAbout.cshtml" />
     <None Include="Controllers\Settings\Home\Home.cshtml" />
+    <None Include="Controllers\Settings\SharedRazor\SettingsNavigation.cshtml" />
+    <None Include="Controllers\Settings\SocketClients\SocketClients.cshtml" />
     <None Include="Controllers\Settings\SocketClient\Home\SocketClientHome.cshtml" />
     <None Include="Controllers\Settings\SocketClient\Setup\SocketClientSetup.cshtml" />
     <None Include="Controllers\Settings\SocketClient\Shared\SocketClientNavigation.cshtml" />
+    <None Include="Controllers\Settings\SocketEndpoints\SocketEndpoints.cshtml" />
     <None Include="Controllers\Settings\SocketEndpoint\Setup\SocketEndpointSetup.cshtml" />
     <None Include="Controllers\Settings\SocketEndpoint\Home\SocketEndpoint.cshtml" />
     <None Include="packages.config" />
@@ -122,12 +133,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Controllers\Settings\SocketEndpoint\Shared\SocketEndpointNavigation.cshtml" />
+    <Content Include="Controllers\Assets\js\jquery.dirty.js" />
+    <Content Include="Controllers\Assets\js\jquery.dirty.min.js" />
     <Content Include="Resources\networks.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>xcopy "$(ProjectDir)bin\$(ConfigurationName)\MultiPlug.Ext.Network.Sockets.dll" "C:\projects\i4Core\Connector\MultiPlug.CLI\bin\Debug\extensions\MultiPlug.Ext.Network.Sockets" /Y /I</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
