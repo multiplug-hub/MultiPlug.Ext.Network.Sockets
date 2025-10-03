@@ -10,6 +10,7 @@
     <icon>images\multiplugico.png</icon>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Use Network Sockets with this MultiPlug Extension</description>
+    <repository type="git" url="https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets" />
 	<license type="expression">MIT</license>
 	<releaseNotes>
 1.0.14
