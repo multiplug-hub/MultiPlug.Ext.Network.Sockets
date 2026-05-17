@@ -46,6 +46,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             AllowedList = new string[0];
             ReadTrim = false;
             LoggingShowControlCharacters = false;
+            PingPongs = new PingPong[0];
         }
 
         internal new void Dispose()
@@ -196,6 +197,26 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 WriteSubscriptions = List.ToArray();
             }
 
+            if(theNewProperties.PingPongs != null)
+            {
+                foreach(var item in theNewProperties.PingPongs)
+                {
+                    item.Id = System.Guid.NewGuid().ToString().Substring(9, 4);
+                    item.ReadUnescaped = Regex.Unescape(item.Read);
+
+                    if(string.IsNullOrEmpty(item.Write))
+                    {
+                        item.WriteUnescaped = item.ReadUnescaped;
+                    }
+                    else
+                    {
+                        item.WriteUnescaped = Regex.Unescape(item.Write);
+                    }
+                }
+
+                PingPongs = theNewProperties.PingPongs;
+            }
+
             if (EventsUpdatedFlag)
             {
                 EventsUpdated?.Invoke();
@@ -293,10 +314,6 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             {
                 m_ReadThread.Interrupt();
                 m_ReadThread.Join();
-                if (LoggingLevel > 0)
-                {
-                    OnLogWriteEntry(EventLogEntryCodes.SocketEndpointSocketClosed, new string[0]);
-                }
             }
         }
 
@@ -395,6 +412,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
         internal void TerminalSend(string theWriteValue)
         {
             m_Listener.Send(Regex.Unescape(theWriteValue), false);
+        }
+
+        internal void RemoveEchoRequest(string theId)
+        {
+            PingPongs = PingPongs.Where(pp => pp.Id != theId).ToArray();
         }
     }
 }

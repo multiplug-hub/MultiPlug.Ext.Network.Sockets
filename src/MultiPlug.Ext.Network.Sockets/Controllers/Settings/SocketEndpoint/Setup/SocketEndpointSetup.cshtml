@@ -57,7 +57,7 @@
                                         <select name="NICIndex" class="input-block-level">
                                             @for (var Index = 0; Index < Model.Extension.Model.IPAddressList.Length; Index++)
                                             {
-                                                <option value="@Index" @if (Model.Extension.Model.NICIndex == Index) { <text> selected </text>    }>@Model.Extension.Model.IPAddressList[Index]</option>
+                                                <option value="@Index" @if (Model.Extension.Model.NICIndex == Index) { <text> selected </text> }>@Model.Extension.Model.IPAddressList[Index]</option>
                                             }
                                         </select>
                                     </div>
@@ -198,7 +198,7 @@
                                                 <td class="span2">
                                                     <div class="input-prepend">
                                                         <div class="btn-group">
-                                                            <button class="btn dropdown-toggle" type="button"  data-toggle="dropdown" tabindex="-1">
+                                                            <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" tabindex="-1">
                                                                 <span class="caret">
                                                                 </span>
                                                             </button>
@@ -264,17 +264,32 @@
                     <div class="row-fluid">
                         <div class="well">
                             <div class="row-fluid">
+                                <ul style="list-style: none;">
+                                    <li>
+                                        <div class="control-group">
+                                            <div class="controls">
+                                                <div class="span10">
+                                                    <p><b>IP Address</b></p>
+                                                </div>
+                                                <div class="span2">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+
+
                                 <ul id="Allowed" style="list-style: none;">
                                     @for (var Index = 0; Index < Model.Extension.Model.AllowedList.Length; Index++)
                                     {
                                         <li>
                                             <div class="control-group">
                                                 <div class="controls">
-                                                    <div class="span2">
-                                                        <button type="button" class="item btn btn-red delete-allow"><i class="icon-trash"></i></button>
-                                                    </div>
                                                     <div class="span10">
                                                         <input name="AllowedList" type="text" value="@Model.Extension.Model.AllowedList[Index]" class="input-block-level">
+                                                    </div>
+                                                    <div class="span2">
+                                                        <button type="button" class="item btn btn-red delete-allow"><i class="icon-trash"></i></button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -285,15 +300,90 @@
                                     <li>
                                         <div class="control-group">
                                             <div class="controls">
+                                                <div class="span10">
+                                                </div>
                                                 <div class="span2">
                                                     <button type="button" id="NewAllow" class="btn btn-green"><i class="icon-plus"></i></button>
-                                                </div>
-                                                <div class="span10">
                                                 </div>
                                             </div>
                                         </div>
                                     </li>
                                 </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4>Echo Requests</h4>
+                    <p><i class="icon-info-sign"></i> If the Request value is Read, the Reply value will be Sent to the Client.</p>
+                    <div class="row-fluid">
+                        <div class="well">
+                            <div class="row-fluid">
+
+                                <table id="PingsTable" class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th class="span5">Request</th>
+                                            <th class="span5">Reply</th>
+                                            <th class="span1"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.Extension.Model.PingIds.Length; i++)
+                                        {
+                                            <tr>
+                                                <td class="span6">
+                                                    <div class="input-prepend input-block-level">
+                                                        <div class="btn-group">
+                                                            <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" tabindex="-1">
+                                                                <span class="caret">
+                                                                </span>
+                                                            </button>
+                                                            <ul class="dropdown-menu">
+                                                                @for (int j = 0; j < WriteSugestions.Length; j++)
+                                                                {
+                                                                    <li>
+                                                                        <a class="WriteSuggestion" data-suggestiontext="@WriteSugestions[j][0]" href="#">@WriteSugestions[j][1]</a>
+                                                                    </li>
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                        <input name="PingReads" class="span9" type="text" value="@Model.Extension.Model.PingReads[i]">
+                                                    </div>
+                                                </td>
+                                                <td class="span5">
+                                                    <div class="input-prepend input-block-level">
+                                                        <div class="btn-group">
+                                                            <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" tabindex="-1">
+                                                                <span class="caret">
+                                                                </span>
+                                                            </button>
+                                                            <ul class="dropdown-menu">
+                                                                @for (int j = 0; j < WriteSugestions.Length; j++)
+                                                                {
+                                                                    <li>
+                                                                        <a class="WriteSuggestion" data-suggestiontext="@WriteSugestions[j][0]" href="#">@WriteSugestions[j][1]</a>
+                                                                    </li>
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                        <input name="PingWrites" class="span9" type="text" value="@Model.Extension.Model.PingWrites[i]">
+                                                    </div>
+                                                </td>
+                                                <td class="span1">
+                                                    <a class="btn btn-red btn-deleteping" href="@Raw(Model.Context.Paths.Current)deleteechorequest/?id=@Model.Extension.Model.Guid&pingid=@Model.Extension.Model.PingIds[i]"><i class="icon-trash"></i></a>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                        <tr>
+                                            <th class="span6"></th>
+                                            <th class="span5"></th>
+                                            <td class="span1">
+                                                <button type="button" id="btn-ping" class="btn btn-green"><i class="icon-plus"></i></button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -429,11 +519,11 @@
         return '<li>\
             <div class="control-group">\
                 <div class="controls">\
-                    <div class="span2">\
-                        <button type="button" class="item btn btn-red delete-allow"><i class="icon-trash"></i></button>\
-                    </div>\
                     <div class="span10">\
                         <input name="AllowedList" type="text" value="" class="input-block-level">\
+                    </div>\
+                    <div class="span2">\
+                        <button type="button" class="item btn btn-red delete-allow"><i class="icon-trash"></i></button>\
                     </div>\
                 </div>\
             </div>\
@@ -457,4 +547,65 @@
     });
 
     ApplyAllowDelete(document);
+
+    function NewPing() {
+        return '<tr>\
+            <td class="span6">\
+                <div class="input-prepend input-block-level">\
+                    <div class="btn-group">\
+                        <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" tabindex="-1">\
+                            <span class="caret">\
+                            </span>\
+                        </button>\
+                        <ul class="dropdown-menu">'
+            + writeSuggestionList +
+            '</ul>\
+                    </div>\
+                    <input name="PingReads" class="span9" type="text" value="">\
+                </div>\
+            </td>\
+            <td class="span5">\
+                <div class="input-prepend input-block-level">\
+                    <div class="btn-group">\
+                        <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" tabindex="-1">\
+                            <span class="caret">\
+                            </span>\
+                        </button>\
+                        <ul class="dropdown-menu">'
+            + writeSuggestionList +
+            '</ul>\
+                    </div>\
+                    <input name="PingWrites" class="span9" type="text" value="">\
+                </div>\
+            </td>\
+            <td class="span1">\
+                <a class="btn btn-red btn-deletepingtemp" href="#"><i class="icon-trash"></i></a>\
+            </td>\
+        </tr>'
+    }
+
+    $("#btn-ping").click(function () {
+        $('#PingsTable tr:last').before(NewPing());
+
+        $(".btn-deletepingtemp").click(function (event) {
+            event.preventDefault();
+            $(this).closest("tr").remove();
+        });
+
+        applyWriteSuggestion();
+        $("form").dirty("setAsDirty");
+    });
+
+    $(".btn-deleteping").click(function (event) {
+        event.preventDefault();
+        var theRow = $(this).closest("tr");
+        if (confirm("Delete the Echo Request?")) {
+            $.post($(this).attr('href'), function (data) {
+
+            })
+            .done(function () {
+                theRow.remove();
+            });
+        }
+    });
 </script>

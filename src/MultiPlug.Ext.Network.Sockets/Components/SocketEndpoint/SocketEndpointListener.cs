@@ -119,17 +119,18 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 // Create the state object.  
                 SocketState state = new SocketState();
                 state.workSocket = client;
-                state.Address = (client.RemoteEndPoint as IPEndPoint).Address.ToString();
+                state.Address = client.RemoteEndPoint.ToString();
+                string JustIPAddress = (client.RemoteEndPoint as IPEndPoint).Address.ToString();
 
-                if(m_Properties.AllowedList.Any())
+                if (m_Properties.AllowedList.Any())
                 {
-                    var Search = m_Properties.AllowedList.FirstOrDefault(Allowed => Allowed == state.Address);
+                    var Search = m_Properties.AllowedList.FirstOrDefault(Allowed => Allowed == JustIPAddress);
 
                     if( Search == null)
                     {
                         client.Shutdown(SocketShutdown.Both);
                         client.Close();
-                        Log?.Invoke(EventLogEntryCodes.SocketEndpointClientNotOnAllowedList, new string[] { state.Address });
+                        Log?.Invoke(EventLogEntryCodes.SocketEndpointClientNotOnAllowedList, new string[] { JustIPAddress });
                         return;
                     }
                 }
@@ -159,6 +160,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
         public void ReceiveCallback(IAsyncResult theAsyncResult)
         {
             SocketState state = (SocketState)theAsyncResult.AsyncState;
+
+            if(state.Errored)
+            {
+                return;
+            }
 
             try
             {
@@ -207,7 +213,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
                         if (m_Properties.LoggingLevel == 1)
                         {
-                            Log?.Invoke(EventLogEntryCodes.SocketEndpointDataReceived, new string[] { string.Empty });
+                            Log?.Invoke(EventLogEntryCodes.SocketEndpointDataReceived, new string[] { string.Empty, state.Address });
                         }
                         else if (m_Properties.LoggingLevel == 2)
                         {
@@ -227,22 +233,38 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                                     }
                                 }
 
-                                Log?.Invoke(EventLogEntryCodes.SocketEndpointDataReceived, new string[] { SB.ToString() });
+                                Log?.Invoke(EventLogEntryCodes.SocketEndpointDataReceived, new string[] { SB.ToString(), state.Address });
                             }
                             else
                             {
-                                Log?.Invoke(EventLogEntryCodes.SocketEndpointDataReceived, new string[] { response });
+                                Log?.Invoke(EventLogEntryCodes.SocketEndpointDataReceived, new string[] { response, state.Address });
                             }
                         }
 
-                        m_Properties.ReadEvent.Invoke(new Payload
-                        (
-                            m_Properties.ReadEvent.Id,
-                            new PayloadSubject[] { new PayloadSubject(m_Properties.ReadEvent.Subjects[0], response ) }
-                        ));
+                        bool IsPingPong = false;
+
+                        foreach(var item in m_Properties.PingPongs)
+                        {
+                            if (response.Equals(item.ReadUnescaped, StringComparison.OrdinalIgnoreCase))
+                            {
+                                IsPingPong = true;
+                                LogSend(item.WriteUnescaped);
+                                Send(state, Encoding.ASCII.GetBytes(item.WriteUnescaped));
+                                break;
+                            }
+                        }
+
+                        if (IsPingPong == false)
+                        {
+                            m_Properties.ReadEvent.Invoke(new Payload
+                            (
+                                m_Properties.ReadEvent.Id,
+                                new PayloadSubject[] { new PayloadSubject(m_Properties.ReadEvent.Subjects[0], response) }
+                            ));
+                        }
                     }
 
-                    client.BeginReceive(state.buffer, 0, SocketState.BufferSize, 0,
+                    client.BeginReceive(state.buffer, 0, SocketState.BufferSize, SocketFlags.None,
                     new AsyncCallback(ReceiveCallback), state);
                 }
             }
@@ -292,11 +314,20 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             
             if(Search != null)
             {
-                Search.workSocket.Close();
+                Search.Errored = true;
+
+                if (Search.workSocket.Connected)
+                {
+                    Search.workSocket.Close();
+                }
+
+                Search.Errored = true;
+                RemoveErroredSockets();
+                Log?.Invoke(EventLogEntryCodes.SocketEndpointSocketClosed, new string[] { Search.Address });
             }
         }
 
-        internal void Send(string data, bool isHex)
+        private void LogSend(string data)
         {
             if (m_Properties.LoggingLevel == 1)
             {
@@ -327,6 +358,16 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                     Log?.Invoke(EventLogEntryCodes.SocketEndpointSending, new string[] { data });
                 }
             }
+        }
+
+        internal void Send(string data, bool isHex)
+        {
+            if(m_Sockets.Any() == false)
+            {
+                return;
+            }
+
+            LogSend(data);
 
             // Convert the string data to byte data using ASCII encoding.  
             byte[] byteData = isHex ? Text.HexStringToBytes(data) : Encoding.ASCII.GetBytes(data);
@@ -340,25 +381,30 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                     continue;
                 }
 
-                try
-                {
-                    SocketState.workSocket.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), SocketState);
-                }
-                catch (SocketException ex)
-                {
-                    OnSocketException(SocketState);
+                Send(SocketState, byteData);
+            }
+        }
 
-                    Log?.Invoke(EventLogEntryCodes.SocketEndpointExceptionDisconnected, new string[] { SocketState.workSocket.RemoteEndPoint.ToString(), ex.SocketErrorCode.ToString() });
+        private void Send(SocketState SocketState, byte[] byteData)
+        {
+            try
+            {
+                SocketState.workSocket.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallback), SocketState);
+            }
+            catch (SocketException ex)
+            {
+                OnSocketException(SocketState);
 
-                    m_Properties.ReadEvent.Invoke(new Payload
-                    (
-                        m_Properties.ReadEvent.Id,
-                        new PayloadSubject[0],
-                        DateTime.Now.AddSeconds(2),
-                        PayloadStatus.Disabled
-                    ));
-                    RemoveErroredSockets();
-                }
+                Log?.Invoke(EventLogEntryCodes.SocketEndpointExceptionDisconnected, new string[] { SocketState.workSocket.RemoteEndPoint.ToString(), ex.SocketErrorCode.ToString() });
+
+                m_Properties.ReadEvent.Invoke(new Payload
+                (
+                    m_Properties.ReadEvent.Id,
+                    new PayloadSubject[0],
+                    DateTime.Now.AddSeconds(2),
+                    PayloadStatus.Disabled
+                ));
+                RemoveErroredSockets();
             }
         }
 
@@ -373,7 +419,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
                 if(m_Properties.LoggingLevel > 0)
                 {
-                    Log?.Invoke(EventLogEntryCodes.SocketEndpointSent, new string[] { bytesSent.ToString() });
+                    Log?.Invoke(EventLogEntryCodes.SocketEndpointSent, new string[] { SocketState.Address });
                 }
             }
             catch( SocketException theSocketException)

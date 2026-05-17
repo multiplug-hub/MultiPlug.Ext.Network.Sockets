@@ -212,7 +212,7 @@ namespace MultiPlug.Ext.Network.Sockets
             }
         }
 
-        internal void RemoveSocketClientSubcription(string theSocketClientGuid, string theSubcriptionGuid)
+        internal void RemoveSocketClientSubscription(string theSocketClientGuid, string theSubcriptionGuid)
         {
             SocketClientComponent SocketClient = SocketClients.FirstOrDefault(c => c.Guid == theSocketClientGuid);
 
@@ -222,5 +222,24 @@ namespace MultiPlug.Ext.Network.Sockets
             }
         }
 
+        internal void RemoveSocketEndpointEchoRequest(string theSocketEndpointGuid, string theId)
+        {
+            SocketEndpointComponent SocketEndpoint = SocketEndpoints.FirstOrDefault(e => e.Guid == theSocketEndpointGuid);
+
+            if (SocketEndpoint != null)
+            {
+                SocketEndpoint.RemoveEchoRequest(theId);
+            }
+        }
+
+        internal void RemoveSocketClientEchoRequest(string theSocketClientGuid, string theId)
+        {
+            SocketClientComponent SocketClient = SocketClients.FirstOrDefault(e => e.Guid == theSocketClientGuid);
+
+            if (SocketClient != null)
+            {
+                SocketClient.RemoveEchoRequest(theId);
+            }
+        }
     }
 }

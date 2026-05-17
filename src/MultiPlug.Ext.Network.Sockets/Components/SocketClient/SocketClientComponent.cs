@@ -51,6 +51,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             Enabled = true;
             ReadTrim = false;
             LoggingShowControlCharacters = false;
+            PingPongs = new PingPong[0];
         }
 
         internal new void Dispose()
@@ -171,6 +172,26 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                 WriteSubscriptions = List.ToArray();
             }
 
+            if (theNewProperties.PingPongs != null)
+            {
+                foreach (var item in theNewProperties.PingPongs)
+                {
+                    item.Id = System.Guid.NewGuid().ToString().Substring(9, 4);
+                    item.ReadUnescaped = Regex.Unescape(item.Read);
+
+                    if (string.IsNullOrEmpty(item.Write))
+                    {
+                        item.WriteUnescaped = item.ReadUnescaped;
+                    }
+                    else
+                    {
+                        item.WriteUnescaped = Regex.Unescape(item.Write);
+                    }
+                }
+
+                PingPongs = theNewProperties.PingPongs;
+            }
+
             if (EventsUpdatedFlag)
             {
                 EventsUpdated?.Invoke();
@@ -246,6 +267,39 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             }
         }
 
+        private void LogSend(string data)
+        {
+            if (LoggingLevel == 1)
+            {
+                OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { string.Empty });
+            }
+            else if (LoggingLevel == 2)
+            {
+                if (LoggingShowControlCharacters.Value == true)
+                {
+                    StringBuilder SB = new StringBuilder();
+
+                    foreach (char aChar in data)
+                    {
+                        if (char.IsControl(aChar))
+                        {
+                            SB.AppendFormat(ControlCharacters.Lookup(Convert.ToUInt32(aChar)));
+                        }
+                        else
+                        {
+                            SB.Append(aChar);
+                        }
+                    }
+
+                    OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { SB.ToString() });
+                }
+                else
+                {
+                    OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { data });
+                }
+            }
+        }
+
         private void OnSubscriptionEvent(SubscriptionEvent theSubscriptionEvent, WriteSubscription theWriteSubscription)
         {
             string WriteValue = string.Empty;
@@ -262,36 +316,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             if (m_Socket != null && m_Socket.Connected)
             {
                 Send(theWriteSubscription.IsHex.Value ? Text.HexStringToBytes(WriteValue) : Encoding.ASCII.GetBytes(WriteValue));
-
-                if (LoggingLevel == 1)
-                {
-                    OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { string.Empty });
-                }
-                else if (LoggingLevel == 2)
-                {
-                    if (LoggingShowControlCharacters.Value == true)
-                    {
-                        StringBuilder SB = new StringBuilder();
-
-                        foreach (char aChar in WriteValue)
-                        {
-                            if (char.IsControl(aChar))
-                            {
-                                SB.AppendFormat(ControlCharacters.Lookup(Convert.ToUInt32(aChar)));
-                            }
-                            else
-                            {
-                                SB.Append(aChar);
-                            }
-                        }
-
-                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { SB.ToString() });
-                    }
-                    else
-                    {
-                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { WriteValue });
-                    }
-                }
+                LogSend(WriteValue);
             }
             else
             {
@@ -605,11 +630,27 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
                             }
                         }
 
-                        ReadEvent.Invoke(new Payload
-                        (
-                            ReadEvent.Id,
-                            new PayloadSubject[] { new PayloadSubject(ReadEvent.Subjects[0], response ) }
-                        ));
+                        bool IsPingPong = false;
+
+                        foreach (var item in PingPongs)
+                        {
+                            if (response.Equals(item.ReadUnescaped, StringComparison.OrdinalIgnoreCase))
+                            {
+                                IsPingPong = true;
+                                LogSend(item.WriteUnescaped);
+                                Send(Encoding.ASCII.GetBytes(item.WriteUnescaped));
+                                break;
+                            }
+                        }
+
+                        if (IsPingPong == false)
+                        {
+                            ReadEvent.Invoke(new Payload
+                            (
+                                ReadEvent.Id,
+                                new PayloadSubject[] { new PayloadSubject(ReadEvent.Subjects[0], response) }
+                            ));
+                        }
                     }
 
                     client.BeginReceive(state.buffer, 0, SocketState.BufferSize, 0, new AsyncCallback(ReceiveCallback), state);
@@ -726,42 +767,15 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
 
             if (m_Socket != null && m_Socket.Connected)
             {
-                var Result = Send(Encoding.ASCII.GetBytes(Regex.Unescape(theWriteValue) ));
+                var Unescaped = Regex.Unescape(theWriteValue);
+                var Result = Send(Encoding.ASCII.GetBytes(Unescaped));
 
                 if(!Result)
                 {
                     return Result;
                 }
 
-                if (LoggingLevel == 1)
-                {
-                    OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { string.Empty });
-                }
-                else if (LoggingLevel == 2)
-                {
-                    if (LoggingShowControlCharacters.Value == true)
-                    {
-                        StringBuilder SB = new StringBuilder();
-
-                        foreach (char aChar in theWriteValue)
-                        {
-                            if (char.IsControl(aChar))
-                            {
-                                SB.AppendFormat(ControlCharacters.Lookup(Convert.ToUInt32(aChar)));
-                            }
-                            else
-                            {
-                                SB.Append(aChar);
-                            }
-                        }
-
-                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { SB.ToString() });
-                    }
-                    else
-                    {
-                        OnLogWriteEntry(EventLogEntryCodes.SocketClientSending, new string[] { theWriteValue });
-                    }
-                }
+                LogSend(Unescaped);
 
                 return true;
             }
@@ -826,6 +840,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketClient
             {
                 m_LoggingService.WriteEntry((uint)theLogCode);
             }
+        }
+
+        internal void RemoveEchoRequest(string theId)
+        {
+            PingPongs = PingPongs.Where(pp => pp.Id != theId).ToArray();
         }
     }
 }

@@ -3,14 +3,14 @@ using MultiPlug.Base.Http;
 
 namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketClient.Setup
 {
-    [Route("socketclient/setup/deletesubscription")]
-    public class DeleteSubcriptionController : SettingsApp
+    [Route("socketclient/setup/deleteechorequest")]
+    public class DeleteEchoRequestController : SettingsApp
     {
-        public Response Post(string id, string subid)
+        public Response Post(string id, string pingid)
         {
-            if (id != null && subid != null)
+            if (id != null && pingid != null)
             {
-                Core.Instance.RemoveSocketClientSubscription(id, subid);
+                Core.Instance.RemoveSocketClientEchoRequest(id, pingid);
             }
 
             return new Response

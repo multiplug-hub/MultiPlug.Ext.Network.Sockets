@@ -68,12 +68,14 @@
     <Compile Include="Controllers\Settings\SocketClients\SocketClientsController.cs" />
     <Compile Include="Controllers\Settings\SocketClient\Home\SocketClientHomeController.cs" />
     <Compile Include="Controllers\Settings\SocketClient\Home\SocketClientTerminalController.cs" />
+    <Compile Include="Controllers\Settings\SocketClient\Setup\DeleteEchoRequestController.cs" />
     <Compile Include="Controllers\Settings\SocketClient\Setup\DeleteSocketClientController.cs" />
     <Compile Include="Controllers\Settings\SocketClient\Setup\DeleteSubcriptionController.cs" />
     <Compile Include="Controllers\Settings\SocketClient\Setup\SocketClientSetupController.cs" />
     <Compile Include="Controllers\Settings\SocketEndpoints\SocketEndpointsController.cs" />
     <Compile Include="Controllers\Settings\SocketEndpoint\Home\SocketEndpointTerminalController.cs" />
     <Compile Include="Controllers\Settings\SocketEndpoint\Home\SocketEndpointDisconnectClientController.cs" />
+    <Compile Include="Controllers\Settings\SocketEndpoint\Setup\DeleteEchoRequestController.cs" />
     <Compile Include="Controllers\Settings\SocketEndpoint\Setup\DeleteSocketEndpointController.cs" />
     <Compile Include="Controllers\Settings\SocketEndpoint\Setup\DeleteSubcriptionController.cs" />
     <Compile Include="Controllers\Settings\SocketEndpoint\Setup\SocketEndpointSetupController.cs" />
@@ -84,6 +86,7 @@
     <Compile Include="Diagnostics\EventLogEntryCodes.cs" />
     <Compile Include="Models\Components\ConnectedClient.cs" />
     <Compile Include="Models\Components\SocketClientProperties.cs" />
+    <Compile Include="Models\Components\PingPong.cs" />
     <Compile Include="Models\Components\SocketEndpointProperties.cs" />
     <Compile Include="Models\Components\SocketState.cs" />
     <Compile Include="Models\Exchange\WriteSubscription.cs" />

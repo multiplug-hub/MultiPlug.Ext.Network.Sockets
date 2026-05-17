@@ -67,7 +67,11 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Setu
 
 
                     SubscriptionsControlConnect = ( SocketEndpoint.SubscriptionsControlConnect == true ),
-                    AllowedList = SocketEndpoint.AllowedList
+                    AllowedList = SocketEndpoint.AllowedList,
+
+                    PingIds = SocketEndpoint.PingPongs.Select(x => x.Id).ToArray(),
+                    PingReads = SocketEndpoint.PingPongs.Select(x => x.Read).ToArray(),
+                    PingWrites = SocketEndpoint.PingPongs.Select(x => x.Write).ToArray(),
 
                 };
                 Subscriptions = new Subscription[] { new Subscription { Id = SocketEndpoint.LogEventId } };
@@ -100,7 +104,10 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Setu
                     WriteSubscriptionIsHexs = new bool[0],
                     WriteSubscriptionIgnoreDatas = new bool[0],
                     SubscriptionsControlConnect = true,
-                    AllowedList = new string[0]
+                    AllowedList = new string[0],
+                    PingIds = new string[0],
+                    PingReads = new string[0],
+                    PingWrites = new string[0]
                 };
             }
 
@@ -185,6 +192,31 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Setu
                     }
                 }
 
+
+                var PingPongs = new List<PingPong>();
+
+                if (theModel.PingReads != null)
+                {
+                    if (theModel.PingReads != null &&
+                        theModel.PingWrites != null &&
+                        theModel.PingReads.Length == theModel.PingWrites.Length)
+                    {
+                        for (int i = 0; i < theModel.PingReads.Length; i++)
+                        {
+                            if (string.IsNullOrEmpty(theModel.PingReads[i]))
+                            {
+                                continue;
+                            }
+
+                            PingPongs.Add(new PingPong
+                            {
+                                Read = theModel.PingReads[i],
+                                Write = theModel.PingWrites[i]
+                            });
+                        }
+                    }
+                }
+
                 Core.Instance.Update(new SocketEndpointProperties[] {
 
                 new SocketEndpointProperties
@@ -201,7 +233,8 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Setu
                     AllowedList = theModel.AllowedList == null ? new string[0] : theModel.AllowedList,
                     ReadTrim = theModel.ReadTrim,
                     ReadPrefix = theModel.ReadPrefix,
-                    ReadAppend = theModel.ReadAppend
+                    ReadAppend = theModel.ReadAppend,
+                    PingPongs = PingPongs.ToArray()
                 } });
 
                 return new Response

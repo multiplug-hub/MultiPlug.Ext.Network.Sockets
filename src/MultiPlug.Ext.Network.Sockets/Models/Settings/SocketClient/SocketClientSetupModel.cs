@@ -21,5 +21,8 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Settings.SocketClient
         public bool ReadTrim { get; internal set; }
         public string ReadPrefix { get; internal set; }
         public string ReadAppend { get; internal set; }
+        public string[] PingIds { get; internal set; }
+        public string[] PingReads { get; internal set; }
+        public string[] PingWrites { get; internal set; }
     }
 }
