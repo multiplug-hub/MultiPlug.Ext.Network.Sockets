@@ -27,5 +27,6 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Settings.SocketEndpoint
         public string[] PingIds { get; internal set; }
         public string[] PingReads { get; internal set; }
         public string[] PingWrites { get; internal set; }
+        public bool PreventDuplicateClients { get; internal set; }
     }
 }

@@ -47,6 +47,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             ReadTrim = false;
             LoggingShowControlCharacters = false;
             PingPongs = new PingPong[0];
+            PreventDuplicateClients = false;
         }
 
         internal new void Dispose()
@@ -215,6 +216,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 }
 
                 PingPongs = theNewProperties.PingPongs;
+            }
+
+            if(theNewProperties.PreventDuplicateClients != null)
+            {
+                PreventDuplicateClients = theNewProperties.PreventDuplicateClients;
             }
 
             if (EventsUpdatedFlag)

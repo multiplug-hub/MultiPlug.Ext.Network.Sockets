@@ -49,5 +49,7 @@ namespace MultiPlug.Ext.Network.Sockets.Models.Components
         public bool? LoggingShowControlCharacters { get; set; }
         [DataMember]
         public PingPong[] PingPongs  { get; set; }
+        [DataMember]
+        public bool? PreventDuplicateClients { get; set; }
     }
 }

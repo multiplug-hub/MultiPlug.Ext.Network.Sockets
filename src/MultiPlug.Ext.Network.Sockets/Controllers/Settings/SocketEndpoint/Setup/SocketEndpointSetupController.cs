@@ -6,7 +6,6 @@ using MultiPlug.Base.Attribute;
 using MultiPlug.Base.Exchange;
 using MultiPlug.Base.Http;
 using MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint;
-using MultiPlug.Ext.Network.Sockets.Models.Settings;
 using MultiPlug.Ext.Network.Sockets.Models.Components;
 using MultiPlug.Ext.Network.Sockets.Models.Settings.SocketEndpoint;
 using MultiPlug.Ext.Network.Sockets.Components.Utils;
@@ -72,6 +71,7 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Setu
                     PingIds = SocketEndpoint.PingPongs.Select(x => x.Id).ToArray(),
                     PingReads = SocketEndpoint.PingPongs.Select(x => x.Read).ToArray(),
                     PingWrites = SocketEndpoint.PingPongs.Select(x => x.Write).ToArray(),
+                    PreventDuplicateClients = SocketEndpoint.PreventDuplicateClients.Value
 
                 };
                 Subscriptions = new Subscription[] { new Subscription { Id = SocketEndpoint.LogEventId } };
@@ -107,7 +107,8 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Setu
                     AllowedList = new string[0],
                     PingIds = new string[0],
                     PingReads = new string[0],
-                    PingWrites = new string[0]
+                    PingWrites = new string[0],
+                    PreventDuplicateClients = false
                 };
             }
 
@@ -234,7 +235,9 @@ namespace MultiPlug.Ext.Network.Sockets.Controllers.Settings.SocketEndpoint.Setu
                     ReadTrim = theModel.ReadTrim,
                     ReadPrefix = theModel.ReadPrefix,
                     ReadAppend = theModel.ReadAppend,
-                    PingPongs = PingPongs.ToArray()
+                    PingPongs = PingPongs.ToArray(),
+                    PreventDuplicateClients = theModel.PreventDuplicateClients
+
                 } });
 
                 return new Response

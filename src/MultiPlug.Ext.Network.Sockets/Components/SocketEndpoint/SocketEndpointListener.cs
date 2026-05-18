@@ -122,6 +122,19 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                 state.Address = client.RemoteEndPoint.ToString();
                 string JustIPAddress = (client.RemoteEndPoint as IPEndPoint).Address.ToString();
 
+                // Prevent Duplicate Clients using the same IP Address
+                if (m_Properties.PreventDuplicateClients == true)
+                {
+                    foreach( var Socket in m_Sockets)
+                    {
+                        if(JustIPAddress == Socket.Address.Split(':')[0])
+                        {
+                            DisconnectClient(Socket.Guid);
+                            break; // We will only do it once, if there are more the User will have to disconnect them manually.
+                        }
+                    }
+                }
+
                 if (m_Properties.AllowedList.Any())
                 {
                     var Search = m_Properties.AllowedList.FirstOrDefault(Allowed => Allowed == JustIPAddress);
