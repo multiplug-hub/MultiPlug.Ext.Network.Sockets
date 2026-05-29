@@ -23,7 +23,7 @@ namespace MultiPlug.Ext.Network.Sockets.Diagnostics
 
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointSocketException, Source = (uint) EventLogEntryCodes.SourceSocketEndpointListener, StringFormat = "Socket Exception: {0}", Type = EventLogEntryType.Error },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointException, Source = (uint) EventLogEntryCodes.SourceSocketEndpointListener, StringFormat = "Exception: {0}", Type = EventLogEntryType.Error },
-            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointDataReceived, Source = (uint) EventLogEntryCodes.SourceSocketEndpointListener, StringFormat = "Data Received From {1}: {0}", Type = EventLogEntryType.Information },
+            new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointDataReceived, Source = (uint) EventLogEntryCodes.SourceSocketEndpointListener, StringFormat = "Data Received From {1} : {0}", Type = EventLogEntryType.Information },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointExceptionConnectionReset, Source = (uint) EventLogEntryCodes.SourceSocketEndpointListener, StringFormat = "Disconnected {0}", Type = EventLogEntryType.Warning },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointExceptionDisconnected, Source = (uint) EventLogEntryCodes.SourceSocketEndpointListener, StringFormat = "Disconnected {0} Code {1}", Type = EventLogEntryType.Warning },
             new EventLogDefinition { Code = (uint) EventLogEntryCodes.SocketEndpointSent, Source = (uint) EventLogEntryCodes.SourceSocketEndpointListener, StringFormat = "Data Sent to {0}", Type = EventLogEntryType.Information },

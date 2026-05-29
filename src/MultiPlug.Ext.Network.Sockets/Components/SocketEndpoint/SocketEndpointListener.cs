@@ -76,15 +76,17 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             }
             catch( ThreadInterruptedException)
             {
-                Log?.Invoke(EventLogEntryCodes.SocketEndpointShutdown, null);
- 
+                if (m_Properties.LoggingLevel > 0)
+                {
+                    Log?.Invoke(EventLogEntryCodes.SocketEndpointShutdown, null);
+                }
+
                 m_Socket.Close();
                 m_Socket = null;
 
                 Array.ForEach(m_Sockets, s =>
                 {
-                   // s.workSocket.Disconnect(false);
-                   if(s.workSocket.Connected)
+                    if (s.workSocket.Connected)
                     {
                         s.workSocket.Shutdown(SocketShutdown.Both);
                         s.workSocket.Close();
@@ -113,8 +115,6 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                     Log?.Invoke(EventLogEntryCodes.ConnectedTo, new string[] { client.RemoteEndPoint.ToString() });
                 }
 
-                // Signal the main thread to continue.  
-                allDone.Set();
 
                 // Create the state object.  
                 SocketState state = new SocketState();
@@ -129,7 +129,7 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                     {
                         if(JustIPAddress == Socket.Address.Split(':')[0])
                         {
-                            DisconnectClient(Socket.Guid);
+                            DisconnectClient(Socket);
                             break; // We will only do it once, if there are more the User will have to disconnect them manually.
                         }
                     }
@@ -155,6 +155,9 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
                 client.BeginReceive(state.buffer, 0, SocketState.BufferSize, 0,
                     new AsyncCallback(ReceiveCallback), state);
+
+                // Signal the main thread to continue.  
+                allDone.Set();
             }
             catch( ObjectDisposedException theException)
             {
@@ -277,8 +280,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
                         }
                     }
 
-                    client.BeginReceive(state.buffer, 0, SocketState.BufferSize, SocketFlags.None,
-                    new AsyncCallback(ReceiveCallback), state);
+                    if(state.Errored == false)
+                    {
+                        client.BeginReceive(state.buffer, 0, SocketState.BufferSize, SocketFlags.None,
+                        new AsyncCallback(ReceiveCallback), state);
+                    }
                 }
             }
             catch (ObjectDisposedException theException)
@@ -327,16 +333,23 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
             
             if(Search != null)
             {
-                Search.Errored = true;
+                DisconnectClient(Search);
+            }
+        }
+        private void DisconnectClient(SocketState theClientToDisconnect)
+        {
+            theClientToDisconnect.Errored = true;
 
-                if (Search.workSocket.Connected)
-                {
-                    Search.workSocket.Close();
-                }
+            if (theClientToDisconnect.workSocket.Connected)
+            {
+                theClientToDisconnect.workSocket.Close();
+            }
 
-                Search.Errored = true;
-                RemoveErroredSockets();
-                Log?.Invoke(EventLogEntryCodes.SocketEndpointSocketClosed, new string[] { Search.Address });
+            RemoveErroredSockets();
+
+            if (m_Properties.LoggingLevel > 0)
+            {
+                Log?.Invoke(EventLogEntryCodes.SocketEndpointSocketClosed, new string[] { theClientToDisconnect.Address });
             }
         }
 

@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>MultiPlug.Ext.Network.Sockets</id>
-    <version>1.0.15.0</version>
+    <version>1.0.16.0</version>
     <title>Network Sockets Extension for the MultiPlug .Net Edge Computing Platform</title>
     <authors>MultiPlugHub</authors>
     <owners>MultiPlugHub</owners>
@@ -13,6 +13,8 @@
     <repository type="git" url="https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets" />
 	<license type="expression">MIT</license>
 	<releaseNotes>
+1.0.16
+Bug https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/35
 1.0.15
 Enhancement https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/34
 Enhancement https://github.com/multiplug-hub/MultiPlug.Ext.Network.Sockets/issues/33

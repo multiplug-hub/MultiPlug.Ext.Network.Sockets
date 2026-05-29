@@ -235,7 +235,11 @@ namespace MultiPlug.Ext.Network.Sockets.Components.SocketEndpoint
 
             if (ForceInitialise)
             {
-                OnLogWriteEntry(EventLogEntryCodes.SocketEndpointSocketClosingDueToReconfigure, new string[0]);
+                if(LoggingLevel > 0)
+                {
+                    OnLogWriteEntry(EventLogEntryCodes.SocketEndpointSocketClosingDueToReconfigure, new string[0]);
+                }
+
                 Shutdown();
 
                 if (SubscriptionsControlConnect == true)
